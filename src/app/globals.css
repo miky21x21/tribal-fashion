@@ -278,18 +278,18 @@ body {
     var(--tribal-dark-cream) 0%,
     var(--tribal-dark-cream) 9.5%,
     #000000 9.5%,
-    #000000 13.5%,
-    var(--tribal-cream) 13.5%,
-    var(--tribal-cream) 18.5%,
-    var(--tribal-red) 18.5%,
-    var(--tribal-red) 21.5%,
-    #ffffff 21.5%,
-    #ffffff 78.5%,
-    var(--tribal-red) 78.5%,
-    var(--tribal-red) 81.5%,
-    var(--tribal-cream) 81.5%,
-    var(--tribal-cream) 86.5%,
-    #000000 86.5%,
+    #000000 12.7%,
+    var(--tribal-cream) 12.7%,
+    var(--tribal-cream) 15.9%,
+    var(--tribal-red) 15.9%,
+    var(--tribal-red) 17.4%,
+    #ffffff 17.4%,
+    #ffffff 82.6%,
+    var(--tribal-red) 82.6%,
+    var(--tribal-red) 84.1%,
+    var(--tribal-cream) 84.1%,
+    var(--tribal-cream) 87.3%,
+    #000000 87.3%,
     #000000 90.5%,
     var(--tribal-dark-cream) 90.5%,
     var(--tribal-dark-cream) 100%
@@ -308,9 +308,9 @@ body {
 .double-underline::after {
   content: "";
   position: absolute;
-  bottom: -0.1rem;
-  left: 12.5%;
-  right: 12.5%;
+  bottom: 0.05025rem;
+  left: 20%;
+  right: 20%;
   height: 3.5px;
   background-color: var(--tribal-red);
 }
@@ -318,9 +318,9 @@ body {
 .double-underline::before {
   content: "";
   position: absolute;
-  bottom: calc(-0.1rem - 3.5px - 1px + 2.9925px);
-  left: 12.5%;
-  right: 12.5%;
+  bottom: calc(0.05025rem - 3.5px - 1px + 2.9925px);
+  left: 20%;
+  right: 20%;
   height: 1px;
   background-color: var(--tribal-red);
 }
@@ -349,3 +349,28 @@ body {
   height: 1px;
   background-color: var(--tribal-red);
 }
+
+/* Wider and equal underlines for the first letter (K) in the navbar logo.
+   Increased by ~5% total width (reduce side offsets from 11.5% to 9%). */
+.font-kiner .double-underline:first-of-type::before {
+  left: 4.9%;
+  right: 9%;
+}
+.font-kiner .double-underline:first-of-type::after {
+  left: 4.9%;
+  right: 9%;
+}
+
+/* Underlines for both “i” letters shifted 5% of their length to the left */
+.font-kiner .double-underline:nth-of-type(2)::before,
+.font-kiner .double-underline:nth-of-type(3)::before {
+  left: 24%;
+  right: 36%;
+}
+.font-kiner .double-underline:nth-of-type(2)::after,
+.font-kiner .double-underline:nth-of-type(3)::after {
+  left: 24%;
+  right: 36%;
+}
+
+

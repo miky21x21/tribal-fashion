@@ -2,25 +2,37 @@
 
 import { motion } from "framer-motion";
 import { memo } from "react";
+import Image from "next/image";
+import theme from "./theme.jpg";
 
 function Hero() {
   return (
-    <section className="min-h-screen flex flex-col items-center justify-center bg-tribal-gradient-warm text-tribal-brown text-center px-4 sm:px-6 md:px-20 py-16 sm:py-20">
-      <div className="max-w-4xl mx-auto">
+    <section className="relative min-h-screen flex flex-col items-center justify-center text-tribal-brown text-center px-4 sm:px-6 md:px-20 py-16 sm:py-20 overflow-hidden">
+      <div className="absolute inset-0 z-0">
+        <Image
+          src={theme}
+          alt="Tribal background"
+          layout="fill"
+          objectFit="cover"
+          quality={100}
+          className="opacity-50 brown-filter"
+        />
+      </div>
+      <div className="relative z-10 max-w-4xl mx-auto">
         <motion.h1
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 font-kiner leading-tight"
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 font-kiner leading-tight text-shadow"
         >
-          Kinir... anything tribal
-        </motion.h1>
+               </motion.h1>
 
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 1 }}
-          className="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 sm:mb-10 max-w-2xl mx-auto leading-relaxed"
+          className="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 sm:mb-10 max-w-2xl mx-auto leading-relaxed text-shadow"
+          style={{ fontFamily: "'Homemade Apple', cursive" }}
         >
           In the age of mass production, the handmade stands out tall,
           distinctly representing a vibrant, dynamic living tradition. The

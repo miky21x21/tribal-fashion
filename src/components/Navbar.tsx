@@ -21,8 +21,9 @@ export default function Navbar() {
     <header className="bg-tribal-striped text-white px-4 sm:px-6 flex justify-between items-center shadow-xl relative">
       {/* Left Logo */}
       <div className="flex items-center space-x-2">
-        <h1 className="relative bottom-2 text-4xl sm:text-5xl font-bold tracking-wide drop-shadow-md font-kiner text-black">
-          <span className="double-underline">Ki</span>n
+        <h1 className="relative bottom-2 text-4xl sm:text-5xl font-normal tracking-wide drop-shadow-md font-kiner text-black">
+          <span className="double-underline">K</span>
+          <span className="double-underline">i</span>n
           <span className="double-underline">i</span>r
         </h1>
       </div>
@@ -50,7 +51,7 @@ export default function Navbar() {
       </button>
 
       {/* Desktop Navigation */}
-      <nav className="hidden md:flex md:space-x-8 font-semibold">
+      <nav className="hidden md:flex md:space-x-10 font-semibold">
         <Link href="/" className="hover:text-amber-300 transition duration-300">
           Home
         </Link>

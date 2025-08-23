@@ -20,6 +20,10 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Kingthings+Linear+K&display=swap"
           rel="stylesheet"
         />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Homemade+Apple&display=swap"
+          rel="stylesheet"
+        />
       </head>
       <body className="min-h-screen flex flex-col font-tribal">
         {/* ✅ Navbar */}

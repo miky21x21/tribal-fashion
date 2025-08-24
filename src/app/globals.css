@@ -373,4 +373,6 @@ body {
   right: 36%;
 }
 
-
+.text-shadow-book {
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}

@@ -1,10 +1,16 @@
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import Link from "next/link";
 
 export const metadata = {
   title: "KINIR...anything tribal",
   description: "Celebrating Jharkhand's rich tribal heritage through fashi",
+  icons: {
+    icon: [
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({

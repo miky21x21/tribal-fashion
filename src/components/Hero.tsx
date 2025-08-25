@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 import theme from "./theme.jpg";
 
@@ -9,6 +9,14 @@ const DESIGN_WIDTH = 896; // lock layout to this design width and scale down on 
 
 function Hero() {
   const [scale, setScale] = useState(1);
+  const [baseHeight, setBaseHeight] = useState<number | null>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (contentRef.current) {
+      setBaseHeight(contentRef.current.offsetHeight);
+    }
+  }, []);
 
   useEffect(() => {
     const updateScale = () => {
@@ -17,49 +25,50 @@ function Hero() {
     };
     updateScale();
     window.addEventListener("resize", updateScale);
-    return () => window.removeEventListener("resize", updateScale);
+
+    return () => {
+      window.removeEventListener("resize", updateScale);
+    };
   }, []);
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center text-tribal-brown text-center px-4 py-16 overflow-hidden">
-      <div className="absolute inset-0 z-0">
+    <section className="relative flex flex-col items-center justify-center text-tribal-brown text-center px-4 py-16 overflow-hidden">
+      <div className="absolute z-0 hero-background-div inset-0" style={{ backgroundColor: 'rgba(145, 93, 49, 0.2)', mixBlendMode: 'multiply', backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 2px, transparent 2px)'}}>
         <Image
           src={theme}
           alt="Tribal background"
           fill
+          priority
           quality={100}
-          className="opacity-50 brown-filter object-cover"
+          className="object-cover"
+          style={{ filter: 'sepia(0.5) saturate(1.0)' }}
+          sizes="100vw"
         />
       </div>
 
       {/* Scaler wrapper keeps visual alignment locked and scales content instead of reflowing */}
       <div className="relative z-10 w-full flex justify-center">
-        <div
-          className="origin-top"
-          style={{
-            width: `${DESIGN_WIDTH}px`,
-            transform: `scale(${scale})`,
-            transformOrigin: "top center",
-          }}
-        >
-          <motion.h1
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            className="font-bold mb-6 font-kiner leading-tight text-shadow-book"
-            style={{ fontSize: "120%" }}
-          ></motion.h1>
-
+        <div style={{ height: baseHeight ? `${baseHeight * scale}px` : "auto" }}>
+          <div
+            ref={contentRef}
+            className="origin-top"
+            style={{
+              width: `${DESIGN_WIDTH}px`,
+              transform: `scale(${scale})`,
+              transformOrigin: "top center",
+            }}
+          >
+          
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 2 }}
             transition={{ delay: 0.5, duration: 2 }}
-            className="text-tribal-brown text-left lg:text-base mb-8 mx-auto leading-relaxed text-shadow-book"
-            style={{ fontFamily: "'Homemade Apple', cursive", fontSize: "150%", color: "#8B4513" }}
+            className="text-tribal-brown text-left lg:text-base mb-8 mx-auto leading-relaxed text-shadow-book hero-paragraph mobile-text-wrap"
+            style={{ fontFamily: "'Homemade Apple', cursive", fontSize: "135%", color: "#8B4513" }}
           >
             &#160;&#160;&#160;&#160;&#160;&#160;In the age of mass production, the handmade stands out tall,
             
-            distinctly representing a vibrant, dynamic living tradition.
+            distinctly  representing a vibrant, dynamic living tradition.
             <br />
             <br />
             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;The handmade are not just relics of the past.
@@ -83,7 +92,7 @@ function Hero() {
             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;This is what you hold in your hands.
             <br />
             
-            &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span className="whitespace-nowrap">Kinir... anything tribal</span>
+            &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span>Kinir... anything tribal</span>
 </motion.p>
 
           <motion.div
@@ -97,11 +106,12 @@ function Hero() {
             <a
               href="/shop"
 
-              className="px-6 py-3 rounded-full bg-tribal-red text-white hover:bg-tribal-green transition duration-200 shadow-xl inline-block font-semibold"
+              className="px-6 py-3 rounded-full bg-tribal-red text-white hover:bg-tribal-green transition duration-200 shadow-xl inline-block font-semibold mobile-button-text"
            >
               Explore Collection
             </a>
           </motion.div>
+        </div>
         </div>
       </div>
     </section>
@@ -109,3 +119,4 @@ function Hero() {
 }
 
 export default memo(Hero);
+

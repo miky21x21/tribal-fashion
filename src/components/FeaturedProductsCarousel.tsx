@@ -118,11 +118,11 @@ function FeaturedProductsCarousel() {
                   className="w-full h-64 object-cover"
                 />
                 <div className="p-6">
-                  <h3 className="text-xl font-bold mb-3">{product.name}</h3>
+                  <h3 className="text-xl font-bold mb-3 mobile-product-name">{product.name}</h3>
                   <p className="text-tribal-red font-bold text-lg mb-4">
                     {product.price}
                   </p>
-                  <button className="w-full bg-tribal-red text-white py-3 rounded-lg shadow hover:bg-tribal-green transition duration-300 font-semibold">
+                  <button className="w-full bg-tribal-red text-white py-3 rounded-lg shadow hover:bg-tribal-green transition duration-300 font-semibold mobile-button-text">
                     Add to Cart
                   </button>
                 </div>

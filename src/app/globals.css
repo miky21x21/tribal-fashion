@@ -1,3 +1,13 @@
+/*
+ * === NAVBAR LOGO FONT DEFINITIONS ===
+ * These font definitions are crucial for the correct rendering of the navbar logo.
+ * Do not modify or remove without understanding the impact on the logo's appearance.
+ */
+@font-face {
+  font-family: "Monotype Corsiva";
+  src: url("/fonts/MTCORSVA.TTF") format("truetype");
+}
+
 @import "tailwindcss";
 
 @font-face {
@@ -172,6 +182,8 @@ body {
   background-repeat: repeat;
 }
 
+
+
 /* Mobile-specific styles */
 @media (max-width: 768px) {
   .text-tribal-mobile {
@@ -264,6 +276,27 @@ body {
     padding-top: 2rem;
     padding-bottom: 2rem;
   }
+
+  .hero-background-div {
+    height: auto;
+    background-attachment: scroll !important;
+  }
+
+  /*
+   * === NAVBAR LOGO ALIGNMENT LOCK ===
+   * These rules ensure the consistent vertical and horizontal alignment
+   * of the navbar logo text across various screen sizes.
+   * Adjustments here should be made with extreme care.
+   */
+  header h1 {
+    transform: translateY(0%) scale(1.15); /* Ensure vertical centering and scale */
+  }
+
+  header h1 span[style*="position: absolute"] {
+    top: 100%; /* Adjust as needed */
+    right: 5%; /* Keep consistent or adjust */
+    transform: translateY(-50%); /* Ensure vertical centering relative to its own height */
+  }
 }
 
 .bg-tribal-striped {
@@ -296,32 +329,46 @@ body {
   );
 }
 
+/*
+ * === NAVBAR LOGO STYLES ===
+ * This class is specifically used for the main text in the navbar logo.
+ * Modifications here will directly affect the logo's typography.
+ */
+/*
+ * === NAVBAR LOGO STYLES ===
+ * This class is specifically used for the main text in the navbar logo.
+ * Modifications here will directly affect the logo's typography.
+ */
 .font-kiner {
   font-family: "Kingthings Linear K", serif;
 }
 
+/*
+ * These classes are essential for the unique double-underline effect
+ * on specific letters within the navbar logo.
+ * Adjustments should be made with extreme care to maintain the logo's design.
+ */
 .double-underline {
   position: relative;
   display: inline-block;
 }
-
 .double-underline::after {
   content: "";
   position: absolute;
-  bottom: 0.05025rem;
+  bottom: 0.1815rem;
   left: 20%;
   right: 20%;
-  height: 3.5px;
+  height: 0.1771875rem;
   background-color: var(--tribal-red);
 }
 
 .double-underline::before {
   content: "";
   position: absolute;
-  bottom: calc(0.05025rem - 3.5px - 1px + 2.9925px);
+  bottom: 0.115375rem;
   left: 20%;
   right: 20%;
-  height: 1px;
+  height: 0.05625rem;
   background-color: var(--tribal-red);
 }
 
@@ -333,20 +380,20 @@ body {
 .double-underline-full::after {
   content: "";
   position: absolute;
-  bottom: -0.1rem;
+  bottom: calc(-0.1rem + 2.1px);
   left: 0;
   right: 0;
-  height: 3.5px;
+  height: 2.835px;
   background-color: var(--tribal-red);
 }
 
 .double-underline-full::before {
   content: "";
   position: absolute;
-  bottom: calc(-0.1rem - 3.5px - 1px + 2.9925px);
+  bottom: calc(-0.1rem - 3.15px - 0.9px + 2.9925px + 2.1px);
   left: 0;
   right: 0;
-  height: 1px;
+  height: 0.9px;
   background-color: var(--tribal-red);
 }
 
@@ -364,15 +411,140 @@ body {
 /* Underlines for both “i” letters shifted 5% of their length to the left */
 .font-kiner .double-underline:nth-of-type(2)::before,
 .font-kiner .double-underline:nth-of-type(3)::before {
-  left: 24%;
-  right: 36%;
+  left: 19%;
+  right: 31%;
 }
 .font-kiner .double-underline:nth-of-type(2)::after,
 .font-kiner .double-underline:nth-of-type(3)::after {
-  left: 24%;
-  right: 36%;
+  left: 19%;
+  right: 31%;
 }
 
 .text-shadow-book {
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.hero-paragraph {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: normal;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
+/* Global mobile text fixes to prevent awkward word breaks */
+@media (max-width: 768px) {
+  /* Better text wrapping for all elements on mobile */
+  * {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+  
+  /* Specific classes for different text elements */
+  .mobile-text-wrap {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: normal;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+  }
+  
+  .mobile-title-wrap {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: keep-all;
+    hyphens: none;
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+  }
+  
+  .mobile-product-name {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: normal;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    line-height: 1.4;
+  }
+  
+  .mobile-button-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Prevent long words from breaking containers */
+  .mobile-container-safe {
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+  
+  /* Hero specific mobile fixes */
+  .hero-paragraph {
+    word-break: normal !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    line-height: 1.6;
+    padding-left: 2.5%;
+    padding-right: 2.5%;
+  }
+  
+  /* Ensure headings don't break awkwardly */
+  h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: normal;
+    hyphens: none;
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+  }
+  
+  /* Paragraphs should wrap naturally */
+  p {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: normal;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+  }
+}
+
+/* Additional utility classes for preventing text breaks */
+.no-break {
+  white-space: nowrap;
+}
+
+.break-words-safe {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: normal;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  -ms-hyphens: auto;
+}
+
+.break-words-keep-all {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: keep-all;
+  hyphens: none;
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
 }

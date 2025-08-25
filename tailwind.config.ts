@@ -26,6 +26,7 @@ const config: Config = {
       fontFamily: {
         kiner: ["'Kingthings Linear K'", "serif"],
         "homemade-apple": ["'Homemade Apple'", "cursive"],
+        'monotype-corsiva': ['Monotype Corsiva', 'cursive'],
       },
       backgroundImage: {
         "tribal-striped":

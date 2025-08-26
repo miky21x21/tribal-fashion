@@ -196,5 +196,90 @@ export const getProductById = (id: number): Product | undefined => {
   return getAllProducts().find(product => product.id === id);
 };
 
+// Theme definitions for the featured products section
+// ==================================================================
+// TO ADD NEW THEMES:
+// 1. Add a new theme object to the productThemes array below
+// 2. Define theme name, color (must match CSS color classes), and description
+// 3. Add products array with product IDs that belong to this theme
+// 4. Ensure CSS color classes are defined in globals.css
+// ==================================================================
+
+export interface ProductTheme {
+  id: string;
+  name: string;
+  color: string; // CSS class name (e.g., 'tribal-red', 'royal-blue')
+  description: string;
+  productIds: number[]; // Array of product IDs that belong to this theme
+}
+
+export const productThemes: ProductTheme[] = [
+  // CEREMONIAL THEME - Features traditional ceremonial items
+  // Color: tribal-red (deep red for ceremonial significance)
+  // TO ADD PRODUCTS: Add product IDs to the productIds array below
+  {
+    id: 'ceremonial',
+    name: 'Ceremonial',
+    color: 'tribal-red',
+    description: 'Traditional ceremonial pieces for special occasions and cultural celebrations',
+    productIds: [101, 401] // Wall Hanging, Silver Necklace - ceremonial significance
+  },
+
+  // CONTEMPORARY THEME - Features modern interpretations of traditional crafts
+  // Color: royal-blue (represents modernity while respecting tradition)
+  // TO ADD PRODUCTS: Add product IDs to the productIds array below
+  {
+    id: 'contemporary',
+    name: 'Contemporary',
+    color: 'royal-blue',
+    description: 'Modern interpretations of traditional tribal crafts for contemporary living',
+    productIds: [201, 102] // Handloom Saree, Table Runner - contemporary applications
+  },
+
+  // PEACE THEME - Features items symbolizing harmony and tranquility
+  // Color: royal-green (represents nature, peace, and harmony)
+  // TO ADD PRODUCTS: Add product IDs to the productIds array below
+  {
+    id: 'peace',
+    name: 'Peace',
+    color: 'royal-green',
+    description: 'Peaceful and harmonious pieces that bring tranquility to your space',
+    productIds: [301, 103] // Tribal Figurines, Cushion Covers - peaceful home items
+  }
+
+  // TO ADD A NEW THEME:
+  // Uncomment and modify the template below:
+  /*
+  {
+    id: 'your-theme-id',
+    name: 'Your Theme Name',
+    color: 'your-css-color-class', // Must exist in globals.css
+    description: 'Description of your theme and what it represents',
+    productIds: [product-id-1, product-id-2] // Add relevant product IDs
+  }
+  */
+];
+
+// Helper function to get products for a specific theme
+// This function automatically fetches the actual product objects based on theme configuration
+export const getThemeProducts = (themeId: string): Product[] => {
+  const theme = productThemes.find(t => t.id === themeId);
+  if (!theme) return [];
+  
+  const allProducts = getAllProducts();
+  return theme.productIds
+    .map(id => allProducts.find(product => product.id === id))
+    .filter((product): product is Product => product !== undefined);
+};
+
+// Helper function to get all themes with their associated products
+// This is used by the carousel component to display themed tiles
+export const getThemesWithProducts = (): (ProductTheme & { products: Product[] })[] => {
+  return productThemes.map(theme => ({
+    ...theme,
+    products: getThemeProducts(theme.id)
+  }));
+};
+
 // Legacy export for backward compatibility
 export const products = getAllProducts();

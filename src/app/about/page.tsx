@@ -12,7 +12,7 @@ export default function AboutPage() {
           </p>
           <p className="text-base sm:text-lg md:text-xl text-tribal-brown leading-relaxed mb-4 sm:mb-6">
             Our mission is to preserve and promote the traditional artistry of
-            Jharkhand's tribal communities by bringing their exquisite
+            Jharkhand&apos;s tribal communities by bringing their exquisite
             craftsmanship to a global audience.
           </p>
           <p className="text-base sm:text-lg md:text-xl text-tribal-brown leading-relaxed">

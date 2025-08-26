@@ -3,43 +3,198 @@ export interface Product {
   name: string;
   price: string;
   image: string;
+  description: string;
+  sizes?: string[];
+  category: string;
+  inStock: boolean;
+  featured?: boolean;
 }
 
-export const products: Product[] = [
+export interface ProductCategory {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+  products: Product[];
+}
+
+// Product Categories Data
+export const productCategories: ProductCategory[] = [
   {
-    id: 1,
-    name: "Handwoven Shawl",
-    price: "₹1,200",
-    image: "/images/products/shawl.jpg",
+    id: "hand-woven-home-decor",
+    name: "Hand Woven Home Decor",
+    description: "Authentic handwoven textiles and decorative items for your home",
+    image: "/images/categories/home-decor.jpg",
+    products: [
+      {
+        id: 101,
+        name: "Tribal Wall Hanging",
+        price: "₹1,800",
+        image: "/images/products/wall-hanging.jpg",
+        description: "Traditional Jharkhand tribal wall hanging featuring authentic motifs and patterns. Handwoven with natural fibers.",
+        sizes: ["Small (2x3 ft)", "Medium (3x4 ft)", "Large (4x5 ft)"],
+        category: "Hand Woven Home Decor",
+        inStock: true,
+        featured: true
+      },
+      {
+        id: 102,
+        name: "Woven Table Runner",
+        price: "₹950",
+        image: "/images/products/table-runner.jpg",
+        description: "Handcrafted table runner with intricate tribal patterns. Perfect for dining room decor.",
+        sizes: ["6 ft", "8 ft", "10 ft"],
+        category: "Hand Woven Home Decor",
+        inStock: true
+      },
+      {
+        id: 103,
+        name: "Decorative Cushion Cover",
+        price: "₹650",
+        image: "/images/products/cushion-cover.jpg",
+        description: "Beautiful handwoven cushion covers with traditional tribal embroidery.",
+        sizes: ["16x16 inch", "18x18 inch", "20x20 inch"],
+        category: "Hand Woven Home Decor",
+        inStock: true
+      }
+    ]
   },
   {
-    id: 2,
-    name: "Tribal Necklace",
-    price: "₹800",
-    image: "/images/products/necklace.jpg",
+    id: "handloom",
+    name: "Handloom",
+    description: "Traditional handloom fabrics and garments crafted by skilled artisans",
+    image: "/images/categories/handloom.jpg",
+    products: [
+      {
+        id: 201,
+        name: "Handloom Saree",
+        price: "₹3,200",
+        image: "/images/products/handloom-saree.jpg",
+        description: "Exquisite handloom saree with traditional Jharkhand patterns. Woven on traditional pit looms.",
+        sizes: ["One Size"],
+        category: "Handloom",
+        inStock: true,
+        featured: true
+      },
+      {
+        id: 202,
+        name: "Handloom Kurta",
+        price: "₹1,800",
+        image: "/images/products/handloom-kurta.jpg",
+        description: "Comfortable handloom cotton kurta with ethnic design elements.",
+        sizes: ["S", "M", "L", "XL", "XXL"],
+        category: "Handloom",
+        inStock: true
+      },
+      {
+        id: 203,
+        name: "Handloom Dupatta",
+        price: "₹1,200",
+        image: "/images/products/handloom-dupatta.jpg",
+        description: "Elegant handloom dupatta with traditional border designs.",
+        sizes: ["2.5 meters", "3 meters"],
+        category: "Handloom",
+        inStock: true
+      }
+    ]
   },
   {
-    id: 3,
-    name: "Ethnic Kurta",
-    price: "₹1,500",
-    image: "/images/products/kurta.jpg",
+    id: "souvenir",
+    name: "Souvenir",
+    description: "Unique tribal souvenirs and collectibles representing Jharkhand's heritage",
+    image: "/images/categories/souvenir.jpg",
+    products: [
+      {
+        id: 301,
+        name: "Tribal Figurine Set",
+        price: "₹850",
+        image: "/images/products/tribal-figurines.jpg",
+        description: "Hand-carved wooden figurines depicting traditional tribal dancers and musicians.",
+        category: "Souvenir",
+        inStock: true,
+        featured: true
+      },
+      {
+        id: 302,
+        name: "Miniature Tribal Hut",
+        price: "₹450",
+        image: "/images/products/miniature-hut.jpg",
+        description: "Detailed miniature replica of a traditional Jharkhand tribal hut made from natural materials.",
+        category: "Souvenir",
+        inStock: true
+      },
+      {
+        id: 303,
+        name: "Tribal Art Postcard Set",
+        price: "₹250",
+        image: "/images/products/postcard-set.jpg",
+        description: "Beautiful set of 12 postcards featuring authentic tribal art and motifs.",
+        category: "Souvenir",
+        inStock: true
+      }
+    ]
   },
   {
-    id: 4,
-    name: "Dokra Earrings",
-    price: "₹600",
-    image: "/images/products/earrings.jpg",
-  },
-  {
-    id: 5,
-    name: "Handmade Bag",
-    price: "₹1,000",
-    image: "/images/products/bag.jpg",
-  },
-  {
-    id: 6,
-    name: "Painted Saree",
-    price: "₹2,000",
-    image: "/images/products/saree.jpg",
-  },
+    id: "silverware",
+    name: "Silverware",
+    description: "Handcrafted silver jewelry and accessories by traditional artisans",
+    image: "/images/categories/silverware.jpg",
+    products: [
+      {
+        id: 401,
+        name: "Silver Tribal Necklace",
+        price: "₹4,500",
+        image: "/images/products/silver-necklace.jpg",
+        description: "Handcrafted silver necklace with traditional tribal motifs. Made with 925 sterling silver.",
+        category: "Silverware",
+        inStock: true,
+        featured: true
+      },
+      {
+        id: 402,
+        name: "Silver Bangles Set",
+        price: "₹2,800",
+        image: "/images/products/silver-bangles.jpg",
+        description: "Set of 4 handcrafted silver bangles with intricate tribal engravings.",
+        sizes: ["Small", "Medium", "Large"],
+        category: "Silverware",
+        inStock: true
+      },
+      {
+        id: 403,
+        name: "Silver Tribal Earrings",
+        price: "₹1,900",
+        image: "/images/products/silver-earrings.jpg",
+        description: "Elegant silver earrings featuring traditional Jharkhand tribal designs.",
+        category: "Silverware",
+        inStock: true
+      }
+    ]
+  }
 ];
+
+// Helper functions for easy data management
+export const getAllProducts = (): Product[] => {
+  return productCategories.flatMap(category => category.products);
+};
+
+export const getFeaturedProducts = (): Product[] => {
+  return getAllProducts().filter(product => product.featured);
+};
+
+export const getProductsByCategory = (categoryId: string): Product[] => {
+  const category = productCategories.find(cat => cat.id === categoryId);
+  return category ? category.products : [];
+};
+
+export const getCategoryByProducts = (categoryName: string): Product[] => {
+  const category = productCategories.find(cat => cat.name === categoryName);
+  return category ? category.products : [];
+};
+
+export const getProductById = (id: number): Product | undefined => {
+  return getAllProducts().find(product => product.id === id);
+};
+
+// Legacy export for backward compatibility
+export const products = getAllProducts();

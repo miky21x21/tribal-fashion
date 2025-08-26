@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, memo, useCallback } from "react";
-import { products } from "@/data/products";
+import { getFeaturedProducts } from "@/data/products";
 import Image from "next/image";
 
 function FeaturedProductsCarousel() {
@@ -10,10 +10,20 @@ function FeaturedProductsCarousel() {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
 
+  // Get featured products
+  const featuredProducts = getFeaturedProducts();
+  
   // Create duplicated products for infinite loop effect
-  const duplicatedProducts = [...products, ...products, ...products];
-  const totalItems = products.length;
+  const duplicatedProducts = [...featuredProducts, ...featuredProducts, ...featuredProducts];
+  const totalItems = featuredProducts.length;
   const startIndex = totalItems; // Start from the middle set of products
+
+  const goToNext = useCallback(() => {
+    if (isTransitioning) return;
+
+    setIsTransitioning(true);
+    setCurrentIndex((prevIndex) => prevIndex + 1);
+  }, [isTransitioning]);
 
   // Auto-rotate carousel
   useEffect(() => {
@@ -24,14 +34,7 @@ function FeaturedProductsCarousel() {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying]);
-
-  const goToNext = useCallback(() => {
-    if (isTransitioning) return;
-
-    setIsTransitioning(true);
-    setCurrentIndex((prevIndex) => prevIndex + 1);
-  }, [isTransitioning]);
+  }, [isAutoPlaying, goToNext]);
 
   const goToPrev = useCallback(() => {
     if (isTransitioning) return;
@@ -110,15 +113,28 @@ function FeaturedProductsCarousel() {
               aria-label={`${(index % totalItems) + 1} of ${totalItems}`}
             >
               <div className="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transform transition-all duration-300 hover:-translate-y-2 h-full">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  width={300}
-                  height={200}
-                  className="w-full h-64 object-cover"
-                />
+                <div className="relative">
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    width={300}
+                    height={200}
+                    className="w-full h-64 object-cover"
+                  />
+                  <div className="absolute top-4 left-4 bg-tribal-green text-white px-3 py-1 rounded-full text-sm font-semibold">
+                    Featured
+                  </div>
+                </div>
                 <div className="p-6">
-                  <h3 className="text-xl font-bold mb-3 mobile-product-name">{product.name}</h3>
+                  <div className="mb-2">
+                    <span className="text-xs font-medium text-tribal-green uppercase tracking-wide">
+                      {product.category}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold mb-3 mobile-product-name text-tribal-brown">{product.name}</h3>
+                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                    {product.description}
+                  </p>
                   <p className="text-tribal-red font-bold text-lg mb-4">
                     {product.price}
                   </p>

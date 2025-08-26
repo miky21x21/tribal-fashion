@@ -1,4 +1,4 @@
-import Link from "next/link";
+
 import FeaturedProductsCarousel from "@/components/FeaturedProductsCarousel";
 import Hero from "@/components/Hero";
 
@@ -25,7 +25,7 @@ export default function HomePage() {
             Celebrating Tribal Heritage
           </h2>
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed mobile-text-wrap">
-            We honor Jharkhand's tribal artisans by bringing you authentic
+            We honor Jharkhand&apos;s tribal artisans by bringing you authentic
             handcrafted products that tell a story of tradition and
             craftsmanship.
           </p>

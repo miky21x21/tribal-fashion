@@ -140,7 +140,7 @@ export default function ProductCollage() {
         </div>
         
         <div className="text-center mt-12">
-          <p className="text-tribal-brown text-lg md:text-xl mb-6 max-w-2xl mx-auto">
+          <p className="text-tribal-red text-lg md:text-xl mb-6 max-w-2xl mx-auto font-['Limelight']">
             Discover the rich tapestry of Jharkhand&apos;s tribal craftsmanship through our curated collection of authentic handmade products.
           </p>
           <a

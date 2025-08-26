@@ -41,7 +41,7 @@ function Hero() {
           priority
           quality={100}
           className="object-cover"
-          style={{ filter: 'sepia(0.5) saturate(1.0)' }}
+
           sizes="100vw"
         />
       </div>

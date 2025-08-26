@@ -1,12 +1,15 @@
-
 import FeaturedProductsCarousel from "@/components/FeaturedProductsCarousel";
 import Hero from "@/components/Hero";
+import ProductCollage from "@/components/ProductCollage";
 
 export default function HomePage() {
   return (
     <main className="flex flex-col">
       {/* Hero Section */}
       <Hero />
+
+      {/* Product Collage Section */}
+      <ProductCollage />
 
       {/* Featured Products Section */}
       <section className="py-16 sm:py-20 px-4 sm:px-6 md:px-20 bg-tribal-gradient-cream">

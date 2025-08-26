@@ -8,6 +8,7 @@ export interface Product {
   category: string;
   inStock: boolean;
   featured?: boolean;
+  theme?: string; // Theme assignment for featured products
 }
 
 export interface ProductCategory {
@@ -17,6 +18,42 @@ export interface ProductCategory {
   image: string;
   products: Product[];
 }
+
+// Theme configuration for featured products organization
+export interface FeaturedTheme {
+  id: string;
+  name: string;
+  description: string;
+  order: number; // Display order (lower numbers appear first)
+}
+
+// THEME CONFIGURATION
+// Add new themes here by adding entries to this array
+// Products are assigned to themes using the 'theme' property
+export const featuredThemes: FeaturedTheme[] = [
+  {
+    id: "ceremonial",
+    name: "Ceremonial",
+    description: "Traditional ceremonial items and sacred artifacts",
+    order: 1
+  },
+  {
+    id: "contemporary",
+    name: "Contemporary",
+    description: "Modern designs with traditional craftsmanship",
+    order: 2
+  }
+  // TO ADD NEW THEMES:
+  // 1. Add a new theme object here with unique id, name, description, and order
+  // 2. Assign products to the theme by setting their 'theme' property to the theme id
+  // Example:
+  // {
+  //   id: "seasonal",
+  //   name: "Seasonal",
+  //   description: "Special seasonal collections",
+  //   order: 3
+  // }
+];
 
 // Product Categories Data
 export const productCategories: ProductCategory[] = [
@@ -35,7 +72,8 @@ export const productCategories: ProductCategory[] = [
         sizes: ["Small (2x3 ft)", "Medium (3x4 ft)", "Large (4x5 ft)"],
         category: "Hand Woven Home Decor",
         inStock: true,
-        featured: true
+        featured: true,
+        theme: "ceremonial" // THEME ASSIGNMENT: Assign products to themes here
       },
       {
         id: 102,
@@ -74,7 +112,8 @@ export const productCategories: ProductCategory[] = [
         sizes: ["One Size"],
         category: "Handloom",
         inStock: true,
-        featured: true
+        featured: true,
+        theme: "ceremonial" // THEME ASSIGNMENT: Traditional ceremonial wear
       },
       {
         id: 202,
@@ -112,7 +151,8 @@ export const productCategories: ProductCategory[] = [
         description: "Hand-carved wooden figurines depicting traditional tribal dancers and musicians.",
         category: "Souvenir",
         inStock: true,
-        featured: true
+        featured: true,
+        theme: "contemporary" // THEME ASSIGNMENT: Modern collectible interpretation
       },
       {
         id: 302,
@@ -148,7 +188,8 @@ export const productCategories: ProductCategory[] = [
         description: "Handcrafted silver necklace with traditional tribal motifs. Made with 925 sterling silver.",
         category: "Silverware",
         inStock: true,
-        featured: true
+        featured: true,
+        theme: "contemporary" // THEME ASSIGNMENT: Modern jewelry with traditional elements
       },
       {
         id: 402,
@@ -180,6 +221,28 @@ export const getAllProducts = (): Product[] => {
 
 export const getFeaturedProducts = (): Product[] => {
   return getAllProducts().filter(product => product.featured);
+};
+
+// THEME-BASED HELPER FUNCTIONS
+// Get products by theme for featured products organization
+export const getProductsByTheme = (themeId: string): Product[] => {
+  return getFeaturedProducts().filter(product => product.theme === themeId);
+};
+
+// Get featured products organized by themes
+export const getFeaturedProductsByThemes = (): { theme: FeaturedTheme; products: Product[] }[] => {
+  // Sort themes by order
+  const sortedThemes = [...featuredThemes].sort((a, b) => a.order - b.order);
+  
+  return sortedThemes.map(theme => ({
+    theme,
+    products: getProductsByTheme(theme.id)
+  })).filter(themeGroup => themeGroup.products.length > 0); // Only include themes with products
+};
+
+// Get products without theme assignment (for backwards compatibility)
+export const getFeaturedProductsWithoutTheme = (): Product[] => {
+  return getFeaturedProducts().filter(product => !product.theme);
 };
 
 export const getProductsByCategory = (categoryId: string): Product[] => {

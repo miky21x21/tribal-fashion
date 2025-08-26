@@ -35,6 +35,43 @@ const config: Config = {
         "tribal-gradient-red": "linear-gradient(to bottom, #9d2320, #e63946)",
         "tribal-gradient-warm": "linear-gradient(to bottom, #ffd166, #fce29c)",
       },
+      animation: {
+        'fade-slide-up': 'fadeSlideUp 1.5s ease-out forwards',
+        'fade-slide-right': 'fadeSlideRight 1.5s ease-out forwards',
+        'fade-slide-left': 'fadeSlideLeft 1.5s ease-out forwards',
+      },
+      keyframes: {
+        fadeSlideUp: {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(30px) scale(0.95)',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0) scale(1)',
+          },
+        },
+        fadeSlideRight: {
+          '0%': {
+            opacity: '0',
+            transform: 'translateX(-30px) scale(0.95)',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateX(0) scale(1)',
+          },
+        },
+        fadeSlideLeft: {
+          '0%': {
+            opacity: '0',
+            transform: 'translateX(30px) scale(0.95)',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateX(0) scale(1)',
+          },
+        },
+      },
     },
   },
   plugins: [],

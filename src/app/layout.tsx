@@ -30,6 +30,9 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Homemade+Apple&display=swap"
           rel="stylesheet"
         />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Limelight&display=swap" rel="stylesheet">
       </head>
       <body className="min-h-screen flex flex-col font-tribal">
         {/* ✅ Navbar */}

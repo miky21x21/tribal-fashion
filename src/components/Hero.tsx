@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
-import theme from "./theme.jpg";
 
 const DESIGN_WIDTH = 896; // lock layout to this design width and scale down on smaller screens
 
@@ -33,15 +32,14 @@ function Hero() {
 
   return (
     <section className="relative flex flex-col items-center justify-center text-tribal-brown text-center px-4 py-16 overflow-hidden">
-      <div className="absolute z-0 hero-background-div inset-0" style={{ backgroundColor: 'rgba(145, 93, 49, 0.2)', mixBlendMode: 'multiply', backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 2px, transparent 2px)'}}>
+      <div className="absolute z-0 hero-background-div inset-0">
         <Image
-          src={theme}
+          src="/images/hero-background.jpg"
           alt="Tribal background"
           fill
           priority
           quality={100}
           className="object-cover"
-
           sizes="100vw"
         />
       </div>
@@ -119,4 +117,3 @@ function Hero() {
 }
 
 export default memo(Hero);
-

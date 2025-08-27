@@ -11,7 +11,13 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "prisma:seed": "node prisma/seed.js"
+    "prisma:seed": "node prisma/seed.js",
+    "db:reset": "node scripts/reset-db.js",
+    "db:reset-quick": "node scripts/reset-db.js --quick",
+    "db:validate": "node scripts/reset-db.js --validate-only",
+    "db:counts": "node scripts/reset-db.js --counts",
+    "test:setup": "node scripts/reset-db.js",
+    "test:integration": "node test-integration.js"
   },
   "keywords": [],
   "author": "",

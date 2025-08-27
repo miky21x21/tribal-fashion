@@ -29,7 +29,22 @@ function Hero() {
       window.removeEventListener("resize", updateScale);
     };
   }, []);
-
+// Add this useEffect for fetching hero content
+  useEffect(() => {
+    const fetchHeroContent = async () => {
+      try {
+        const response = await fetch('/api/content/hero');
+        const data = await response.json();
+        if (data.success) {
+          setHeroContent(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching hero content:', error);
+      }
+    };
+    
+    fetchHeroContent();
+  }, []);
   return (
     <section className="relative flex flex-col items-center justify-center text-tribal-brown text-center px-4 py-16 overflow-hidden">
       <div className="absolute z-0 hero-background-div inset-0">

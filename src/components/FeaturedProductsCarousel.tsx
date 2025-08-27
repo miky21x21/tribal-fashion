@@ -29,12 +29,33 @@ function FeaturedProductsCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [featuredProducts, setFeaturedProducts] = useState([]); 
   const carouselRef = useRef<HTMLDivElement>(null);
 
   // Get all themes with their associated products
   // This automatically includes any new themes defined in the data file
   const themesWithProducts = getThemesWithProducts();
-
+useEffect(() => {
+    const fetchFeaturedProducts = async () => {
+      try {
+        const response = await fetch('/api/products/featured');
+        const data = await response.json();
+        if (data.success) {
+          setFeaturedProducts(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching featured products:', error);
+        // Fallback to local data if API fails
+        setFeaturedProducts(getFeaturedProducts());
+      }
+    };
+    
+    fetchFeaturedProducts();
+}, []);
+  
+   const duplicatedProducts = featuredProducts.length > 0 
+    ? [...featuredProducts, ...featuredProducts, ...featuredProducts] 
+    : [];
   /**
    * CAROUSEL CONFIGURATION
    * =====================================================================================

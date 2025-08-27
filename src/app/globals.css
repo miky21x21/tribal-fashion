@@ -1,26 +1,560 @@
+/*
+ * === NAVBAR LOGO FONT DEFINITIONS ===
+ * These font definitions are crucial for the correct rendering of the navbar logo.
+ * Do not modify or remove without understanding the impact on the logo's appearance.
+ */
+@font-face {
+  font-family: "Monotype Corsiva";
+  src: url("/fonts/MTCORSVA.TTF") format("truetype");
+}
+
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Kingthings Linear K";
+  src: url("/fonts/Kingthings Linear K.ttf") format("truetype");
+}
+
+/*
+ * === COLOR CUSTOMIZATION ===
+ * To change the tribal color scheme, modify the CSS variables below.
+ * These variables are used throughout the application for consistent theming.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --tribal-cream: #fce29c;
+  --tribal-dark-cream: #fce29c;
+  --tribal-red: #9d2320;
+  --tribal-red-accent: #e63946;
+  --tribal-dark: #3b1c1c;
+  --tribal-yellow: #ffd166;
+  --tribal-brown: #ef362c;
+  --tribal-green: #3a5a40;
+  --royal-blue: #112659;
+  --royal-green: #136207;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--tribal-cream);
+  color: var(--tribal-dark);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Base tribal color classes */
+.bg-tribal-cream {
+  background-color: var(--tribal-cream);
+}
+
+.bg-tribal-red {
+  background-color: var(--tribal-red);
+}
+
+.bg-tribal-yellow {
+  background-color: var(--tribal-yellow);
+}
+
+.bg-tribal-brown {
+  background-color: var(--tribal-brown);
+}
+
+.bg-tribal-green {
+  background-color: var(--tribal-green);
+}
+
+.bg-tribal-accent {
+  background-color: var(--tribal-red-accent);
+}
+
+.bg-royal-blue {
+  background-color: var(--royal-blue);
+}
+
+.bg-royal-green {
+  background-color: var(--royal-green);
+}
+
+.text-tribal-cream {
+  color: var(--tribal-cream);
+}
+
+.text-tribal-red {
+  color: var(--tribal-red);
+}
+
+.text-tribal-dark {
+  color: var(--tribal-dark);
+}
+
+.text-tribal-brown {
+  color: var(--tribal-brown);
+}
+
+.text-tribal-yellow {
+  color: var(--tribal-yellow);
+}
+
+.text-tribal-green {
+  color: var(--tribal-green);
+}
+
+/* Tribal Patterns - Subtle background textures */
+.bg-tribal-yellow-pattern {
+  background-color: var(--tribal-yellow);
+  background-image: radial-gradient(var(--tribal-brown) 10%, transparent 11%),
+    radial-gradient(var(--tribal-brown) 10%, transparent 11%);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+  background-repeat: repeat;
+}
+
+.bg-tribal-cream-pattern {
+  background-color: var(--tribal-cream);
+  background-image: linear-gradient(
+      45deg,
+      var(--tribal-brown) 25%,
+      transparent 25%
+    ),
+    linear-gradient(-45deg, var(--tribal-brown) 25%, transparent 25%),
+    linear-gradient(45deg, var(--tribal-brown) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--tribal-brown) 25%, transparent 25%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  background-repeat: repeat;
+}
+
+.bg-tribal-red-pattern {
+  background-color: var(--tribal-red);
+  background-image: linear-gradient(
+      90deg,
+      var(--tribal-green) 2px,
+      transparent 2px
+    ),
+    linear-gradient(180deg, var(--tribal-green) 2px, transparent 2px);
+  background-size: 30px 30px;
+  background-repeat: repeat;
+}
+
+/* Reduced opacity patterns for subtle effect */
+.bg-tribal-yellow-pattern-subtle {
+  background-color: var(--tribal-yellow);
+  background-image: radial-gradient(rgba(92, 64, 51, 0.1) 10%, transparent 11%),
+    radial-gradient(rgba(92, 64, 51, 0.1) 10%, transparent 11%);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+  background-repeat: repeat;
+}
+
+.bg-tribal-cream-pattern-subtle {
+  background-color: var(--tribal-cream);
+  background-image: linear-gradient(
+      45deg,
+      rgba(92, 64, 51, 0.1) 25%,
+      transparent 25%
+    ),
+    linear-gradient(-45deg, rgba(92, 64, 51, 0.1) 25%, transparent 25%),
+    linear-gradient(45deg, rgba(92, 64, 51, 0.1) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(92, 64, 51, 0.1) 25%, transparent 25%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  background-repeat: repeat;
+}
+
+/*
+ * === GRADIENT CUSTOMIZATION ===
+ * To change gradient backgrounds, modify the values below.
+ * These gradients use the tribal color palette defined above.
+ */
+/* Gradient backgrounds */
+.bg-tribal-gradient-yellow {
+  background: linear-gradient(135deg, #ffd166 0%, #ff9a3d 100%);
+}
+
+.bg-tribal-gradient-red {
+  background: linear-gradient(135deg, #a52a2a 0%, #8b1c1c 100%);
+}
+
+.bg-tribal-gradient-cream {
+  background: linear-gradient(135deg, #faf3e0 0%, #f8f5e4 100%);
+}
+
+.bg-tribal-gradient-warm {
+  background: linear-gradient(135deg, #fff5e6 0%, #ffd166 50%, #ff9a3d 100%);
+}
+
+.bg-tribal-red-pattern-subtle {
+  background-color: var(--tribal-red);
+  background-image: linear-gradient(
+      90deg,
+      rgba(58, 90, 64, 0.1) 2px,
+      transparent 2px
+    ),
+    linear-gradient(180deg, rgba(58, 90, 64, 0.1) 2px, transparent 2px);
+  background-size: 30px 30px;
+  background-repeat: repeat;
+}
+
+
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  .text-tribal-mobile {
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.4;
+  }
+
+  .text-tribal-mobile-lg {
+    font-size: 1rem; /* 16px */
+    line-height: 1.5;
+  }
+
+  .text-tribal-mobile-xl {
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.5;
+  }
+
+  .text-tribal-mobile-2xl {
+    font-size: 1.25rem; /* 20px */
+    line-height: 1.4;
+  }
+
+  .text-tribal-mobile-3xl {
+    font-size: 1.5rem; /* 24px */
+    line-height: 1.3;
+  }
+
+  .text-tribal-mobile-4xl {
+    font-size: 1.75rem; /* 28px */
+    line-height: 1.2;
+  }
+
+  .text-tribal-mobile-5xl {
+    font-size: 2rem; /* 32px */
+    line-height: 1.2;
+  }
+
+  .p-tribal-mobile {
+    padding: 0.5rem;
+  }
+
+  .p-tribal-mobile-2 {
+    padding: 1rem;
+  }
+
+  .p-tribal-mobile-3 {
+    padding: 1.5rem;
+  }
+
+  .p-tribal-mobile-4 {
+    padding: 2rem;
+  }
+
+  .px-tribal-mobile {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .py-tribal-mobile {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .px-tribal-mobile-2 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .py-tribal-mobile-2 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .px-tribal-mobile-3 {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .py-tribal-mobile-3 {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .px-tribal-mobile-4 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  .py-tribal-mobile-4 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .hero-background-div {
+    height: auto;
+    background-attachment: scroll !important;
+  }
+
+  /*
+   * === NAVBAR LOGO ALIGNMENT LOCK ===
+   * These rules ensure the consistent vertical and horizontal alignment
+   * of the navbar logo text across various screen sizes.
+   * Adjustments here should be made with extreme care.
+   */
+  header h1 {
+    transform: translateY(0%) scale(1.15); /* Ensure vertical centering and scale */
+  }
+
+  header h1 span[style*="position: absolute"] {
+    top: 100%; /* Adjust as needed */
+    right: 5%; /* Keep consistent or adjust */
+    transform: translateY(-50%); /* Ensure vertical centering relative to its own height */
+  }
+}
+
+.bg-tribal-striped {
+  /*
+ * To change the width of the stripes, adjust the percentage values below.
+ * To change the colors, you can modify the CSS variables in the :root selector
+ * or replace them with hex codes directly in the linear-gradient.
+ */
+  height: 105px;
+  background: linear-gradient(
+    to bottom,
+    var(--tribal-dark-cream) 0%,
+    var(--tribal-dark-cream) 9.5%,
+    #000000 9.5%,
+    #000000 12.7%,
+    var(--tribal-cream) 12.7%,
+    var(--tribal-cream) 15.9%,
+    var(--tribal-red) 15.9%,
+    var(--tribal-red) 17.4%,
+    #ffffff 17.4%,
+    #ffffff 82.6%,
+    var(--tribal-red) 82.6%,
+    var(--tribal-red) 84.1%,
+    var(--tribal-cream) 84.1%,
+    var(--tribal-cream) 87.3%,
+    #000000 87.3%,
+    #000000 90.5%,
+    var(--tribal-dark-cream) 90.5%,
+    var(--tribal-dark-cream) 100%
+  );
+}
+
+/*
+ * === NAVBAR LOGO STYLES ===
+ * This class is specifically used for the main text in the navbar logo.
+ * Modifications here will directly affect the logo's typography.
+ */
+/*
+ * === NAVBAR LOGO STYLES ===
+ * This class is specifically used for the main text in the navbar logo.
+ * Modifications here will directly affect the logo's typography.
+ */
+.font-kiner {
+  font-family: "Kingthings Linear K", serif;
+}
+
+/*
+ * These classes are essential for the unique double-underline effect
+ * on specific letters within the navbar logo.
+ * Adjustments should be made with extreme care to maintain the logo's design.
+ */
+.double-underline {
+  position: relative;
+  display: inline-block;
+}
+.double-underline::after {
+  content: "";
+  position: absolute;
+  bottom: 0.1815rem;
+  left: 20%;
+  right: 20%;
+  height: 0.1771875rem;
+  background-color: var(--tribal-red);
+}
+
+.double-underline::before {
+  content: "";
+  position: absolute;
+  bottom: 0.115375rem;
+  left: 20%;
+  right: 20%;
+  height: 0.05625rem;
+  background-color: var(--tribal-red);
+}
+
+.double-underline-full {
+  position: relative;
+  display: inline-block;
+}
+
+.double-underline-full::after {
+  content: "";
+  position: absolute;
+  bottom: calc(-0.1rem + 2.1px);
+  left: 0;
+  right: 0;
+  height: 2.835px;
+  background-color: var(--tribal-red);
+}
+
+.double-underline-full::before {
+  content: "";
+  position: absolute;
+  bottom: calc(-0.1rem - 3.15px - 0.9px + 2.9925px + 2.1px);
+  left: 0;
+  right: 0;
+  height: 0.9px;
+  background-color: var(--tribal-red);
+}
+
+/* Wider and equal underlines for the first letter (K) in the navbar logo.
+   Increased by ~5% total width (reduce side offsets from 11.5% to 9%). */
+.font-kiner .double-underline:first-of-type::before {
+  left: 4.9%;
+  right: 9%;
+}
+.font-kiner .double-underline:first-of-type::after {
+  left: 4.9%;
+  right: 9%;
+}
+
+/* Underlines for both “i” letters shifted 5% of their length to the left */
+.font-kiner .double-underline:nth-of-type(2)::before,
+.font-kiner .double-underline:nth-of-type(3)::before {
+  left: 19%;
+  right: 31%;
+}
+.font-kiner .double-underline:nth-of-type(2)::after,
+.font-kiner .double-underline:nth-of-type(3)::after {
+  left: 19%;
+  right: 31%;
+}
+
+.text-shadow-book {
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.hero-paragraph {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: normal;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
+/* Global mobile text fixes to prevent awkward word breaks */
+@media (max-width: 768px) {
+  /* Better text wrapping for all elements on mobile */
+  * {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+  
+  /* Specific classes for different text elements */
+  .mobile-text-wrap {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: normal;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+  }
+  
+  .mobile-title-wrap {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: keep-all;
+    hyphens: none;
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+  }
+  
+  .mobile-product-name {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: normal;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    line-height: 1.4;
+  }
+  
+  .mobile-button-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Prevent long words from breaking containers */
+  .mobile-container-safe {
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+  
+  /* Hero specific mobile fixes */
+  .hero-paragraph {
+    word-break: normal !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    line-height: 1.6;
+    padding-left: 2.5%;
+    padding-right: 2.5%;
+  }
+  
+  /* Ensure headings don't break awkwardly */
+  h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: normal;
+    hyphens: none;
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+  }
+  
+  /* Paragraphs should wrap naturally */
+  p {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: normal;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+  }
+}
+
+/* Additional utility classes for preventing text breaks */
+.no-break {
+  white-space: nowrap;
+}
+
+.break-words-safe {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: normal;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  -ms-hyphens: auto;
+}
+
+.break-words-keep-all {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: keep-all;
+  hyphens: none;
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
 }

@@ -9,6 +9,7 @@ const DESIGN_WIDTH = 896; // lock layout to this design width and scale down on 
 function Hero() {
   const [scale, setScale] = useState(1);
   const [baseHeight, setBaseHeight] = useState<number | null>(null);
+  const [heroContent, setHeroContent] = useState<{content: string; image: string} | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -29,7 +30,8 @@ function Hero() {
       window.removeEventListener("resize", updateScale);
     };
   }, []);
-// Add this useEffect for fetching hero content
+
+  // Fetch hero content from API
   useEffect(() => {
     const fetchHeroContent = async () => {
       try {
@@ -45,6 +47,7 @@ function Hero() {
     
     fetchHeroContent();
   }, []);
+
   return (
     <section className="relative flex flex-col items-center justify-center text-tribal-brown text-center px-4 py-16 overflow-hidden">
       <div className="absolute z-0 hero-background-div inset-0">

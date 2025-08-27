@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, memo, useCallback } from "react";
-import { getThemesWithProducts } from "@/data/products";
+import { getThemesWithProducts, getFeaturedProducts } from "@/data/products";
 import type { ProductTheme, Product } from "@/data/products";
 import Image from "next/image";
 
@@ -29,13 +29,14 @@ function FeaturedProductsCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [featuredProducts, setFeaturedProducts] = useState([]); 
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]); 
   const carouselRef = useRef<HTMLDivElement>(null);
 
   // Get all themes with their associated products
   // This automatically includes any new themes defined in the data file
   const themesWithProducts = getThemesWithProducts();
-useEffect(() => {
+
+  useEffect(() => {
     const fetchFeaturedProducts = async () => {
       try {
         const response = await fetch('/api/products/featured');
@@ -51,11 +52,12 @@ useEffect(() => {
     };
     
     fetchFeaturedProducts();
-}, []);
+  }, []);
   
-   const duplicatedProducts = featuredProducts.length > 0 
+  const duplicatedProducts = featuredProducts.length > 0 
     ? [...featuredProducts, ...featuredProducts, ...featuredProducts] 
     : [];
+
   /**
    * CAROUSEL CONFIGURATION
    * =====================================================================================

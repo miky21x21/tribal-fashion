@@ -29,8 +29,8 @@
   --tribal-yellow: #ffd166;
   --tribal-brown: #ef362c;
   --tribal-green: #3a5a40;
-  --royal-blue: #2e3b82;
-  --royal-green: #15803d;
+  --royal-blue: #112659;
+  --royal-green: #136207;
 }
 
 body {
@@ -62,6 +62,14 @@ body {
 
 .bg-tribal-accent {
   background-color: var(--tribal-red-accent);
+}
+
+.bg-royal-blue {
+  background-color: var(--royal-blue);
+}
+
+.bg-royal-green {
+  background-color: var(--royal-green);
 }
 
 .text-tribal-cream {

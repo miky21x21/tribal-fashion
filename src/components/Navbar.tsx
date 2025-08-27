@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function Navbar() {
   return (
-    <header className="bg-tribal-striped text-white px-4 sm:px-6 flex justify-between items-center shadow-xl relative">
+    <header className="sticky top-0 z-50 bg-tribal-striped text-white px-4 sm:px-6 flex justify-between items-center shadow-xl relative">
       {/* Left Logo */}
       <div className="flex items-center">
         <h1 className="relative bottom-2 text-4xl sm:text-5xl font-normal tracking-wider drop-shadow-md font-kiner text-black" style={{ transform: 'scale(1.15)', transformOrigin: 'bottom' }}>

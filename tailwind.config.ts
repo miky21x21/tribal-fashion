@@ -20,8 +20,12 @@ const config: Config = {
         "tribal-red-accent": "#e63946",
         "tribal-dark": "#3b1c1c",
         "tribal-yellow": "#ffd166",
-        "tribal-brown": "#ef362c",
-        "tribal-green": "#3a5a40",
+        "tribal-brown": "#ef362c",  
+        "tribal-green": "#136207",
+        "tribal-blue": "#112659",
+        "royal-green": "#136207",
+        "royal-blue": "#112659",
+
       },
       fontFamily: {
         kiner: ["'Kingthings Linear K'", "serif"],

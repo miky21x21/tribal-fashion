@@ -1,0 +1,121 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: tribal_fashion_test_ci
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    env:
+      NODE_ENV: test
+      TEST_ENV: ci
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/tribal_fashion_test_ci
+      API_BASE_URL: http://localhost:3001
+      JWT_SECRET: ci-test-secret-key-for-testing-only
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install frontend dependencies
+      run: npm ci
+
+    - name: Install backend dependencies
+      run: |
+        cd backend
+        npm ci
+
+    - name: Setup test database
+      run: |
+        cd backend
+        npx prisma generate
+        npx prisma migrate deploy
+        npm run test:setup
+
+    - name: Start backend server
+      run: |
+        cd backend
+        npm start &
+        sleep 10
+        curl -f http://localhost:3001/health || exit 1
+      env:
+        PORT: 3001
+
+    - name: Run integration tests
+      run: |
+        npm run test:integration
+      env:
+        CI: true
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: integration-test-results
+        path: |
+          test-results/
+          logs/
+
+    - name: Publish test results
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: Integration Test Results
+        path: test-results/junit.xml
+        reporter: java-junit
+
+    - name: Comment test results on PR
+      uses: actions/github-script@v7
+      if: github.event_name == 'pull_request' && always()
+      with:
+        script: |
+          const fs = require('fs');
+          try {
+            const results = JSON.parse(fs.readFileSync('test-results/test-results.json', 'utf8'));
+            const comment = `## Integration Test Results 🧪
+            
+            **Summary:**
+            - ✅ Passed: ${results.summary.passed}
+            - ❌ Failed: ${results.summary.failed}
+            - ⏭️ Skipped: ${results.summary.skipped}
+            - ⏱️ Duration: ${results.summary.duration}ms
+            - 🌍 Environment: ${results.summary.environment}
+            
+            ${results.errors.length > 0 ? `**Failed Tests:**
+            ${results.errors.map(e => `- ❌ ${e.test}: ${e.error}`).join('\n')}` : ''}
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+          } catch (error) {
+            console.log('Could not read test results file');
+          }

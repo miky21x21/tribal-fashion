@@ -95,7 +95,7 @@ npm run lint
 - **Backend**: Express.js + Prisma + SQLite
 - **Styling**: Tailwind CSS v4
 - **Animation**: Framer Motion
-- **Testing**: Playwright (E2E)
+- **Testing**: Playwright (E2E), Custom Integration Tests
 - **Linting**: ESLint
 
 ## Project Structure

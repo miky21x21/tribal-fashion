@@ -10,7 +10,14 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
-    "test:e2e:debug": "playwright test --debug"
+    "test:e2e:debug": "playwright test --debug",
+    "test:integration": "node tests/integration/run-tests.js",
+    "test:integration:dev": "TEST_ENV=dev node tests/integration/run-tests.js",
+    "test:integration:staging": "TEST_ENV=staging node tests/integration/run-tests.js",
+    "test:integration:ci": "TEST_ENV=ci node tests/integration/run-tests.js",
+    "test:integration:verbose": "TEST_ENV=dev node tests/integration/run-tests.js --verbose",
+    "test:db": "node tests/integration/run-tests.js --db-only",
+    "test:api": "node tests/integration/run-tests.js --api-only"
   },
   "dependencies": {
     "framer-motion": "^12.23.12",
@@ -27,6 +34,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.21",
+    "axios": "^1.11.0",
     "eslint": "^9",
     "eslint-config-next": "15.4.6",
     "tailwindcss": "^4.1.12",

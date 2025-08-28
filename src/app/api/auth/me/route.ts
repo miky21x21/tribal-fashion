@@ -19,6 +19,9 @@ export async function GET(request: NextRequest) {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
+          avatar: user.avatar,
+          phoneNumber: user.phoneNumber,
+          profileComplete: user.profileComplete,
           role: user.role,
           authMethod: user.tokenType
         }
@@ -49,6 +52,44 @@ export async function GET(request: NextRequest) {
       { 
         success: false, 
         message: 'Failed to fetch user profile',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    );
+  }
+}
+
+// Add PUT method for profile completion
+export async function PUT(request: NextRequest) {
+  try {
+    const authHeader = request.headers.get('Authorization');
+    
+    if (!authHeader) {
+      return NextResponse.json(
+        { success: false, message: 'No authorization header' },
+        { status: 401 }
+      );
+    }
+    
+    const body = await request.json();
+    
+    const response = await fetch(`${BACKEND_URL}/api/auth/profile/complete`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': authHeader,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body)
+    });
+    
+    const data = await response.json();
+    return NextResponse.json(data, { status: response.status });
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    return NextResponse.json(
+      { 
+        success: false, 
+        message: 'Failed to update profile',
         error: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }

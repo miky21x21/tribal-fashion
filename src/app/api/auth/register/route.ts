@@ -5,8 +5,20 @@ const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    const { provider } = body;
     
-    const response = await fetch(`${BACKEND_URL}/api/auth/register`, {
+    let endpoint = '/api/auth/register';
+    
+    // Route to specific OAuth endpoints based on provider
+    if (provider === 'google') {
+      endpoint = '/api/auth/oauth/google';
+    } else if (provider === 'apple') {
+      endpoint = '/api/auth/oauth/apple';
+    } else if (provider === 'phone') {
+      endpoint = '/api/auth/phone/register';
+    }
+    
+    const response = await fetch(`${BACKEND_URL}${endpoint}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

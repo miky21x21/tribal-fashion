@@ -1,10 +1,74 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { OAuth2Client } = require('google-auth-library');
 const prisma = require('../config/database');
 const { authenticate } = require('../middleware/auth');
 
 const router = express.Router();
+
+// Initialize Google OAuth client
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+// Helper function to generate JWT token
+const generateToken = (userId) => {
+  return jwt.sign(
+    { id: userId },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_EXPIRE }
+  );
+};
+
+// Helper function to find or create user from OAuth
+const findOrCreateUser = async (profileData) => {
+  const { email, googleId, appleId, phoneNumber, firstName, lastName, avatar } = profileData;
+  
+  // First try to find existing user by provider ID
+  let user = null;
+  
+  if (googleId) {
+    user = await prisma.user.findUnique({ where: { googleId } });
+  } else if (appleId) {
+    user = await prisma.user.findUnique({ where: { appleId } });
+  } else if (phoneNumber) {
+    user = await prisma.user.findUnique({ where: { phoneNumber } });
+  }
+  
+  // If not found by provider ID but email exists, link accounts
+  if (!user && email) {
+    user = await prisma.user.findUnique({ where: { email } });
+    if (user) {
+      // Update existing user with new provider data
+      const updateData = {};
+      if (googleId) updateData.googleId = googleId;
+      if (appleId) updateData.appleId = appleId;
+      if (phoneNumber && !user.phoneNumber) updateData.phoneNumber = phoneNumber;
+      
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: updateData
+      });
+    }
+  }
+  
+  // If still no user found, create new one
+  if (!user) {
+    const userData = {
+      email,
+      googleId,
+      appleId,
+      phoneNumber,
+      firstName: firstName || null,
+      lastName: lastName || null,
+      avatar: avatar || null,
+      profileComplete: !!(firstName && lastName)
+    };
+    
+    user = await prisma.user.create({ data: userData });
+  }
+  
+  return user;
+};
 
 // Register
 router.post('/register', async (req, res) => {
@@ -33,16 +97,13 @@ router.post('/register', async (req, res) => {
         email,
         password: hashedPassword,
         firstName,
-        lastName
+        lastName,
+        profileComplete: !!(firstName && lastName)
       }
     });
     
     // Generate token
-    const token = jwt.sign(
-      { id: user.id },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRE }
-    );
+    const token = generateToken(user.id);
     
     res.status(201).json({
       success: true,
@@ -52,7 +113,8 @@ router.post('/register', async (req, res) => {
           id: user.id,
           email: user.email,
           firstName: user.firstName,
-          lastName: user.lastName
+          lastName: user.lastName,
+          profileComplete: user.profileComplete
         }
       }
     });
@@ -60,6 +122,214 @@ router.post('/register', async (req, res) => {
     res.status(500).json({
       success: false,
       message: error.message
+    });
+  }
+});
+
+// Google OAuth Registration/Login
+router.post('/oauth/google', async (req, res) => {
+  try {
+    const { idToken } = req.body;
+    
+    if (!idToken) {
+      return res.status(400).json({
+        success: false,
+        message: 'Google ID token is required'
+      });
+    }
+    
+    // Verify the Google ID token
+    const ticket = await googleClient.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID
+    });
+    
+    const payload = ticket.getPayload();
+    const { sub: googleId, email, given_name: firstName, family_name: lastName, picture: avatar } = payload;
+    
+    // Find or create user
+    const user = await findOrCreateUser({
+      email,
+      googleId,
+      firstName,
+      lastName,
+      avatar
+    });
+    
+    // Generate token
+    const token = generateToken(user.id);
+    
+    res.json({
+      success: true,
+      data: {
+        token,
+        user: {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          avatar: user.avatar,
+          profileComplete: user.profileComplete
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Google OAuth error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to authenticate with Google'
+    });
+  }
+});
+
+// Apple Sign In Registration/Login
+router.post('/oauth/apple', async (req, res) => {
+  try {
+    const { appleId, email, firstName, lastName } = req.body;
+    
+    if (!appleId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Apple ID is required'
+      });
+    }
+    
+    // Find or create user
+    const user = await findOrCreateUser({
+      appleId,
+      email,
+      firstName,
+      lastName
+    });
+    
+    // Generate token
+    const token = generateToken(user.id);
+    
+    res.json({
+      success: true,
+      data: {
+        token,
+        user: {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          avatar: user.avatar,
+          profileComplete: user.profileComplete
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Apple OAuth error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to authenticate with Apple'
+    });
+  }
+});
+
+// Phone Number Registration/Login
+router.post('/phone/register', async (req, res) => {
+  try {
+    const { phoneNumber, firstName, lastName } = req.body;
+    
+    if (!phoneNumber) {
+      return res.status(400).json({
+        success: false,
+        message: 'Phone number is required'
+      });
+    }
+    
+    // Find or create user
+    const user = await findOrCreateUser({
+      phoneNumber,
+      firstName,
+      lastName
+    });
+    
+    // Generate token
+    const token = generateToken(user.id);
+    
+    res.json({
+      success: true,
+      data: {
+        token,
+        user: {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          phoneNumber: user.phoneNumber,
+          profileComplete: user.profileComplete
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Phone registration error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to register with phone number'
+    });
+  }
+});
+
+// Update profile for incomplete profiles
+router.put('/profile/complete', authenticate, async (req, res) => {
+  try {
+    const { firstName, lastName, email } = req.body;
+    const userId = req.user.id;
+    
+    if (!firstName || !lastName) {
+      return res.status(400).json({
+        success: false,
+        message: 'First name and last name are required'
+      });
+    }
+    
+    // Check if email is being updated and if it's already in use
+    if (email) {
+      const existingUser = await prisma.user.findUnique({
+        where: { email }
+      });
+      
+      if (existingUser && existingUser.id !== userId) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email is already in use by another account'
+        });
+      }
+    }
+    
+    // Update user profile
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        firstName,
+        lastName,
+        email: email || undefined,
+        profileComplete: true
+      }
+    });
+    
+    res.json({
+      success: true,
+      data: {
+        user: {
+          id: updatedUser.id,
+          email: updatedUser.email,
+          firstName: updatedUser.firstName,
+          lastName: updatedUser.lastName,
+          avatar: updatedUser.avatar,
+          phoneNumber: updatedUser.phoneNumber,
+          profileComplete: updatedUser.profileComplete
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Profile completion error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update profile'
     });
   }
 });
@@ -74,7 +344,7 @@ router.post('/login', async (req, res) => {
       where: { email }
     });
     
-    if (!user || !(await bcrypt.compare(password, user.password))) {
+    if (!user || !user.password || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({
         success: false,
         message: 'Invalid credentials'
@@ -82,11 +352,7 @@ router.post('/login', async (req, res) => {
     }
     
     // Generate token
-    const token = jwt.sign(
-      { id: user.id },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRE }
-    );
+    const token = generateToken(user.id);
     
     res.json({
       success: true,
@@ -96,7 +362,8 @@ router.post('/login', async (req, res) => {
           id: user.id,
           email: user.email,
           firstName: user.firstName,
-          lastName: user.lastName
+          lastName: user.lastName,
+          profileComplete: user.profileComplete
         }
       }
     });
@@ -123,7 +390,16 @@ router.post('/verify', async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await prisma.user.findUnique({
       where: { id: decoded.id },
-      select: { id: true, email: true, firstName: true, lastName: true, role: true }
+      select: { 
+        id: true, 
+        email: true, 
+        firstName: true, 
+        lastName: true, 
+        role: true, 
+        avatar: true,
+        phoneNumber: true,
+        profileComplete: true
+      }
     });
     
     if (!user) {

@@ -108,6 +108,43 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Verify JWT token endpoint for middleware
+router.post('/verify', async (req, res) => {
+  try {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: 'No token provided'
+      });
+    }
+    
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+      select: { id: true, email: true, firstName: true, lastName: true, role: true }
+    });
+    
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Token is not valid'
+      });
+    }
+    
+    res.json({
+      success: true,
+      user
+    });
+  } catch (error) {
+    res.status(401).json({
+      success: false,
+      message: 'Token is not valid'
+    });
+  }
+});
+
 // Get current user
 router.get('/me', authenticate, async (req, res) => {
   res.json({

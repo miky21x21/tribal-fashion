@@ -4,6 +4,28 @@ const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
 
 export async function GET(request: NextRequest) {
   try {
+    // Check for user context from middleware first
+    const userContext = request.headers.get('x-user-context');
+    const authMethod = request.headers.get('x-auth-method');
+    
+    if (userContext && authMethod) {
+      const user = JSON.parse(userContext);
+      
+      // Return user data in consistent format regardless of auth method
+      return NextResponse.json({
+        success: true,
+        data: {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+          authMethod: user.tokenType
+        }
+      });
+    }
+    
+    // Fallback to original JWT verification for backward compatibility
     const authHeader = request.headers.get('authorization');
     
     if (!authHeader) {

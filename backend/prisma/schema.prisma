@@ -81,3 +81,16 @@ model HeroContent {
   image   String
   updatedAt DateTime @updatedAt
 }
+
+model PhoneOTP {
+  id          String   @id @default(cuid())
+  phoneNumber String
+  otpCode     String
+  expiresAt   DateTime
+  isUsed      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([phoneNumber])
+  @@index([expiresAt])
+}

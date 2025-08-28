@@ -14,6 +14,7 @@ datasource db {
 }
 
 model User {
+<<<<<<< HEAD
   id               String    @id @default(cuid())
   email            String?   @unique
   emailVerified    DateTime?
@@ -76,11 +77,35 @@ enum AuthProvider {
   GOOGLE
   APPLE
   PHONE
+=======
+  id              String      @id @default(cuid())
+  email           String      @unique
+  password        String
+  firstName       String
+  lastName        String
+  avatar          String?
+  role            Role        @default(CUSTOMER)
+  googleId        String?     @unique
+  appleId         String?     @unique
+  phoneNumber     String?     @unique
+  isPhoneVerified Boolean     @default(false)
+  authProvider    AuthProvider @default(EMAIL)
+  orders          Order[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+>>>>>>> 42464f028b67909ce956fe451d5fe2711919f81e
 }
 
 enum Role {
   CUSTOMER
   ADMIN
+}
+
+enum AuthProvider {
+  GOOGLE
+  APPLE
+  PHONE
+  EMAIL
 }
 
 model Product {
@@ -131,4 +156,17 @@ model HeroContent {
   content String
   image   String
   updatedAt DateTime @updatedAt
+}
+
+model PhoneOTP {
+  id          String   @id @default(cuid())
+  phoneNumber String
+  otpCode     String
+  expiresAt   DateTime
+  isUsed      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([phoneNumber])
+  @@index([expiresAt])
 }

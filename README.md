@@ -1,16 +1,11 @@
-<<<<<<< HEAD
-# Tribal Fashion E-commerce Platform
-
-A modern e-commerce platform built with Next.js 15, React 19, and TypeScript.
-=======
 # Tribal Fashion - E-commerce Platform
 
-A modern e-commerce platform showcasing tribal fashion from Jharkhand, built with Next.js 15 and featuring comprehensive API route testing.
+A modern e-commerce platform showcasing tribal fashion from Jharkhand, built with Next.js 15 and featuring comprehensive testing infrastructure.
 
 ## Features
 
 - **Modern Tech Stack**: Next.js 15 with App Router, React 19, TypeScript
-- **Comprehensive API Testing**: Complete test coverage for all API routes
+- **Comprehensive Testing**: Complete test coverage with both Jest unit tests and Playwright E2E tests
 - **Mock Server Integration**: MSW (Mock Service Worker) for testing
 - **Responsive Design**: Mobile-first design with Tailwind CSS
 - **Authentication System**: JWT-based authentication with protected routes
@@ -19,13 +14,20 @@ A modern e-commerce platform showcasing tribal fashion from Jharkhand, built wit
 
 ## Testing Architecture
 
-### API Route Testing
+### API Route Testing (Jest)
 
 The project includes comprehensive Jest test suites for all Next.js API routes that proxy requests to the Express backend:
 
 - **Products API** (`/api/products`): Get all products, featured products, product by ID, create products
 - **Authentication API** (`/api/auth`): Register, login, get user profile  
 - **Orders API** (`/api/orders`): Get orders, create orders, get order by ID
+
+### End-to-End Testing (Playwright)
+
+Comprehensive Playwright end-to-end tests covering:
+- Product browsing and catalog functionality
+- User authentication flow (login/logout)
+- Complete order placement process
 
 ### Test Features
 
@@ -48,29 +50,55 @@ src/__tests__/
 │   └── test-utils.test.ts  # Utility test file
 ├── setup.ts                # Global test setup
 └── setup.test.ts           # Setup validation test
+
+tests/
+└── e2e/                    # Playwright end-to-end tests
+    ├── fixtures/           # Test data and helpers
+    ├── *.spec.ts          # Test specifications
+    ├── global-setup.ts
+    └── global-teardown.ts
 ```
->>>>>>> c8f80df977d37bfe8eb6ee59afed779a26519313
 
 ## Getting Started
 
 ### Prerequisites
-<<<<<<< HEAD
-- Node.js 18+ 
-- npm
-=======
 
 - Node.js 18+ 
 - npm
-
-### Installation
->>>>>>> c8f80df977d37bfe8eb6ee59afed779a26519313
 
 ### Installation
 
 1. Install frontend dependencies:
 ```bash
-<<<<<<< HEAD
+# Install dependencies
 npm install
+
+# Run development server
+npm run dev
+
+# Run Jest tests
+npm test
+
+# Run tests in watch mode  
+npm run test:watch
+
+# Run Playwright E2E tests
+npm run test:e2e
+
+# Run E2E tests with UI mode
+npm run test:e2e:ui
+
+# Run E2E tests in headed mode (see browser)
+npm run test:e2e:headed
+
+# Debug E2E tests
+npm run test:e2e:debug
+
+# Build for production
+npm run build
+
+# Run linting
+npm run lint
 ```
 
 2. Install backend dependencies:
@@ -95,6 +123,22 @@ npm run dev
 Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 ### Testing
+
+#### Jest Unit Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run specific test file
+npm test products.test.ts
+
+# Run tests with coverage
+npm test -- --coverage
+```
 
 #### End-to-End Tests
 
@@ -147,34 +191,6 @@ npm run build
 npm run lint
 ```
 
-## Tech Stack
-
-- **Frontend**: Next.js 15 (App Router) + React 19 + TypeScript
-- **Backend**: Express.js + Prisma + SQLite
-- **Styling**: Tailwind CSS v4
-- **Animation**: Framer Motion
-- **Testing**: Playwright (E2E), Custom Integration Tests
-- **Linting**: ESLint
-=======
-# Install dependencies
-npm install
-
-# Run development server
-npm run dev
-
-# Run tests
-npm test
-
-# Run tests in watch mode  
-npm run test:watch
-
-# Build for production
-npm run build
-
-# Run linting
-npm run lint
-```
-
 ## API Routes
 
 ### Products
@@ -193,70 +209,20 @@ npm run lint
 - `POST /api/orders` - Create new order
 - `GET /api/orders/[id]` - Get order by ID
 
-## Testing
-
-### Running Tests
-
-```bash
-# Run all tests
-npm test
-
-# Run tests in watch mode
-npm run test:watch
-
-# Run specific test file
-npm test products.test.ts
-
-# Run tests with coverage
-npm test -- --coverage
-```
-
-### Test Configuration
-
-The project uses:
-- **Jest** as the test runner
-- **MSW** for HTTP request mocking
-- **Next.js Jest configuration** for optimal setup
-- **TypeScript support** for type-safe tests
-
-### Mock Data
-
-All tests use realistic mock data defined in `src/__tests__/utils/test-utils.ts`:
-- Mock products with various categories
-- Mock user authentication responses
-- Mock order data with proper structure
-
 ## Tech Stack
 
-- **Frontend**: Next.js 15, React 19, TypeScript
+- **Frontend**: Next.js 15 (App Router) + React 19 + TypeScript
+- **Backend**: Express.js + Prisma + SQLite
 - **Styling**: Tailwind CSS v4, PostCSS, Autoprefixer  
 - **Animation**: Framer Motion
-- **Testing**: Jest, MSW, @jest/globals
+- **Testing**: Jest, MSW, Playwright, @jest/globals
 - **Linting**: ESLint with Next.js configuration
 - **Build**: Next.js build system with optimization
->>>>>>> c8f80df977d37bfe8eb6ee59afed779a26519313
 
 ## Project Structure
 
 ```
 ├── src/
-<<<<<<< HEAD
-│   ├── app/          # Next.js App Router pages
-│   ├── components/   # Reusable UI components
-│   └── data/         # Static data and types
-├── backend/
-│   ├── src/          # Express.js API server
-│   ├── prisma/       # Database schema and migrations
-│   └── scripts/      # Database utilities
-├── tests/
-│   └── e2e/          # Playwright end-to-end tests
-│       ├── fixtures/     # Test data and helpers
-│       ├── *.spec.ts     # Test specifications
-│       ├── global-setup.ts
-│       └── global-teardown.ts
-└── playwright.config.ts  # Playwright configuration
-```
-=======
 │   ├── app/
 │   │   ├── api/                 # API routes
 │   │   │   ├── auth/           # Authentication endpoints
@@ -268,10 +234,17 @@ All tests use realistic mock data defined in `src/__tests__/utils/test-utils.ts`
 │   │   └── layout.tsx          # Root layout
 │   ├── components/             # Reusable UI components
 │   ├── data/                   # Static data files
-│   └── __tests__/              # Test files
+│   └── __tests__/              # Jest test files
+├── tests/
+│   └── e2e/                    # Playwright end-to-end tests
+│       ├── fixtures/           # Test data and helpers
+│       ├── *.spec.ts          # Test specifications
+│       ├── global-setup.ts
+│       └── global-teardown.ts
 ├── backend/                    # Express.js backend (separate)
 ├── jest.config.js              # Jest configuration
 ├── jest.setup.js               # Jest setup file
+├── playwright.config.ts        # Playwright configuration
 └── tailwind.config.ts          # Tailwind configuration
 ```
 
@@ -280,7 +253,7 @@ All tests use realistic mock data defined in `src/__tests__/utils/test-utils.ts`
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
 3. Write tests for your changes
-4. Ensure all tests pass (`npm test`)
+4. Ensure all tests pass (`npm test` and `npm run test:e2e`)
 5. Commit your changes (`git commit -m 'Add amazing feature'`)
 6. Push to the branch (`git push origin feature/amazing-feature`)
 7. Open a Pull Request
@@ -288,4 +261,3 @@ All tests use realistic mock data defined in `src/__tests__/utils/test-utils.ts`
 ## License
 
 This project is licensed under the MIT License.
->>>>>>> c8f80df977d37bfe8eb6ee59afed779a26519313

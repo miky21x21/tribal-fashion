@@ -7,6 +7,9 @@ interface JWTUser {
   firstName: string;
   lastName: string;
   role: string;
+  authProvider?: string;
+  phoneNumber?: string;
+  providerId?: string;
 }
 
 interface NextAuthUser {
@@ -55,7 +58,10 @@ function extractUserInfo(user: JWTUser | NextAuthUser, tokenType: 'jwt' | 'nexta
       firstName: nextAuthUser.name?.split(' ')[0] || nextAuthUser.firstName || '',
       lastName: nextAuthUser.name?.split(' ').slice(1).join(' ') || nextAuthUser.lastName || '',
       role: nextAuthUser.role || 'user',
-      tokenType: 'nextauth'
+      tokenType: 'nextauth',
+      authProvider: 'email', // NextAuth typically uses email/password
+      phoneNumber: undefined,
+      providerId: undefined
     };
   } else {
     const jwtUser = user as JWTUser;
@@ -65,7 +71,10 @@ function extractUserInfo(user: JWTUser | NextAuthUser, tokenType: 'jwt' | 'nexta
       firstName: jwtUser.firstName,
       lastName: jwtUser.lastName,
       role: jwtUser.role || 'user',
-      tokenType: 'jwt'
+      tokenType: 'jwt',
+      authProvider: jwtUser.authProvider || 'email',
+      phoneNumber: jwtUser.phoneNumber,
+      providerId: jwtUser.providerId
     };
   }
 }

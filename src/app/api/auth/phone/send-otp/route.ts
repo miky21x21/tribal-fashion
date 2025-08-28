@@ -6,8 +6,12 @@ const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
 const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER;
 
-// Initialize Twilio client
-const twilioClient = TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN 
+// Initialize Twilio client - only if credentials are provided and not placeholders
+const twilioClient = TWILIO_ACCOUNT_SID && 
+                    TWILIO_AUTH_TOKEN && 
+                    !TWILIO_ACCOUNT_SID.includes('your_') && 
+                    !TWILIO_AUTH_TOKEN.includes('your_') &&
+                    TWILIO_ACCOUNT_SID.startsWith('AC')
   ? twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
   : null;
 

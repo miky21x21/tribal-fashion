@@ -66,12 +66,24 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      return NextResponse.json({
+      // Standardize response format for phone authentication
+      const standardizedResponse = {
         success: true,
         message: 'OTP verified successfully',
-        phoneNumber: formattedPhone,
-        data: verifyData.data,
-      });
+        token: verifyData.token,
+        user: {
+          id: verifyData.user?.id || '',
+          email: verifyData.user?.email || '',
+          firstName: verifyData.user?.firstName || '',
+          lastName: verifyData.user?.lastName || '',
+          role: verifyData.user?.role || 'user',
+          authProvider: 'phone',
+          phoneNumber: formattedPhone,
+          providerId: undefined
+        }
+      };
+
+      return NextResponse.json(standardizedResponse);
 
     } catch (backendError) {
       console.error('Backend error:', backendError);

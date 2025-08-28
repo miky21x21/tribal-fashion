@@ -27,6 +27,91 @@ npm run test:setup
 ```
 
 #### Testing
+
+A comprehensive test suite has been implemented using Jest and Supertest to validate all API endpoints.
+
+### Test Structure
+
+- **Unit Tests**: Located in `tests/routes/` for individual endpoint testing
+- **Integration Tests**: Located in `tests/integration/` for full application testing
+- **Test Helpers**: Located in `tests/helpers/` for utilities and test data
+
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run only integration tests
+npm test -- --testPathPatterns="integration"
+```
+
+### Test Coverage
+
+The test suite covers:
+
+#### Products API (`/api/products`)
+- GET `/` - List all products with pagination and filtering
+- GET `/featured` - Get featured products
+- GET `/:id` - Get single product by ID  
+- POST `/` - Create new product (admin only)
+
+#### Auth API (`/api/auth`)
+- POST `/register` - User registration
+- POST `/login` - User login
+- GET `/me` - Get current user profile
+
+#### Orders API (`/api/orders`)
+- GET `/` - List orders (placeholder)
+- POST `/` - Create order (placeholder)
+- GET `/:id` - Get single order (placeholder)
+
+#### Test Features
+- Authentication testing with JWT tokens
+- Authorization testing (admin vs user permissions)
+- Input validation testing
+- Error handling verification
+- Response format consistency
+- Database integration testing
+- Security header validation
+- CORS configuration testing
+
+### Test Utilities
+
+#### Authentication Helpers (`tests/helpers/auth.js`)
+- `createTestUser()` - Create test user account
+- `createTestAdmin()` - Create admin test account
+- `generateToken()` - Generate JWT tokens
+- `getAuthHeaders()` - Create auth headers
+- `cleanupTestUsers()` - Clean test data
+
+#### Test Data (`tests/helpers/testData.js`)
+- Mock data for products, users, orders
+- Invalid data for error testing
+- Data variations for comprehensive testing
+
+### Environment Setup
+
+Tests use environment variables for isolation:
+- `NODE_ENV=test`
+- `JWT_SECRET=test-jwt-secret-for-testing-only`
+- `DATABASE_URL=postgresql://test:test@localhost:5432/test_db`
+
+### Mock Strategy
+
+Tests are designed to work without requiring an active database connection by:
+- Using environment variables for configuration
+- Mocking Prisma client responses where needed
+- Testing error scenarios for database failures
+- Validating response formats and status codes
+
+## Testing
 ```bash
 # Run integration tests (includes database reset)
 npm run test:integration

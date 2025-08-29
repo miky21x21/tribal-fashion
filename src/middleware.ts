@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getToken } from 'next-auth/jwt';
 
 interface JWTUser {
   id: string;
@@ -10,16 +9,6 @@ interface JWTUser {
   authProvider?: string;
   phoneNumber?: string;
   providerId?: string;
-}
-
-interface NextAuthUser {
-  sub?: string;
-  id?: string;
-  email: string;
-  name?: string;
-  firstName?: string;
-  lastName?: string;
-  role?: string;
 }
 
 // JWT verification utility
@@ -48,35 +37,18 @@ async function verifyJWT(token: string): Promise<JWTUser> {
   }
 }
 
-// Extract user info consistently from both token types
-function extractUserInfo(user: JWTUser | NextAuthUser, tokenType: 'jwt' | 'nextauth') {
-  if (tokenType === 'nextauth') {
-    const nextAuthUser = user as NextAuthUser;
-    return {
-      id: nextAuthUser.sub || nextAuthUser.id || '',
-      email: nextAuthUser.email,
-      firstName: nextAuthUser.name?.split(' ')[0] || nextAuthUser.firstName || '',
-      lastName: nextAuthUser.name?.split(' ').slice(1).join(' ') || nextAuthUser.lastName || '',
-      role: nextAuthUser.role || 'user',
-      tokenType: 'nextauth',
-      authProvider: 'email', // NextAuth typically uses email/password
-      phoneNumber: undefined,
-      providerId: undefined
-    };
-  } else {
-    const jwtUser = user as JWTUser;
-    return {
-      id: jwtUser.id,
-      email: jwtUser.email,
-      firstName: jwtUser.firstName,
-      lastName: jwtUser.lastName,
-      role: jwtUser.role || 'user',
-      tokenType: 'jwt',
-      authProvider: jwtUser.authProvider || 'email',
-      phoneNumber: jwtUser.phoneNumber,
-      providerId: jwtUser.providerId
-    };
-  }
+// Extract user info from JWT token
+function extractUserInfo(user: JWTUser) {
+  return {
+    id: user.id,
+    email: user.email,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    role: user.role || 'user',
+    authProvider: user.authProvider || 'email',
+    phoneNumber: user.phoneNumber,
+    providerId: user.providerId
+  };
 }
 
 export async function middleware(request: NextRequest) {
@@ -99,34 +71,17 @@ export async function middleware(request: NextRequest) {
   let user = null;
   let authMethod = null;
   
-  // First, try to authenticate with JWT token
+  // Try to authenticate with JWT token
   const authHeader = request.headers.get('authorization');
   const jwtToken = authHeader?.replace('Bearer ', '');
   
   if (jwtToken) {
     try {
       const jwtUser = await verifyJWT(jwtToken);
-      user = extractUserInfo(jwtUser, 'jwt');
+      user = extractUserInfo(jwtUser);
       authMethod = 'jwt';
     } catch {
-      // JWT verification failed, continue to NextAuth check
-    }
-  }
-  
-  // If JWT authentication failed or wasn't provided, try NextAuth
-  if (!user) {
-    try {
-      const nextAuthToken = await getToken({
-        req: request,
-        secret: process.env.NEXTAUTH_SECRET
-      });
-      
-      if (nextAuthToken) {
-        user = extractUserInfo(nextAuthToken as NextAuthUser, 'nextauth');
-        authMethod = 'nextauth';
-      }
-    } catch {
-      // NextAuth verification failed
+      // JWT verification failed
     }
   }
   

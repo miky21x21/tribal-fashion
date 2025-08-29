@@ -129,32 +129,51 @@ router.post('/register', async (req, res) => {
 // Google OAuth Registration/Login
 router.post('/oauth/google', async (req, res) => {
   try {
-    const { idToken } = req.body;
+    const { idToken, verified, email, firstName, lastName, googleId, avatar } = req.body;
     
-    if (!idToken) {
+    let userData;
+    
+    if (verified && email && googleId) {
+      // Token was already verified by frontend, use provided data
+      userData = {
+        email,
+        googleId,
+        firstName,
+        lastName,
+        avatar
+      };
+    } else if (idToken) {
+      // Legacy path: verify token in backend
+      if (!idToken) {
+        return res.status(400).json({
+          success: false,
+          message: 'Google ID token is required'
+        });
+      }
+      
+      // Verify the Google ID token
+      const ticket = await googleClient.verifyIdToken({
+        idToken,
+        audience: process.env.GOOGLE_CLIENT_ID
+      });
+      
+      const payload = ticket.getPayload();
+      userData = {
+        email: payload.email,
+        googleId: payload.sub,
+        firstName: payload.given_name,
+        lastName: payload.family_name,
+        avatar: payload.picture
+      };
+    } else {
       return res.status(400).json({
         success: false,
-        message: 'Google ID token is required'
+        message: 'Google authentication data is required'
       });
     }
     
-    // Verify the Google ID token
-    const ticket = await googleClient.verifyIdToken({
-      idToken,
-      audience: process.env.GOOGLE_CLIENT_ID
-    });
-    
-    const payload = ticket.getPayload();
-    const { sub: googleId, email, given_name: firstName, family_name: lastName, picture: avatar } = payload;
-    
     // Find or create user
-    const user = await findOrCreateUser({
-      email,
-      googleId,
-      firstName,
-      lastName,
-      avatar
-    });
+    const user = await findOrCreateUser(userData);
     
     // Generate token
     const token = generateToken(user.id);
@@ -175,9 +194,10 @@ router.post('/oauth/google', async (req, res) => {
     });
   } catch (error) {
     console.error('Google OAuth error:', error);
+    console.error('Error stack:', error.stack);
     res.status(500).json({
       success: false,
-      message: 'Failed to authenticate with Google'
+      message: 'Internal server error'
     });
   }
 });

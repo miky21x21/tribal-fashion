@@ -130,17 +130,21 @@ const AuthComponent = ({ onLogin, onProfileComplete }: { onLogin: (token: string
   };
 
   const handleSocialLogin = async (provider: 'google' | 'apple', body: object) => {
+    console.log(`Starting ${provider} login with:`, body);
     const isLoadingKey = provider === 'google' ? 'isGoogleLoading' : 'isAppleLoading';
     setState(s => ({ ...s, [isLoadingKey]: true, ...clearAllErrors() }));
 
     try {
+        console.log(`Calling /api/auth/${provider}...`);
         const res = await fetch(`/api/auth/${provider}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body),
         });
 
+        console.log(`Response status: ${res.status}`);
         const data = await res.json();
+        console.log(`Response data:`, data);
 
         if (!res.ok || !data.success) {
             throw new Error(data.message || `${provider.charAt(0).toUpperCase() + provider.slice(1)} login failed.`);
@@ -151,8 +155,10 @@ const AuthComponent = ({ onLogin, onProfileComplete }: { onLogin: (token: string
         setState(s => ({ ...s, [isLoadingKey]: false }));
 
         if (user.profileComplete) {
+            console.log('Profile complete, calling onLogin');
             onLogin(token, user);
         } else {
+            console.log('Profile incomplete, showing completion form');
             setState(s => ({
                 ...s,
                 showProfileCompletion: true,
@@ -162,6 +168,7 @@ const AuthComponent = ({ onLogin, onProfileComplete }: { onLogin: (token: string
             }));
         }
     } catch (error: any) {
+        console.error(`${provider} login error:`, error);
         setState(s => ({
             ...s,
             [isLoadingKey]: false,
@@ -172,6 +179,7 @@ const AuthComponent = ({ onLogin, onProfileComplete }: { onLogin: (token: string
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (codeResponse) => {
+      console.log('Google OAuth success:', codeResponse);
       await handleSocialLogin('google', { code: codeResponse.code });
     },
     onError: (error) => {
@@ -330,7 +338,7 @@ const AuthComponent = ({ onLogin, onProfileComplete }: { onLogin: (token: string
           {!state.isOtpSent ? (
             <div className="space-y-4">
               <div className="relative">
-                <input type="tel" value={state.phoneNumber} onChange={e => { const val = e.target.value; setState(s => ({ ...s, phoneNumber: val, isPhoneValid: /^\+?[1-9]\d{1,14}$/.test(val.replace(/\s|-/g, '')), errors: { ...s.errors, phone: undefined } })); }} placeholder="Enter phone number (e.g., +1234567890)" className="w-full border-3 border-tribal-brown bg-white text-tribal-dark py-4 px-6 rounded-none text-lg font-medium placeholder-tribal-brown placeholder-opacity-60 focus:outline-none focus:border-tribal-red focus:ring-4 focus:ring-tribal-red focus:ring-opacity-20" />
+                <input type="tel" value={state.phoneNumber} onChange={e => { const val = e.target.value; setState(s => ({ ...s, phoneNumber: val, isPhoneValid: /^\+?[1-9]\d{1,14}$/.test(val.replace(/\s|-/g, '')), errors: {} })); }} placeholder="Enter phone number (e.g., +1234567890)" className="w-full border-3 border-tribal-brown bg-white text-tribal-dark py-4 px-6 rounded-none text-lg font-medium placeholder-tribal-brown placeholder-opacity-60 focus:outline-none focus:border-tribal-red focus:ring-4 focus:ring-tribal-red focus:ring-opacity-20" />
                 {state.isPhoneValid && <div className="absolute right-4 top-1/2 transform -translate-y-1/2"><svg className="w-6 h-6 text-tribal-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg></div>}
               </div>
               <button onClick={handleSendOtp} disabled={!state.isPhoneValid || state.isPhoneLoading} className="w-full bg-tribal-red text-tribal-cream py-4 px-6 rounded-none font-bold text-lg hover:bg-tribal-red-accent disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center space-x-2">
@@ -345,7 +353,7 @@ const AuthComponent = ({ onLogin, onProfileComplete }: { onLogin: (token: string
                 {state.timer > 0 && <p className="text-tribal-red font-bold text-lg">Resend in {`${Math.floor(state.timer / 60)}:${(state.timer % 60).toString().padStart(2, '0')}`}</p>}
               </div>
               <div className="relative">
-                <input type="text" value={state.otpCode} onChange={e => { const val = e.target.value.replace(/\D/g, '').slice(0, 6); setState(s => ({ ...s, otpCode: val, errors: { ...s.errors, verify: undefined } })); }} placeholder="Enter 6-digit code" maxLength={6} className="w-full border-3 border-tribal-brown bg-white text-tribal-dark py-4 px-6 rounded-none text-lg font-mono text-center tracking-widest focus:outline-none focus:border-tribal-red focus:ring-4 focus:ring-tribal-red focus:ring-opacity-20" />
+                <input type="text" value={state.otpCode} onChange={e => { const val = e.target.value.replace(/\D/g, '').slice(0, 6); setState(s => ({ ...s, otpCode: val, errors: {} })); }} placeholder="Enter 6-digit code" maxLength={6} className="w-full border-3 border-tribal-brown bg-white text-tribal-dark py-4 px-6 rounded-none text-lg font-mono text-center tracking-widest focus:outline-none focus:border-tribal-red focus:ring-4 focus:ring-tribal-red focus:ring-opacity-20" />
                 {state.otpCode.length === 6 && <div className="absolute right-4 top-1/2 transform -translate-y-1/2"><svg className="w-6 h-6 text-tribal-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg></div>}
               </div>
               <button onClick={handleVerifyOtp} disabled={state.otpCode.length !== 6 || state.isVerifyLoading} className="w-full bg-tribal-green text-tribal-cream py-4 px-6 rounded-none font-bold text-lg hover:bg-royal-green disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center space-x-2">

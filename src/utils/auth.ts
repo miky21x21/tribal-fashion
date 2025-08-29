@@ -66,14 +66,13 @@ export function getUserFromRequest(request: NextRequest) {
   return null;
 }
 
-// Common interface for user data regardless of auth method
+// Common interface for user data
 export interface AuthenticatedUser {
   id: string;
   email: string;
   firstName: string;
   lastName: string;
   role: string;
-  tokenType: 'jwt' | 'nextauth';
   authProvider?: AuthProvider;
   phoneNumber?: string;
 }

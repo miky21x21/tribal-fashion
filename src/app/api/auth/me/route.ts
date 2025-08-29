@@ -23,9 +23,8 @@ export async function GET(request: NextRequest) {
           phoneNumber: user.phoneNumber,
           profileComplete: user.profileComplete,
           role: user.role,
-          authMethod: user.tokenType,
+          authMethod: 'jwt',
           authProvider: user.authProvider || 'email', // Default to email for backward compatibility
-          phoneNumber: user.phoneNumber,
           providerId: user.providerId
         }
       });

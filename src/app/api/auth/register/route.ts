@@ -1,31 +1,43 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { 
-  AuthRequest, 
-  processAuthRequest,
-  EmailAuthRequest
-} from '@/utils/auth';
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
+
+// Types for different authentication providers
+interface BaseAuthRequest {
+  authProvider: string;
+  firstName?: string;
+  lastName?: string;
+}
+
+interface EmailAuthRequest extends BaseAuthRequest {
+  authProvider: 'email';
+  email: string;
+  password: string;
+}
+
+interface GoogleAuthRequest extends BaseAuthRequest {
+  authProvider: 'google';
+  token: string;
+}
+
+interface AppleAuthRequest extends BaseAuthRequest {
+  authProvider: 'apple';
+  identityToken: string;
+  user?: any;
+}
+
+interface PhoneAuthRequest extends BaseAuthRequest {
+  authProvider: 'phone';
+  phoneNumber: string;
+  otpCode: string;
+}
+
+type AuthRequest = EmailAuthRequest | GoogleAuthRequest | AppleAuthRequest | PhoneAuthRequest;
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { provider } = body;
     
-<<<<<<< HEAD
-    let endpoint = '/api/auth/register';
-    
-    // Route to specific OAuth endpoints based on provider
-    if (provider === 'google') {
-      endpoint = '/api/auth/oauth/google';
-    } else if (provider === 'apple') {
-      endpoint = '/api/auth/oauth/apple';
-    } else if (provider === 'phone') {
-      endpoint = '/api/auth/phone/register';
-    }
-    
-    const response = await fetch(`${BACKEND_URL}${endpoint}`, {
-=======
     // Check if authProvider is specified for new multi-provider auth
     if (body.authProvider) {
       return await handleMultiProviderRegistration(body as AuthRequest & { firstName?: string; lastName?: string });
@@ -43,9 +55,19 @@ export async function POST(request: NextRequest) {
       return await handleMultiProviderRegistration(emailAuthRequest);
     }
     
-    // If no recognized format, pass through to backend for legacy handling
-    const response = await fetch(`${BACKEND_URL}/api/auth/register`, {
->>>>>>> 84428204ad48621b695145ade372872ca90500cd
+    // Legacy provider-based routing for backward compatibility
+    const { provider } = body;
+    let endpoint = '/api/auth/register';
+    
+    if (provider === 'google') {
+      endpoint = '/api/auth/oauth/google';
+    } else if (provider === 'apple') {
+      endpoint = '/api/auth/oauth/apple';
+    } else if (provider === 'phone') {
+      endpoint = '/api/auth/phone/register';
+    }
+    
+    const response = await fetch(`${BACKEND_URL}${endpoint}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -88,39 +110,31 @@ async function handleMultiProviderRegistration(authRequest: AuthRequest & { firs
         break;
         
       case 'google':
-        // Process Google token and register/login user
-        const { user: googleUser } = await processAuthRequest(authRequest);
-        backendEndpoint = `${BACKEND_URL}/api/auth/social-register`;
+        // Direct Google OAuth registration
+        backendEndpoint = `${BACKEND_URL}/api/auth/oauth/google`;
         requestBody = {
           authProvider: 'google',
           token: authRequest.token,
-          userData: {
-            ...googleUser,
-            firstName: authRequest.firstName || googleUser.firstName,
-            lastName: authRequest.lastName || googleUser.lastName
-          }
+          firstName: authRequest.firstName,
+          lastName: authRequest.lastName
         };
         break;
         
       case 'apple':
-        // Process Apple token and register/login user
-        const { user: appleUser } = await processAuthRequest(authRequest);
-        backendEndpoint = `${BACKEND_URL}/api/auth/social-register`;
+        // Direct Apple OAuth registration
+        backendEndpoint = `${BACKEND_URL}/api/auth/oauth/apple`;
         requestBody = {
           authProvider: 'apple',
           identityToken: authRequest.identityToken,
-          userData: {
-            ...appleUser,
-            firstName: authRequest.firstName || appleUser.firstName,
-            lastName: authRequest.lastName || appleUser.lastName
-          },
+          firstName: authRequest.firstName,
+          lastName: authRequest.lastName,
           userInfo: authRequest.user
         };
         break;
         
       case 'phone':
         // Register with phone number (OTP should be pre-verified)
-        backendEndpoint = `${BACKEND_URL}/api/auth/phone-register`;
+        backendEndpoint = `${BACKEND_URL}/api/auth/phone/register`;
         requestBody = {
           phoneNumber: authRequest.phoneNumber,
           otpCode: authRequest.otpCode,

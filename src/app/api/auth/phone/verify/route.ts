@@ -71,8 +71,7 @@ export async function POST(req: NextRequest) {
             phoneNumber,
             firstName: firstName || '',
             lastName: lastName || '',
-            isPhoneVerified: true,
-            authProvider: 'PHONE',
+            profileComplete: !!(firstName && lastName)
           }
         })
       } else {
@@ -80,9 +79,9 @@ export async function POST(req: NextRequest) {
         user = await prisma.user.update({
           where: { id: user.id },
           data: {
-            isPhoneVerified: true,
             firstName: firstName || user.firstName,
             lastName: lastName || user.lastName,
+            profileComplete: !!(firstName && lastName)
           }
         })
       }
@@ -97,7 +96,7 @@ export async function POST(req: NextRequest) {
           phoneNumber: user.phoneNumber,
           firstName: user.firstName,
           lastName: user.lastName,
-          isPhoneVerified: user.isPhoneVerified,
+          profileComplete: user.profileComplete,
         }
       })
     }

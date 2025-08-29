@@ -174,7 +174,8 @@ const AuthComponent = ({ onLogin, onProfileComplete }: { onLogin: (token: string
     onSuccess: async (codeResponse) => {
       await handleSocialLogin('google', { code: codeResponse.code });
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('Google login error:', error);
       setState(s => ({
         ...s,
         isGoogleLoading: false,
@@ -182,6 +183,7 @@ const AuthComponent = ({ onLogin, onProfileComplete }: { onLogin: (token: string
       }));
     },
     flow: 'auth-code',
+    // Remove redirect_uri to use default behavior for auth-code flow
   });
 
   const handleAppleLogin = async () => {
@@ -279,7 +281,13 @@ const AuthComponent = ({ onLogin, onProfileComplete }: { onLogin: (token: string
       {/* This is a condensed version of your JSX */}
       <div className="relative text-center mb-12">
         <div className="inline-block p-4 bg-tribal-red rounded-full mb-6 shadow-lg">
-            <Image src="/components/kanirlogo.jpeg" alt="Kinir Logo" width={80} height={80} className="rounded-full" />
+            <Image 
+              src="/components/kanirlogo.jpeg" 
+              alt="Kinir Logo" 
+              width={80} 
+              height={80} 
+              style={{ borderRadius: '50%' }}
+            />
         </div>
         <h2 className="text-3xl font-kiner text-tribal-dark font-bold tracking-wide">
             <span className="double-underline">K</span><span className="double-underline">i</span>n<span className="double-underline">i</span>r

@@ -19,7 +19,11 @@
     "test:integration:ci": "TEST_ENV=ci node tests/integration/run-tests.js",
     "test:integration:verbose": "TEST_ENV=dev node tests/integration/run-tests.js --verbose",
     "test:db": "node tests/integration/run-tests.js --db-only",
-    "test:api": "node tests/integration/run-tests.js --api-only"
+    "test:api": "node tests/integration/run-tests.js --api-only",
+    "setup:google": "node setup-google-oauth.js",
+    "check:env": "node check-env.js",
+    "fix:google": "node update-google-credentials.js",
+    "verify:google": "node verify-google-oauth.js"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.7",

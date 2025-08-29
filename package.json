@@ -23,7 +23,8 @@
     "setup:google": "node setup-google-oauth.js",
     "check:env": "node check-env.js",
     "fix:google": "node update-google-credentials.js",
-    "verify:google": "node verify-google-oauth.js"
+    "verify:google": "node verify-google-oauth.js",
+    "diagnose:google": "node diagnose-google-oauth.js"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.7",

@@ -35,7 +35,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Exchange authorization code for tokens
-    const { tokens } = await googleClient.getToken(code);
+    // When using @react-oauth/google with auth-code flow, we need to set redirect_uri to 'postmessage'
+    const { tokens } = await googleClient.getToken({
+      code: code,
+      redirect_uri: 'postmessage'
+    });
     
     if (!tokens.id_token) {
       throw new Error('No ID token received from Google');

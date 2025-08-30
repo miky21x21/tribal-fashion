@@ -9,7 +9,6 @@ const DESIGN_WIDTH = 896; // lock layout to this design width and scale down on 
 function Hero() {
   const [scale, setScale] = useState(1);
   const [baseHeight, setBaseHeight] = useState<number | null>(null);
-  const [heroContent, setHeroContent] = useState<{content: string; image: string} | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -29,23 +28,6 @@ function Hero() {
     return () => {
       window.removeEventListener("resize", updateScale);
     };
-  }, []);
-
-  // Fetch hero content from API
-  useEffect(() => {
-    const fetchHeroContent = async () => {
-      try {
-        const response = await fetch('/api/content/hero');
-        const data = await response.json();
-        if (data.success) {
-          setHeroContent(data.data);
-        }
-      } catch (error) {
-        console.error('Error fetching hero content:', error);
-      }
-    };
-    
-    fetchHeroContent();
   }, []);
 
   return (

@@ -84,10 +84,10 @@ export default function ProductCollage() {
   }, []);
 
   return (
-    <section className="py-16 sm:py-20 px-4 sm:px-6 md:px-20 bg-[#a0c878] overflow-hidden">
+    <section className="py-16 sm:py-20 px-4 sm:px-6 md:px-20 bg-gradient-to-br from-[#a0c878] via-[#8BB665] to-[#76A452] overflow-hidden">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center font-tribal mb-12 sm:mb-16 text-tribal-red mobile-title-wrap">
-          Our Craft Heritage
+          Our Craft
         </h2>
         
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 lg:gap-6 max-h-[600px] overflow-hidden">

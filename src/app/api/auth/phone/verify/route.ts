@@ -1,7 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import twilio from 'twilio'
-import { prisma } from "@/lib/prisma"
-const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
+
+// Initialize Twilio client safely
+const getTwilioClient = () => {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  
+  if (!accountSid || !authToken || !accountSid.startsWith('AC')) {
+    return null;
+  }
+  
+  return twilio(accountSid, authToken);
+};
 
 // In production, use Redis or database to store verification codes
 const verificationCodes = new Map<string, { code: string; expires: number }>()
@@ -24,16 +34,22 @@ export async function POST(req: NextRequest) {
 
       // Send SMS via Twilio
       try {
+        const client = getTwilioClient();
+        
+        if (!client) {
+          return NextResponse.json({ error: 'SMS service not configured' }, { status: 500 })
+        }
+        
         await client.messages.create({
           body: `Your verification code is: ${code}`,
           from: process.env.TWILIO_PHONE_NUMBER,
           to: phoneNumber,
-        })
+        });
 
         return NextResponse.json({ message: 'Verification code sent successfully' })
       } catch (twilioError) {
         console.error('Twilio error:', twilioError)
-        return NextResponse.json({ error: 'Failed to send SMS' }, { status: 500 })
+        return NextResponse.json({ error: 'Failed to send SMS. Please check Twilio configuration.' }, { status: 500 })
       }
     }
 
@@ -59,44 +75,16 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Invalid verification code' }, { status: 400 })
       }
 
-      // Code is valid, create or update user
-      let user = await prisma.user.findUnique({
-        where: { phoneNumber }
-      })
-
-      if (!user) {
-        // Create new user
-        user = await prisma.user.create({
-          data: {
-            phoneNumber,
-            firstName: firstName || '',
-            lastName: lastName || '',
-            profileComplete: !!(firstName && lastName)
-          }
-        })
-      } else {
-        // Update existing user
-        user = await prisma.user.update({
-          where: { id: user.id },
-          data: {
-            firstName: firstName || user.firstName,
-            lastName: lastName || user.lastName,
-            profileComplete: !!(firstName && lastName)
-          }
-        })
-      }
-
       // Remove verification code
       verificationCodes.delete(phoneNumber)
 
       return NextResponse.json({
         message: 'Phone number verified successfully',
         user: {
-          id: user.id,
-          phoneNumber: user.phoneNumber,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          profileComplete: user.profileComplete,
+          phoneNumber,
+          firstName: firstName || '',
+          lastName: lastName || '',
+          profileComplete: !!(firstName && lastName),
         }
       })
     }

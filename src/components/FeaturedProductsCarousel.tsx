@@ -122,17 +122,17 @@ function FeaturedProductsCarousel() {
    */
   const renderThemeTile = (theme: ProductTheme & { products: Product[] }, index: number) => {
     // Determine background color class based on theme.color
-    // This maps the color string from theme data to actual CSS classes
+    // This maps the color string from theme data to actual CSS gradient classes
     const getBackgroundClass = (colorName: string) => {
       switch (colorName) {
         case 'tribal-red':
-          return 'bg-tribal-red';
+          return 'bg-gradient-to-tl from-tribal-red via-tribal-red-accent to-red-700';
         case 'royal-blue':
-          return 'bg-royal-blue';
+          return 'bg-gradient-to-tl from-royal-blue via-blue-700 to-blue-900';
         case 'royal-green':
-          return 'bg-royal-green';
+          return 'bg-gradient-to-tl from-royal-green via-green-700 to-green-900';
         default:
-          return 'bg-tribal-cream'; // fallback color
+          return 'bg-gradient-to-tl from-tribal-cream via-tribal-dark-cream to-yellow-200'; // fallback gradient
       }
     };
 

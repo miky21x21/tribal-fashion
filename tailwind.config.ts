@@ -8,6 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        'xs': '475px',
+      },
       /*
        * === TRIBAL COLOR PALETTE ===
        * To customize the tribal color scheme, modify the values below.

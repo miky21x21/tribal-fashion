@@ -293,6 +293,67 @@ router.post('/phone/register', async (req, res) => {
   }
 });
 
+// Update full profile
+router.put('/profile', authenticate, async (req, res) => {
+  try {
+    const { firstName, lastName, email, avatar, phoneNumber } = req.body;
+    const userId = req.user.id;
+    
+    // Check if email is being updated and if it's already in use
+    if (email && email !== req.user.email) {
+      const existingUser = await prisma.user.findUnique({
+        where: { email }
+      });
+      
+      if (existingUser && existingUser.id !== userId) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email is already in use by another account'
+        });
+      }
+    }
+    
+    // Prepare update data
+    const updateData = {};
+    if (firstName) updateData.firstName = firstName;
+    if (lastName) updateData.lastName = lastName;
+    if (email) updateData.email = email;
+    if (avatar) updateData.avatar = avatar;
+    if (phoneNumber) updateData.phoneNumber = phoneNumber;
+    
+    // Update profile completion status
+    updateData.profileComplete = !!(firstName && lastName);
+    
+    // Update user profile
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: updateData
+    });
+    
+    res.json({
+      success: true,
+      message: 'Profile updated successfully',
+      data: {
+        user: {
+          id: updatedUser.id,
+          email: updatedUser.email,
+          firstName: updatedUser.firstName,
+          lastName: updatedUser.lastName,
+          avatar: updatedUser.avatar,
+          phoneNumber: updatedUser.phoneNumber,
+          profileComplete: updatedUser.profileComplete
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Profile update error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update profile'
+    });
+  }
+});
+
 // Update profile for incomplete profiles
 router.put('/profile/complete', authenticate, async (req, res) => {
   try {

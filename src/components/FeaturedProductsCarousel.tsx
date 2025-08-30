@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef, memo, useCallback } from "react";
-import { getThemesWithProducts } from "@/data/products";
-import type { ProductTheme, Product } from "@/data/products";
+import { getThemesWithProducts } from "../data/products";
+import type { ProductTheme, Product } from "../data/products";
 import Image from "next/image";
 
 /**
@@ -29,33 +29,12 @@ function FeaturedProductsCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [featuredProducts, setFeaturedProducts] = useState([]); 
   const carouselRef = useRef<HTMLDivElement>(null);
 
   // Get all themes with their associated products
   // This automatically includes any new themes defined in the data file
   const themesWithProducts = getThemesWithProducts();
-useEffect(() => {
-    const fetchFeaturedProducts = async () => {
-      try {
-        const response = await fetch('/api/products/featured');
-        const data = await response.json();
-        if (data.success) {
-          setFeaturedProducts(data.data);
-        }
-      } catch (error) {
-        console.error('Error fetching featured products:', error);
-        // Fallback to local data if API fails
-        setFeaturedProducts(getFeaturedProducts());
-      }
-    };
-    
-    fetchFeaturedProducts();
-}, []);
-  
-   const duplicatedProducts = featuredProducts.length > 0 
-    ? [...featuredProducts, ...featuredProducts, ...featuredProducts] 
-    : [];
+
   /**
    * CAROUSEL CONFIGURATION
    * =====================================================================================
@@ -143,17 +122,17 @@ useEffect(() => {
    */
   const renderThemeTile = (theme: ProductTheme & { products: Product[] }, index: number) => {
     // Determine background color class based on theme.color
-    // This maps the color string from theme data to actual CSS classes
+    // This maps the color string from theme data to actual CSS gradient classes
     const getBackgroundClass = (colorName: string) => {
       switch (colorName) {
         case 'tribal-red':
-          return 'bg-tribal-red';
+          return 'bg-gradient-to-tl from-tribal-red via-tribal-red-accent to-red-700';
         case 'royal-blue':
-          return 'bg-royal-blue';
+          return 'bg-gradient-to-tl from-royal-blue via-blue-700 to-blue-900';
         case 'royal-green':
-          return 'bg-royal-green';
+          return 'bg-gradient-to-tl from-royal-green via-green-700 to-green-900';
         default:
-          return 'bg-tribal-cream'; // fallback color
+          return 'bg-gradient-to-tl from-tribal-cream via-tribal-dark-cream to-yellow-200'; // fallback gradient
       }
     };
 

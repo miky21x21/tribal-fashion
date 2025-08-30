@@ -27,12 +27,43 @@ app.use('/api/auth', authRoutes);
 app.use('/api/orders', orderRoutes);
 
 // Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({
+app.get('/api/health', async (req, res) => {
+  const status = {
     success: true,
     message: 'Server is running successfully',
-    timestamp: new Date().toISOString()
-  });
+    timestamp: new Date().toISOString(),
+    server: {
+      status: 'healthy',
+      uptime: process.uptime(),
+      memory: process.memoryUsage(),
+      version: process.version
+    },
+    database: {
+      status: 'unknown',
+      message: 'Database connectivity check not performed'
+    }
+  };
+
+  // Test database connectivity
+  try {
+    const prisma = require('./config/database');
+    await prisma.$connect();
+    await prisma.$queryRaw`SELECT 1`;
+    status.database = {
+      status: 'healthy',
+      message: 'Database connection successful'
+    };
+  } catch (error) {
+    status.database = {
+      status: 'unhealthy',
+      message: 'Database connection failed',
+      error: error.message
+    };
+    status.success = false;
+  }
+
+  const statusCode = status.success ? 200 : 503;
+  res.status(statusCode).json(status);
 });
 
 // 404 handler
@@ -54,8 +85,11 @@ app.use((error, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// Only start server if not in test environment
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
 
 module.exports = app;

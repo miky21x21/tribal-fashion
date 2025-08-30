@@ -1,0 +1,30 @@
+{
+  "database": {
+    "url": "postgresql://staging_user:staging_password@staging-db.example.com:5432/tribal_fashion_test_staging",
+    "maxConnections": 10,
+    "timeout": 45000
+  },
+  "api": {
+    "baseUrl": "https://staging-api.tribalfashion.com",
+    "timeout": 15000,
+    "retries": 5
+  },
+  "test": {
+    "timeout": 45000,
+    "seedData": true,
+    "cleanupAfterTests": true,
+    "parallelTests": true,
+    "maxParallel": 4,
+    "verbose": false
+  },
+  "auth": {
+    "jwtSecret": "staging-test-secret-key",
+    "tokenExpiry": "2h"
+  },
+  "logging": {
+    "level": "info",
+    "enableConsole": true,
+    "enableFile": true,
+    "filePath": "./logs/test-staging.log"
+  }
+}

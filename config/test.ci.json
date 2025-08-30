@@ -1,0 +1,31 @@
+{
+  "database": {
+    "url": "${DATABASE_URL}",
+    "maxConnections": 20,
+    "timeout": 60000
+  },
+  "api": {
+    "baseUrl": "${API_BASE_URL}",
+    "timeout": 20000,
+    "retries": 3
+  },
+  "test": {
+    "timeout": 60000,
+    "seedData": true,
+    "cleanupAfterTests": true,
+    "parallelTests": true,
+    "maxParallel": 8,
+    "verbose": false,
+    "reporters": ["json", "junit", "github-actions"]
+  },
+  "auth": {
+    "jwtSecret": "${JWT_SECRET}",
+    "tokenExpiry": "1h"
+  },
+  "logging": {
+    "level": "warn",
+    "enableConsole": false,
+    "enableFile": true,
+    "filePath": "./test-results/test-ci.log"
+  }
+}

@@ -13,23 +13,43 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String
-  firstName String
-  lastName  String
-  avatar    String?
-  role      Role     @default(CUSTOMER)
-  orders    Order[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(cuid())
+  email        String?  @unique
+  password     String?
+  firstName    String?
+  lastName     String?
+  avatar       String?
+  role         Role     @default(CUSTOMER)
+  
+  // OAuth provider fields
+  googleId     String?  @unique
+  appleId      String?  @unique
+  phoneNumber  String?  @unique
+  
+  // Profile completion status
+  profileComplete Boolean @default(false)
+  
+  orders       Order[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@index([email])
+  @@index([googleId])
+  @@index([appleId])
+  @@index([phoneNumber])
 }
 
 enum Role {
   CUSTOMER
   ADMIN
+}
+
+enum AuthProvider {
+  GOOGLE
+  APPLE
+  PHONE
+  EMAIL
 }
 
 model Product {
@@ -80,4 +100,17 @@ model HeroContent {
   content String
   image   String
   updatedAt DateTime @updatedAt
+}
+
+model PhoneOTP {
+  id          String   @id @default(cuid())
+  phoneNumber String
+  otpCode     String
+  expiresAt   DateTime
+  isUsed      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([phoneNumber])
+  @@index([expiresAt])
 }

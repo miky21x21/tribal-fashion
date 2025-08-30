@@ -1,0 +1,28 @@
+{
+  "database": {
+    "url": "postgresql://user:password@localhost:5432/tribal_fashion_test_dev",
+    "maxConnections": 5,
+    "timeout": 30000
+  },
+  "api": {
+    "baseUrl": "http://localhost:3001",
+    "timeout": 10000,
+    "retries": 3
+  },
+  "test": {
+    "timeout": 30000,
+    "seedData": true,
+    "cleanupAfterTests": true,
+    "parallelTests": false,
+    "verbose": true
+  },
+  "auth": {
+    "jwtSecret": "dev-test-secret-key",
+    "tokenExpiry": "1h"
+  },
+  "logging": {
+    "level": "debug",
+    "enableConsole": true,
+    "enableFile": false
+  }
+}

@@ -124,12 +124,16 @@ function isProtectedRoute(pathname: string): boolean {
     '/api/profile',
     '/api/admin',
     '/dashboard',
-    '/profile',
     '/admin'
   ];
   
   // Allow /api/auth/me to pass through for user profile fetching
   if (pathname === '/api/auth/me') {
+    return false;
+  }
+  
+  // Don't protect client-side profile page - it handles auth internally
+  if (pathname === '/profile') {
     return false;
   }
   

@@ -20,6 +20,12 @@ export async function GET(request: NextRequest) {
           lastName: user.lastName,
           avatar: user.avatar,
           phoneNumber: user.phoneNumber,
+          street: user.street,
+          apartment: user.apartment,
+          city: user.city,
+          state: user.state,
+          zipCode: user.zipCode,
+          country: user.country,
           profileComplete: user.profileComplete,
           role: user.role
         }
@@ -42,7 +48,7 @@ export async function GET(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { firstName, lastName, email, avatar, phoneNumber } = body;
+    const { firstName, lastName, email, avatar, phoneNumber, street, apartment, city, state, zipCode, country } = body;
     
     // Get authorization token
     const authHeader = request.headers.get('authorization');
@@ -66,7 +72,13 @@ export async function PUT(request: NextRequest) {
         lastName,
         email,
         avatar,
-        phoneNumber
+        phoneNumber,
+        street,
+        apartment,
+        city,
+        state,
+        zipCode,
+        country
       })
     });
     

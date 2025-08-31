@@ -1,18 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-
-interface User {
-  id: string;
-  email?: string;
-  firstName?: string;
-  lastName?: string;
-  avatar?: string;
-  phoneNumber?: string;
-  profileComplete: boolean;
-}
 
 interface OrderItem {
   id: string;
@@ -42,6 +32,12 @@ interface ProfileState {
   email: string;
   phoneNumber: string;
   avatar: string;
+  street: string;
+  apartment: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
   isLoading: boolean;
   isSaving: boolean;
   isVerifyingPhone: boolean;
@@ -67,6 +63,12 @@ export default function ProfilePage() {
     email: "",
     phoneNumber: "",
     avatar: "",
+    street: "",
+    apartment: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    country: "India",
     isLoading: true,
     isSaving: false,
     isVerifyingPhone: false,
@@ -85,11 +87,12 @@ export default function ProfilePage() {
   useEffect(() => {
     loadUserProfile();
     loadUserOrders();
-  }, []);
+  }, [loadUserProfile, loadUserOrders]);
 
-  const loadUserProfile = async () => {
+  const loadUserProfile = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
+      
       if (!token) {
         router.push('/login');
         return;
@@ -100,9 +103,10 @@ export default function ProfilePage() {
           'Authorization': `Bearer ${token}`
         }
       });
-
+      
       if (response.ok) {
         const data = await response.json();
+        
         if (data.success) {
           const user = data.data;
           setState(prev => ({
@@ -112,8 +116,16 @@ export default function ProfilePage() {
             email: user.email || "",
             phoneNumber: user.phoneNumber || "",
             avatar: user.avatar || "",
+            street: user.street || "",
+            apartment: user.apartment || "",
+            city: user.city || "",
+            state: user.state || "",
+            zipCode: user.zipCode || "",
+            country: user.country || "India",
             isLoading: false
           }));
+        } else {
+          setState(prev => ({ ...prev, error: "Failed to load profile data", isLoading: false }));
         }
       } else {
         router.push('/login');
@@ -126,9 +138,9 @@ export default function ProfilePage() {
         isLoading: false
       }));
     }
-  };
+  }, [router]);
 
-  const loadUserOrders = async () => {
+  const loadUserOrders = useCallback(async () => {
     try {
       setState(prev => ({ ...prev, isLoadingOrders: true }));
       
@@ -186,7 +198,7 @@ export default function ProfilePage() {
         isLoadingOrders: false
       }));
     }
-  };
+  }, []);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -216,7 +228,13 @@ export default function ProfilePage() {
           firstName: state.firstName,
           lastName: state.lastName,
           email: state.email,
-          avatar: state.avatar
+          avatar: state.avatar,
+          street: state.street,
+          apartment: state.apartment,
+          city: state.city,
+          state: state.state,
+          zipCode: state.zipCode,
+          country: state.country
         })
       });
 
@@ -240,7 +258,7 @@ export default function ProfilePage() {
           error: data.message || 'Failed to update profile'
         }));
       }
-    } catch (error) {
+    } catch (_error) {
       setState(prev => ({
         ...prev,
         isSaving: false,
@@ -269,12 +287,12 @@ export default function ProfilePage() {
       
       const data = await response.json();
       
-      if (data.message) {
+      if (data.success) {
         setState(prev => ({
           ...prev,
           isVerifyingPhone: false,
           otpSent: true,
-          success: "OTP sent to your phone number"
+          success: data.message + (data.developmentCode ? ` (Dev Code: ${data.developmentCode})` : "")
         }));
       } else {
         setState(prev => ({
@@ -283,7 +301,7 @@ export default function ProfilePage() {
           error: data.message || 'Failed to send OTP'
         }));
       }
-    } catch (error) {
+    } catch (_error) {
       setState(prev => ({
         ...prev,
         isVerifyingPhone: false,
@@ -313,7 +331,7 @@ export default function ProfilePage() {
       
       const data = await response.json();
       
-      if (data.message) {
+      if (data.success) {
         // Now update the phone number in the profile
         const token = localStorage.getItem('token');
         const updateResponse = await fetch('/api/auth/profile', {
@@ -327,7 +345,13 @@ export default function ProfilePage() {
             lastName: state.lastName,
             email: state.email,
             avatar: state.avatar,
-            phoneNumber: state.newPhoneNumber
+            phoneNumber: state.newPhoneNumber,
+            street: state.street,
+            apartment: state.apartment,
+            city: state.city,
+            state: state.state,
+            zipCode: state.zipCode,
+            country: state.country
           })
         });
 
@@ -358,7 +382,7 @@ export default function ProfilePage() {
           error: data.message || 'Invalid OTP'
         }));
       }
-    } catch (error) {
+    } catch (_error) {
       setState(prev => ({
         ...prev,
         isVerifyingPhone: false,
@@ -367,251 +391,7 @@ export default function ProfilePage() {
     }
   };
 
-  const createTestOrder = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setState(prev => ({ ...prev, error: "Please log in to create test orders" }));
-        return;
-      }
 
-      console.log('Creating test order...');
-      
-      // Create a test order with sample data
-      const testOrderData = {
-        items: [
-          {
-            productId: '1',
-            quantity: 2,
-            price: 2500
-          },
-          {
-            productId: '2', 
-            quantity: 1,
-            price: 1800
-          }
-        ],
-        total: 6800,
-        shippingAddress: {
-          street: '123 Test Street',
-          city: 'Test City',
-          state: 'Test State',
-          zipCode: '12345',
-          country: 'India'
-        },
-        paymentMethod: 'credit_card'
-      };
-
-      const response = await fetch('/api/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(testOrderData)
-      });
-
-      console.log('Test order response status:', response.status);
-      const data = await response.json();
-      console.log('Test order response data:', data);
-
-      if (data.success) {
-        setState(prev => ({ ...prev, success: "Test order created successfully!" }));
-        // Reload orders to show the new test order
-        loadUserOrders();
-      } else {
-        setState(prev => ({ ...prev, error: data.message || 'Failed to create test order' }));
-      }
-    } catch (error) {
-      console.error('Create test order failed:', error);
-      setState(prev => ({ ...prev, error: 'Network error creating test order' }));
-    }
-  };
-
-  const testCheckoutFunction = async () => {
-    console.log('🔵 TEST CHECKOUT BUTTON CLICKED - Function started');
-    alert('testCheckoutFunction is running!');
-    
-    try {
-      const token = localStorage.getItem('token');
-      console.log('🔑 Token check:', { 
-        exists: !!token, 
-        tokenLength: token?.length || 0,
-        tokenStart: token?.substring(0, 20) || 'none'
-      });
-      
-      if (!token) {
-        console.log('❌ No token found - redirecting to login');
-        setState(prev => ({ ...prev, error: "Please log in to test checkout" }));
-        alert('No token found! Please log in.');
-        return;
-      }
-
-      console.log('✅ Starting test checkout process...');
-      setState(prev => ({ ...prev, success: "🚀 Starting test checkout process...", error: "" }));
-      console.log('=== STARTING TEST CHECKOUT PROCESS ===');
-
-      // Step 1: Simulate getting cart items
-      console.log('Step 1: Getting cart items...');
-      const cartItems = [
-        {
-          productId: '1',
-          name: 'Traditional Tribal Necklace',
-          price: 2500,
-          quantity: 1,
-          image: '/products/necklace-1.jpg',
-          category: 'Jewelry'
-        },
-        {
-          productId: '3',
-          name: 'Handwoven Tribal Scarf',
-          price: 1500,
-          quantity: 2,
-          image: '/products/scarf-1.jpg',
-          category: 'Accessories'
-        },
-        {
-          productId: '5',
-          name: 'Tribal Art Print Bag',
-          price: 3200,
-          quantity: 1,
-          image: '/products/bag-1.jpg',
-          category: 'Bags'
-        }
-      ];
-
-      console.log('🛒 Cart items:', cartItems);
-      const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      const tax = Math.round(subtotal * 0.18); // 18% GST
-      const shipping = subtotal > 5000 ? 0 : 200; // Free shipping above ₹5000
-      const total = subtotal + tax + shipping;
-
-      console.log(`💰 Pricing:`, {
-        subtotal: `₹${subtotal}`,
-        tax: `₹${tax}`,
-        shipping: `₹${shipping}`,
-        total: `₹${total}`
-      });
-      
-      // Step 2: Simulate customer details validation
-      console.log('Step 2: Validating customer details...');
-      const customerDetails = {
-        firstName: state.firstName || 'Test',
-        lastName: state.lastName || 'Customer',
-        email: state.email || 'test@example.com',
-        phoneNumber: state.phoneNumber || '+91 9876543210'
-      };
-      console.log('👤 Customer details:', customerDetails);
-
-      // Step 3: Simulate shipping address
-      console.log('Step 3: Processing shipping address...');
-      const shippingAddress = {
-        street: '456 Tribal Fashion Street',
-        apartment: 'Apt 2B',
-        city: 'Ranchi',
-        state: 'Jharkhand',
-        zipCode: '834001',
-        country: 'India'
-      };
-      console.log('📍 Shipping address:', shippingAddress);
-
-      // Step 4: Simulate payment processing
-      console.log('Step 4: Processing payment...');
-      const paymentDetails = {
-        method: 'credit_card',
-        cardType: 'Visa',
-        last4: '1234',
-        transactionId: `TXN_${Date.now()}`,
-        status: 'completed'
-      };
-      console.log('💳 Payment details:', paymentDetails);
-
-      // Step 5: Create the order
-      console.log('Step 5: Creating order in database...');
-      setState(prev => ({ ...prev, success: "📝 Creating order in database..." }));
-
-      const orderData = {
-        items: cartItems.map(item => ({
-          productId: item.productId,
-          quantity: item.quantity,
-          price: item.price
-        })),
-        total: total,
-        subtotal: subtotal,
-        tax: tax,
-        shipping: shipping,
-        customerDetails: customerDetails,
-        shippingAddress: shippingAddress,
-        paymentDetails: paymentDetails,
-        orderNotes: 'Test order created via test checkout function'
-      };
-
-      console.log('📦 Order data being sent:', orderData);
-      console.log('🌐 Making request to /api/orders...');
-
-      const response = await fetch('/api/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(orderData)
-      });
-
-      console.log('🔄 Order creation response received');
-      console.log('📊 Response status:', response.status);
-      console.log('📋 Response headers:', Object.fromEntries(response.headers.entries()));
-      
-      const orderResult = await response.json();
-      console.log('📄 Order creation response data:', orderResult);
-
-      if (orderResult.success) {
-        console.log('✅ === ORDER CREATED SUCCESSFULLY ===');
-        console.log('🆔 Order ID:', orderResult.data.id);
-        console.log('💵 Order Total:', orderResult.data.total);
-        console.log('📈 Order Status:', orderResult.data.status);
-        
-        setState(prev => ({ 
-          ...prev, 
-          success: `🎉 Test checkout completed! Order #${orderResult.data.id.slice(-8).toUpperCase()} created successfully with ${cartItems.length} items totaling ₹${total}`,
-          error: ""
-        }));
-        
-        // Step 6: Reload orders to show the new order
-        console.log('Step 6: Reloading order history...');
-        setTimeout(() => {
-          loadUserOrders();
-        }, 1000);
-        
-        console.log('🏁 === TEST CHECKOUT PROCESS COMPLETED SUCCESSFULLY ===');
-        alert('SUCCESS: Test checkout completed! Check your order history.');
-      } else {
-        console.error('❌ Order creation failed:', orderResult);
-        const errorMsg = `❌ Test checkout failed: ${orderResult.message || 'Unknown error'}`;
-        setState(prev => ({ 
-          ...prev, 
-          error: errorMsg,
-          success: ""
-        }));
-        alert(errorMsg);
-      }
-    } catch (error) {
-      console.error('💥 Test checkout function failed:', error);
-      console.error('🔍 Error details:', {
-        name: error instanceof Error ? error.name : 'Unknown',
-        message: error instanceof Error ? error.message : 'Network error',
-        stack: error instanceof Error ? error.stack : 'No stack trace'
-      });
-      
-      const errorMsg = `❌ Test checkout error: ${error instanceof Error ? error.message : 'Network error'}`;
-      setState(prev => ({ 
-        ...prev, 
-        error: errorMsg,
-        success: ""
-      }));
-      alert(errorMsg);
-    }
-  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -844,6 +624,116 @@ export default function ProfilePage() {
                 </div>
               </div>
             )}
+
+            {/* Address Section */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-tribal-dark mb-4">Shipping Address</h3>
+              
+              {/* Street Address */}
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-tribal-dark mb-1 sm:mb-2">Street Address</label>
+                <input
+                  type="text"
+                  value={state.street}
+                  onChange={(e) => setState(prev => ({ ...prev, street: e.target.value }))}
+                  placeholder="Enter your street address"
+                  className="w-full border border-tribal-brown/30 bg-white/80 backdrop-blur-sm text-tribal-dark py-2 sm:py-3 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-medium placeholder-tribal-brown placeholder-opacity-60 focus:outline-none focus:border-tribal-red focus:ring-2 focus:ring-tribal-red/20 transition-all duration-300"
+                />
+              </div>
+
+              {/* Apartment/Unit */}
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-tribal-dark mb-1 sm:mb-2">Apartment/Unit (Optional)</label>
+                <input
+                  type="text"
+                  value={state.apartment}
+                  onChange={(e) => setState(prev => ({ ...prev, apartment: e.target.value }))}
+                  placeholder="Apt, suite, unit, building, floor, etc."
+                  className="w-full border border-tribal-brown/30 bg-white/80 backdrop-blur-sm text-tribal-dark py-2 sm:py-3 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-medium placeholder-tribal-brown placeholder-opacity-60 focus:outline-none focus:border-tribal-red focus:ring-2 focus:ring-tribal-red/20 transition-all duration-300"
+                />
+              </div>
+
+              {/* City and State */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium text-tribal-dark mb-1 sm:mb-2">City</label>
+                  <input
+                    type="text"
+                    value={state.city}
+                    onChange={(e) => setState(prev => ({ ...prev, city: e.target.value }))}
+                    placeholder="Enter your city"
+                    className="w-full border border-tribal-brown/30 bg-white/80 backdrop-blur-sm text-tribal-dark py-2 sm:py-3 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-medium placeholder-tribal-brown placeholder-opacity-60 focus:outline-none focus:border-tribal-red focus:ring-2 focus:ring-tribal-red/20 transition-all duration-300"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium text-tribal-dark mb-1 sm:mb-2">State/Province</label>
+                  <input
+                    type="text"
+                    value={state.state}
+                    onChange={(e) => setState(prev => ({ ...prev, state: e.target.value }))}
+                    placeholder="Enter your state"
+                    className="w-full border border-tribal-brown/30 bg-white/80 backdrop-blur-sm text-tribal-dark py-2 sm:py-3 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-medium placeholder-tribal-brown placeholder-opacity-60 focus:outline-none focus:border-tribal-red focus:ring-2 focus:ring-tribal-red/20 transition-all duration-300"
+                  />
+                </div>
+              </div>
+
+              {/* Zip Code and Country */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium text-tribal-dark mb-1 sm:mb-2">Zip/Postal Code</label>
+                  <input
+                    type="text"
+                    value={state.zipCode}
+                    onChange={(e) => setState(prev => ({ ...prev, zipCode: e.target.value }))}
+                    placeholder="Enter zip code"
+                    className="w-full border border-tribal-brown/30 bg-white/80 backdrop-blur-sm text-tribal-dark py-2 sm:py-3 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-medium placeholder-tribal-brown placeholder-opacity-60 focus:outline-none focus:border-tribal-red focus:ring-2 focus:ring-tribal-red/20 transition-all duration-300"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-xs sm:text-sm font-medium text-tribal-dark mb-1 sm:mb-2">Country</label>
+                  <select
+                    value={state.country}
+                    onChange={(e) => setState(prev => ({ ...prev, country: e.target.value }))}
+                    className="w-full border border-tribal-brown/30 bg-white/80 backdrop-blur-sm text-tribal-dark py-2 sm:py-3 px-3 sm:px-4 rounded-xl text-xs sm:text-sm font-medium focus:outline-none focus:border-tribal-red focus:ring-2 focus:ring-tribal-red/20 transition-all duration-300"
+                  >
+                    <option value="India">India</option>
+                    <option value="United States">United States</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="Canada">Canada</option>
+                    <option value="Australia">Australia</option>
+                    <option value="Germany">Germany</option>
+                    <option value="France">France</option>
+                    <option value="Japan">Japan</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Save Button */}
+            <div className="flex justify-center mt-6">
+              <button
+                onClick={handleProfileSave}
+                disabled={state.isSaving}
+                className="bg-tribal-red/90 backdrop-blur-sm text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold text-sm sm:text-base hover:bg-tribal-red-accent/90 disabled:opacity-50 transition-all duration-300 transform hover:scale-105 shadow-lg border border-white/20 flex items-center space-x-2"
+              >
+                {state.isSaving ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Save Profile</span>
+                  </>
+                )}
+              </button>
+            </div>
 
             {/* Order History Section */}
             <div className="mt-8">

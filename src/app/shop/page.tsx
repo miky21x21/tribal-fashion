@@ -34,7 +34,7 @@ export default function ShopPage() {
     : productCategories.flatMap(category => category.products);
 
   return (
-    <section className="px-3 sm:px-4 md:px-6 py-8 sm:py-12 md:py-16 bg-tribal-gradient-cream">
+    <section className="px-3 sm:px-4 md:px-6 py-8 sm:py-12 md:py-16 bg-tribal-cream">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-6 sm:mb-8 md:mb-12 text-center text-tribal-red">
           Explore Our Collection
@@ -83,7 +83,7 @@ export default function ShopPage() {
           {filteredProducts.map((product) => (
             <div
               key={product.id}
-              className="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transform transition-all duration-300 hover:-translate-y-2 cursor-pointer"
+              className="bg-white/20 backdrop-blur-md rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transform transition-all duration-300 hover:-translate-y-2 cursor-pointer border border-white/30"
               onClick={() => setSelectedProduct(product)}
             >
               <div className="relative">
@@ -95,7 +95,7 @@ export default function ShopPage() {
                   className="w-full h-40 sm:h-48 md:h-64 object-cover"
                 />
                 {product.featured && (
-                  <div className="absolute top-2 sm:top-4 left-2 sm:left-4 bg-tribal-green text-white px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-semibold">
+                  <div className="absolute top-2 sm:top-4 left-2 sm:left-4 bg-tribal-red text-white px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-semibold shadow-lg">
                     Featured
                   </div>
                 )}
@@ -152,11 +152,11 @@ export default function ShopPage() {
         {/* Product Detail Modal */}
         {selectedProduct && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-3 sm:p-4 z-50">
-            <div className="bg-white rounded-xl sm:rounded-2xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+            <div className="bg-white/20 backdrop-blur-md rounded-xl sm:rounded-2xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto border border-white/30 shadow-2xl">
               <div className="relative">
                 <button
                   onClick={() => setSelectedProduct(null)}
-                  className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-white rounded-full p-1.5 sm:p-2 shadow-lg hover:shadow-xl transition-all duration-300 z-10"
+                  className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-white/80 backdrop-blur-sm rounded-full p-1.5 sm:p-2 shadow-lg hover:shadow-xl transition-all duration-300 z-10 border border-white/50"
                 >
                   <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

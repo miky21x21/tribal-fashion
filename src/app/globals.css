@@ -337,6 +337,93 @@ body {
     var(--tribal-dark-cream) 90.5%,
     var(--tribal-dark-cream) 100%
   );
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-tribal-striped::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -30%;
+  width: 20%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 9.5%,
+    black 9.5%,
+    black 12.7%,
+    transparent 12.7%,
+    transparent 15.9%,
+    black 15.9%,
+    black 17.4%,
+    transparent 17.4%,
+    transparent 82.6%,
+    black 82.6%,
+    black 84.1%,
+    transparent 84.1%,
+    transparent 87.3%,
+    black 87.3%,
+    black 90.5%,
+    transparent 90.5%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 9.5%,
+    black 9.5%,
+    black 12.7%,
+    transparent 12.7%,
+    transparent 15.9%,
+    black 15.9%,
+    black 17.4%,
+    transparent 17.4%,
+    transparent 82.6%,
+    black 82.6%,
+    black 84.1%,
+    transparent 84.1%,
+    transparent 87.3%,
+    black 87.3%,
+    black 90.5%,
+    transparent 90.5%,
+    transparent 100%
+  );
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+  animation: stripe-beam 23s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes stripe-beam {
+  0% {
+    left: -30%;
+    opacity: 0;
+  }
+  4.35% {
+    opacity: 1;
+  }
+  30.43% {
+    opacity: 1;
+  }
+  34.78% {
+    left: 110%;
+    opacity: 0;
+  }
+  100% {
+    left: 110%;
+    opacity: 0;
+  }
 }
 
 /*
@@ -557,4 +644,32 @@ body {
   -webkit-hyphens: none;
   -moz-hyphens: none;
   -ms-hyphens: none;
+}
+
+/* 
+ * === DOTS TYPEWRITER ANIMATION ===
+ * Animation for the dots in the navbar subtitle
+ */
+@keyframes dots-typewriter {
+  0% {
+    content: "";
+  }
+  25% {
+    content: ".";
+  }
+  50% {
+    content: "..";
+  }
+  75% {
+    content: "...";
+  }
+  100% {
+    content: "....";
+  }
+}
+
+/* Dots typewriter effect for subtitle */
+.dots-typewriter::before {
+  content: "";
+  animation: dots-typewriter 2s steps(4) infinite;
 }

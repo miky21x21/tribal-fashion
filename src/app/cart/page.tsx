@@ -41,7 +41,7 @@ export default function CartPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
               
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-kiner text-tribal-dark font-bold mb-4">Your Cart is Empty</h1>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl text-tribal-dark font-bold mb-4" style={{fontFamily: 'Times New Roman, serif'}}>Your Cart is Empty</h1>
               <p className="text-base sm:text-lg text-tribal-brown mb-6 sm:mb-8">Discover our amazing collection of tribal fashion</p>
               
               <Link

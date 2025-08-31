@@ -1,147 +1,144 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import Image from 'next/image';
 
 interface CollageItem {
   id: string;
-  type: 'image' | 'video';
+  type: 'image';
   src: string;
   alt?: string;
 }
 
-const mockCollageItems: CollageItem[] = [
+const craftingProcessImages: CollageItem[] = [
   {
     id: '1',
     type: 'image',
-    src: 'https://images.unsplash.com/photo-1582273166316-e8db58e5fcc7?w=400&h=300&fit=crop&crop=center',
-    alt: 'Tribal pottery'
+    src: '/images/Product banner/hand weaving 1.png',
+    alt: 'Traditional hand weaving process - Setting up the loom'
   },
   {
     id: '2',
-    type: 'video',
-    src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+    type: 'image',
+    src: '/images/Product banner/hand weaving 2.png',
+    alt: 'Final product with weaving intricate patterns'
   },
   {
     id: '3',
     type: 'image',
-    src: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop&crop=center',
-    alt: 'Handwoven textile'
+    src: '/images/Product banner/hand weaving 3.png',
+    alt: 'Detailed handwork in traditional tribal weaving'
   },
   {
     id: '4',
     type: 'image',
-    src: 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=400&h=300&fit=crop&crop=center',
-    alt: 'Traditional jewelry'
+    src: '/images/Product banner/hand weaving 4.png',
+    alt: 'Artisan crafting traditional tribal textiles'
   },
   {
     id: '5',
-    type: 'video',
-    src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'
+    type: 'image',
+    src: '/images/Product banner/product (16).png',
+    alt: 'Traditional tribal crafting process'
   },
   {
     id: '6',
     type: 'image',
-    src: 'https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=400&h=300&fit=crop&crop=center',
-    alt: 'Wooden crafts'
+    src: '/images/Product banner/product (18).png',
+    alt: 'Authentic tribal product creation'
   },
   {
     id: '7',
     type: 'image',
-    src: 'https://images.unsplash.com/photo-1578662995432-eb63c39e4a42?w=400&h=300&fit=crop&crop=center',
-    alt: 'Traditional masks'
-  },
-  {
-    id: '8',
-    type: 'video',
-    src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
-  },
-  {
-    id: '9',
-    type: 'image',
-    src: 'https://images.unsplash.com/photo-1582273166316-e8db58e5fcc7?w=400&h=300&fit=crop&crop=center',
-    alt: 'Tribal art'
+    src: '/images/Product banner/hand weaving 7.jpg',
+    alt: 'Master artisan demonstrating traditional techniques'
   }
 ];
 
 export default function ProductCollage() {
-  const [shuffledItems, setShuffledItems] = useState<CollageItem[]>(mockCollageItems);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isZooming, setIsZooming] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const shuffleArray = (array: CollageItem[]): CollageItem[] => {
-    const newArray = [...array];
-    for (let i = newArray.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-    }
-    return newArray;
+  const currentImage = craftingProcessImages[currentImageIndex];
+
+  const nextImage = () => {
+    // Start zoom effect
+    setIsZooming(true);
+    
+    // After zoom completes, start carousel transition
+    setTimeout(() => {
+      setIsTransitioning(true);
+      
+      // Change image during transition
+      setTimeout(() => {
+        setCurrentImageIndex(prev => 
+          prev === craftingProcessImages.length - 1 ? 0 : prev + 1
+        );
+        setIsZooming(false);
+        setIsTransitioning(false);
+      }, 500);
+    }, 2000); // Zoom for 2 seconds
   };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setShuffledItems(current => shuffleArray(current));
-    }, 4000); // Shuffle every 4 seconds
+    // Auto advance every 1 minute
+    const setupTimer = () => {
+      timerRef.current = setTimeout(() => {
+        nextImage();
+        setupTimer();
+      }, 60000); // 1 minute
+    };
 
-    return () => clearInterval(interval);
+    setupTimer();
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
   }, []);
 
   return (
-    <section className="py-16 sm:py-20 px-4 sm:px-6 md:px-20 bg-gradient-to-br from-[#a0c878] via-[#8BB665] to-[#76A452] overflow-hidden">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center font-tribal mb-12 sm:mb-16 text-tribal-red mobile-title-wrap">
-          Our Craft
+    <section className="py-16 sm:py-20 px-4 sm:px-6 md:px-20 bg-gradient-to-br from-black via-gray-900 to-gray-800 overflow-hidden">
+      <div className="max-w-4xl mx-auto">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-12 sm:mb-16 text-tribal-cream mobile-title-wrap font-serif">
+          How Our Crafts Are Made
         </h2>
         
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 lg:gap-6 max-h-[600px] overflow-hidden">
-          {shuffledItems.map((item, index) => (
-            <div
-              key={`${item.id}-${index}`}
-              className={`
-                relative overflow-hidden rounded-lg shadow-lg
-                transition-all duration-1000 ease-in-out transform
-                ${index === 0 ? 'col-span-2 row-span-2' : ''}
-                ${index === 4 ? 'md:col-span-2' : ''}
-                ${index % 3 === 0 ? 'animate-fade-slide-up' : ''}
-                ${index % 3 === 1 ? 'animate-fade-slide-right' : ''}
-                ${index % 3 === 2 ? 'animate-fade-slide-left' : ''}
-              `}
-              style={{
-                animationDelay: `${index * 200}ms`,
-                minHeight: index === 0 ? '300px' : '150px'
-              }}
-            >
-              {item.type === 'image' ? (
-                /* eslint-disable @next/next/no-img-element */
-                <img
-                  src={item.src}
-                  alt={item.alt || 'Tribal craft'}
-                  className="w-full h-full object-cover hover:scale-110 transition-transform duration-700"
-                  loading="lazy"
-                />
-                /* eslint-enable @next/next/no-img-element */
-              ) : (
-                <video
-                  src={item.src}
-                  className="w-full h-full object-cover"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                >
-                  Your browser does not support the video tag.
-                </video>
-              )}
-              
-              {/* Overlay with subtle tribal pattern */}
-              <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-tribal-brown/20 pointer-events-none" />
-              
-              {/* Hover effect overlay */}
-              <div className="absolute inset-0 bg-tribal-red/0 hover:bg-tribal-red/10 transition-colors duration-300" />
-            </div>
-          ))}
+        {/* Single Image Display with Zoom-In and Carousel Effect */}
+        <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] rounded-xl overflow-hidden shadow-2xl bg-gray-800">
+          <div className={`w-full h-full transition-all duration-500 ease-in-out ${
+            isTransitioning ? 'transform translate-x-full opacity-0' : 'transform translate-x-0 opacity-100'
+          }`}>
+            <Image
+              src={currentImage.src}
+              alt={currentImage.alt || 'Traditional craft making process'}
+              fill
+              className={`object-cover transition-transform duration-2000 ease-out ${
+                isZooming ? 'scale-125' : 'scale-100'
+              }`}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+              priority={currentImageIndex === 0}
+            />
+          </div>
+          
+          {/* Subtle gradient overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+          
+          {/* Image Description Overlay */}
+          <div className="absolute bottom-4 left-4 right-4 text-center">
+            <p className="text-white text-sm md:text-base bg-black/20 px-4 py-3 rounded-lg backdrop-blur-sm font-light" style={{fontFamily: 'Bahnschrift Light Condensed, sans-serif'}}>
+              {currentImage.alt}
+            </p>
+          </div>
         </div>
+
         
         <div className="text-center mt-12">
-          <p className="text-tribal-red text-lg md:text-xl mb-6 max-w-2xl mx-auto font-['Limelight']">
-            Discover the rich tapestry of Jharkhand&apos;s tribal craftsmanship through our curated collection of authentic handmade products.
+          <p className="text-tribal-cream text-lg md:text-xl mb-6 max-w-2xl mx-auto leading-relaxed" style={{fontFamily: 'Times New Roman, serif'}}>
+            Witness the ancient artistry of Jharkhand&apos;s tribal craftspeople as they weave stories into every thread, preserving centuries-old traditions through skilled hands and passionate hearts.
           </p>
           <a
             href="/shop"
@@ -151,6 +148,13 @@ export default function ProductCollage() {
           </a>
         </div>
       </div>
+      
+      
+      <style dangerouslySetInnerHTML={{__html: `
+        .duration-2000 {
+          transition-duration: 2000ms;
+        }
+      `}} />
     </section>
   );
 }

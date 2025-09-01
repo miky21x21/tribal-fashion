@@ -575,23 +575,27 @@ body {
 .font-kiner .double-underline:first-of-type::before {
   left: 4.9%;
   right: 9%;
+  background-color: var(--tribal-red);
 }
 .font-kiner .double-underline:first-of-type::after {
   left: 4.9%;
   right: 9%;
+  background-color: var(--tribal-red);
 }
 
-/* Underlines for both “i” letters shifted 5% of their length to the left */
+/* Underlines for both "i" letters shifted 5% of their length to the left */
 /* Underlines for both "i" letters - mobile/default styling */
 .font-kiner .double-underline:nth-of-type(2)::before,
 .font-kiner .double-underline:nth-of-type(3)::before {
   left: 19%;
   right: 31%;
+  background-color: var(--tribal-red);
 }
 .font-kiner .double-underline:nth-of-type(2)::after,
 .font-kiner .double-underline:nth-of-type(3)::after {
   left: 19%;
   right: 31%;
+  background-color: var(--tribal-red);
 }
 
 /* Desktop-specific: Even length underlines for both "i" letters */
@@ -600,11 +604,13 @@ body {
   .font-kiner .double-underline:nth-of-type(3)::before {
     left: 21.5%;
     right: 33.5%;
+    background-color: var(--tribal-red);
   }
   .font-kiner .double-underline:nth-of-type(2)::after,
   .font-kiner .double-underline:nth-of-type(3)::after {
     left: 21.5%;
     right: 33.5%;
+    background-color: var(--tribal-red);
   }
 }
 

@@ -1,4 +1,80 @@
 /*
+ * === NAVBAR LOGO RESPONSIVE STYLING ===
+ * Responsive scaling for the Kinir logo to maintain consistency across devices
+ */
+.kinir-logo {
+  transform: scale(1.6698) translateY(-1%);
+  transform-origin: bottom;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  pointer-events: auto;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+@media (min-width: 1024px) {
+  .kinir-logo {
+    transform: scale(1.014) translateY(-16%) !important;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .subtitle {
+    font-size: 0.221870725rem !important;
+  }
+  
+  header .bg-tribal-striped {
+    height: 88px !important;
+    background: linear-gradient(
+      to bottom,
+      var(--tribal-dark-cream) 0%,
+      var(--tribal-dark-cream) 11%,
+      #000000 11%,
+      #000000 14%,
+      var(--tribal-cream) 14%,
+      var(--tribal-cream) 17%,
+      var(--tribal-red) 17%,
+      var(--tribal-red) 18.5%,
+      #ffffff 18.5%,
+      #ffffff 81.5%,
+      var(--tribal-red) 81.5%,
+      var(--tribal-red) 83%,
+      var(--tribal-cream) 83%,
+      var(--tribal-cream) 86%,
+      #000000 86%,
+      #000000 89%,
+      var(--tribal-dark-cream) 89%,
+      var(--tribal-dark-cream) 100%
+    ) !important;
+  }
+
+  /* Mobile-specific: Decrease width (thickness) and gap of double underlines by 10% */
+  .double-underline::after {
+    bottom: 0.17968rem !important;
+    height: 0.15946875rem !important;
+  }
+
+  .double-underline::before {
+    bottom: 0.10383rem !important;
+    height: 0.050625rem !important;
+  }
+
+  /* Mobile-specific: Decrease thickness for both "i" letters underlines */
+  .font-kiner .double-underline:nth-of-type(2)::before,
+  .font-kiner .double-underline:nth-of-type(3)::before {
+    height: 0.050625rem !important;
+  }
+  .font-kiner .double-underline:nth-of-type(2)::after,
+  .font-kiner .double-underline:nth-of-type(3)::after {
+    height: 0.15946875rem !important;
+  }
+}
+
+/*
  * === NAVBAR LOGO FONT DEFINITIONS ===
  * These font definitions are crucial for the correct rendering of the navbar logo.
  * Do not modify or remove without understanding the impact on the logo's appearance.
@@ -315,7 +391,7 @@ body {
  * To change the colors, you can modify the CSS variables in the :root selector
  * or replace them with hex codes directly in the linear-gradient.
  */
-  height: 105px;
+  height: 115.5px;
   background: linear-gradient(
     to bottom,
     var(--tribal-dark-cream) 0%,
@@ -452,7 +528,7 @@ body {
 .double-underline::after {
   content: "";
   position: absolute;
-  bottom: 0.1815rem;
+  bottom: 0.19965rem;
   left: 20%;
   right: 20%;
   height: 0.1771875rem;
@@ -462,7 +538,7 @@ body {
 .double-underline::before {
   content: "";
   position: absolute;
-  bottom: 0.115375rem;
+  bottom: 0.11537rem;
   left: 20%;
   right: 20%;
   height: 0.05625rem;
@@ -495,7 +571,7 @@ body {
 }
 
 /* Wider and equal underlines for the first letter (K) in the navbar logo.
-   Increased by ~5% total width (reduce side offsets from 11.5% to 9%). */
+   Original width maintained with increased gap. */
 .font-kiner .double-underline:first-of-type::before {
   left: 4.9%;
   right: 9%;
@@ -506,6 +582,7 @@ body {
 }
 
 /* Underlines for both “i” letters shifted 5% of their length to the left */
+/* Underlines for both "i" letters - mobile/default styling */
 .font-kiner .double-underline:nth-of-type(2)::before,
 .font-kiner .double-underline:nth-of-type(3)::before {
   left: 19%;
@@ -515,6 +592,20 @@ body {
 .font-kiner .double-underline:nth-of-type(3)::after {
   left: 19%;
   right: 31%;
+}
+
+/* Desktop-specific: Even length underlines for both "i" letters */
+@media (min-width: 768px) {
+  .font-kiner .double-underline:nth-of-type(2)::before,
+  .font-kiner .double-underline:nth-of-type(3)::before {
+    left: 21.5%;
+    right: 33.5%;
+  }
+  .font-kiner .double-underline:nth-of-type(2)::after,
+  .font-kiner .double-underline:nth-of-type(3)::after {
+    left: 21.5%;
+    right: 33.5%;
+  }
 }
 
 .text-shadow-book {

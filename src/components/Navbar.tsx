@@ -93,58 +93,27 @@ export default function Navbar() {
     return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`;
   };
   return (
-    <header className="sticky top-0 z-50 bg-tribal-striped text-white px-2 sm:px-4 md:px-6 flex justify-between items-center shadow-xl relative min-h-[70px]">
+    <header className="sticky top-0 z-50 bg-tribal-striped text-white px-2 sm:px-4 md:px-6 lg:px-8 flex justify-between items-center shadow-xl relative min-h-[77px]">
       {/* Left Logo */}
-      <div className="flex items-center pl-4">
+      <div className="flex items-center pl-4 sm:pl-6 md:pl-8">
         <Link href="/" className="hover:opacity-80 transition duration-300">
           <h1 
-            className="relative text-3xl sm:text-4xl md:text-5xl font-normal tracking-wider drop-shadow-md font-kiner text-black cursor-pointer" 
-            style={{ 
-              transform: 'scale(1.518) translateY(-1%)', 
-              transformOrigin: 'bottom'
-            }}
+            className="relative text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal tracking-wider drop-shadow-md font-kiner text-black cursor-pointer kinir-logo" 
           >
-          <style jsx>{`
-            h1 {
-              touch-action: manipulation;
-              user-select: none;
-              -webkit-user-select: none;
-              -moz-user-select: none;
-              -ms-user-select: none;
-              pointer-events: auto;
-              will-change: auto;
-              backface-visibility: hidden;
-              -webkit-backface-visibility: hidden;
-            }
-            @media (min-width: 1024px) {
-              h1 {
-                transform: scale(1.093) translateY(-11%) !important;
-                touch-action: manipulation;
-                user-select: none;
-                -webkit-user-select: none;
-                -moz-user-select: none;
-                -ms-user-select: none;
-              }
-            }
-            @media (max-width: 767px) {
-              .subtitle {
-                font-size: 0.249013323927rem !important;
-              }
-              h1 {
-                touch-action: manipulation;
-                user-select: none;
-                -webkit-user-select: none;
-                -moz-user-select: none;
-                -ms-user-select: none;
-              }
-            }
-          `}</style>
           <span className="double-underline">K</span>
           <span className="double-underline">i</span>n
           <span className="double-underline">i</span>r
           <span 
             className="absolute text-black subtitle"
-            style={{ top: '111%', right: '5%', fontSize: '0.379535625rem', whiteSpace: 'nowrap', fontFamily: '"Monotype Corsiva", cursive', letterSpacing: '-0.05em', transform: 'translateY(-50%)' }}
+            style={{ 
+              top: '111%', 
+              right: '5%', 
+              fontSize: '0.454645726rem',
+              whiteSpace: 'nowrap', 
+              fontFamily: '"Monotype Corsiva", cursive', 
+              letterSpacing: '-0.05em', 
+              transform: 'translateY(-50%)'
+            }}
           >
             <span className="dots-typewriter"></span>Anything Tribal
           </span>
@@ -155,7 +124,7 @@ export default function Navbar() {
       {/* Right Navigation */}
       <nav className="flex items-center space-x-2 sm:space-x-4 md:space-x-6 font-semibold">
         <Link href="/" className="hover:text-amber-300 transition duration-300 p-1 sm:p-2 rounded-lg">
-          <Image src="/home.svg" alt="Home" width={20} height={20} className="sm:w-6 sm:h-6" />
+          <Image src="/home.svg" alt="Home" width={22} height={22} className="sm:w-7 sm:h-7" />
         </Link>
         
         {/* Cart Icon with Item Count */}
@@ -165,9 +134,9 @@ export default function Navbar() {
           title="Shopping Cart"
         >
           <div className="relative">
-            <Image src="/shop.svg" alt="Cart" width={20} height={20} className="sm:w-6 sm:h-6" />
+            <Image src="/shop.svg" alt="Cart" width={22} height={22} className="sm:w-7 sm:h-7" />
             {totalItems > 0 && (
-              <span className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-tribal-red text-white text-[10px] sm:text-xs font-bold rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center animate-pulse border border-white">
+              <span className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-tribal-red text-white text-[11px] sm:text-sm font-bold rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center animate-pulse border border-white">
                 {totalItems > 99 ? '99+' : totalItems}
               </span>
             )}
@@ -178,21 +147,21 @@ export default function Navbar() {
           className="hover:text-amber-300 transition duration-300 p-1 sm:p-2 rounded-lg"
           prefetch={false}
         >
-          <Image src="/about.svg" alt="About" width={20} height={20} className="sm:w-6 sm:h-6" />
+          <Image src="/about.svg" alt="About" width={22} height={22} className="sm:w-7 sm:h-7" />
         </Link>
         <Link
           href="/contact"
           className="hover:text-amber-300 transition duration-300 p-1 sm:p-2 rounded-lg"
           prefetch={false}
         >
-          <Image src="/contact.svg" alt="Contact" width={20} height={20} className="sm:w-6 sm:h-6" />
+          <Image src="/contact.svg" alt="Contact" width={22} height={22} className="sm:w-7 sm:h-7" />
         </Link>
         
         {/* Profile Section */}
         <div className="relative ml-1 sm:ml-2 md:ml-4 z-[9999]" ref={dropdownRef}>
           
           {isLoading ? (
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/30 backdrop-blur-md animate-pulse border-2 border-white shadow-lg"></div>
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/30 backdrop-blur-md animate-pulse border-2 border-white shadow-lg"></div>
           ) : user ? (
             <div className="relative z-[9999]" style={{ position: 'relative', zIndex: 9999 }}>
               <button
@@ -205,10 +174,10 @@ export default function Navbar() {
                     alt="Profile"
                     width={32}
                     height={32}
-                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border-2 border-white/50 shadow-md"
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover border-2 border-white/50 shadow-md"
                   />
                 ) : (
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-tribal-red to-tribal-red-accent flex items-center justify-center text-white text-[10px] sm:text-xs font-bold border-2 border-white/50 shadow-md">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-tribal-red to-tribal-red-accent flex items-center justify-center text-white text-[11px] sm:text-sm font-bold border-2 border-white/50 shadow-md">
                     {getInitials(user.firstName, user.lastName) || 'U'}
                   </div>
                 )}
@@ -216,15 +185,7 @@ export default function Navbar() {
               
               {/* Profile Dropdown */}
               {showProfileDropdown && (
-                <div className="profile-dropdown-overlay absolute right-0 mt-2 w-56 sm:w-64 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-[9999]">
-                  <style jsx>{`
-                    .profile-dropdown-overlay {
-                      position: fixed !important;
-                      z-index: 99999 !important;
-                      top: 70px !important;
-                      right: 20px !important;
-                    }
-                  `}</style>
+                <div className="absolute right-0 mt-2 w-56 sm:w-64 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-[9999]" style={{position: 'fixed', top: '77px', right: '20px', zIndex: 99999}}>
                   <div className="px-4 py-3 border-b border-gray-100">
                     <div className="flex items-center space-x-3">
                       {user.avatar ? (
@@ -282,10 +243,10 @@ export default function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 bg-white/20 backdrop-blur-md hover:bg-white/30 transition duration-300 rounded-full border-2 border-white/50 shadow-lg"
+              className="flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 bg-white/20 backdrop-blur-md hover:bg-white/30 transition duration-300 rounded-full border-2 border-white/50 shadow-lg"
               title="Sign In"
             >
-              <svg className="w-4 h-4 sm:w-6 sm:h-6 text-white drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 sm:w-7 sm:h-7 text-white drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
             </Link>

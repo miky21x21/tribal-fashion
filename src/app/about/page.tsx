@@ -1,11 +1,14 @@
 export default function AboutPage() {
   return (
-    <main className="min-h-screen py-16 sm:py-20 px-4 sm:px-6 bg-tribal-gradient-cream">
+    <main className="min-h-screen py-16 sm:py-20 px-4 sm:px-6 bg-tribal-cream">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 sm:mb-8 text-tribal-red text-center">
           About Us
         </h1>
-        <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 md:p-12">
+        <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-8 md:p-12 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-3xl pointer-events-none"></div>
+          
+          <div className="relative z-10">
           <p className="text-base sm:text-lg md:text-xl text-tribal-brown leading-relaxed mb-4 sm:mb-6">
             We celebrate the rich tribal heritage of Jharkhand through unique
             handmade fashion and crafts.
@@ -20,6 +23,7 @@ export default function AboutPage() {
             passed down through generations of skilled artisans who dedicate
             their lives to keeping these traditions alive.
           </p>
+          </div>
         </div>
       </div>
     </main>

@@ -59,43 +59,78 @@ export default function ProductCollage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isZooming, setIsZooming] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(1);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const zoomIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const currentImage = craftingProcessImages[currentImageIndex];
 
-  const nextImage = () => {
-    // Start zoom effect
+  const startZoomEffect = () => {
     setIsZooming(true);
+    setZoomLevel(1);
     
-    // After zoom completes, start carousel transition
-    setTimeout(() => {
-      setIsTransitioning(true);
+    // Gradual zoom effect over 6 seconds for longer image display
+    let currentZoom = 1;
+    const zoomStep = 0.004; // Smaller increment for slower zoom
+    
+    zoomIntervalRef.current = setInterval(() => {
+      currentZoom += zoomStep;
+      setZoomLevel(currentZoom);
       
-      // Change image during transition
+      // When zoom reaches maximum, transition to next image
+      if (currentZoom >= 1.25) {
+        clearInterval(zoomIntervalRef.current!);
+        transitionToNextImage();
+      }
+    }, 20); // Update every 20ms for smooth animation
+  };
+
+  const transitionToNextImage = () => {
+    setIsTransitioning(true);
+    
+    // Smooth slide transition
+    setTimeout(() => {
+      setCurrentImageIndex(prev => 
+        prev === craftingProcessImages.length - 1 ? 0 : prev + 1
+      );
+      
+      // Reset states after image change
       setTimeout(() => {
-        setCurrentImageIndex(prev => 
-          prev === craftingProcessImages.length - 1 ? 0 : prev + 1
-        );
         setIsZooming(false);
         setIsTransitioning(false);
+        setZoomLevel(1);
       }, 500);
-    }, 2000); // Zoom for 2 seconds
+    }, 1000);
+  };
+
+  const nextImage = () => {
+    startZoomEffect();
   };
 
   useEffect(() => {
-    // Auto advance every 1 minute
+    // Start zoom effect immediately when component mounts
+    startZoomEffect();
+
+    // Auto advance every 8 seconds (6s zoom + 2s transition time)
     const setupTimer = () => {
       timerRef.current = setTimeout(() => {
         nextImage();
         setupTimer();
-      }, 60000); // 1 minute
+      }, 8000); // 8 seconds total cycle for longer image display
     };
 
-    setupTimer();
+    // Start the timer after initial zoom completes
+    const startTimer = setTimeout(() => {
+      setupTimer();
+    }, 8000);
 
     return () => {
+      clearTimeout(startTimer);
       if (timerRef.current) {
         clearTimeout(timerRef.current);
+      }
+      if (zoomIntervalRef.current) {
+        clearInterval(zoomIntervalRef.current);
       }
     };
   }, []);
@@ -109,16 +144,18 @@ export default function ProductCollage() {
         
         {/* Single Image Display with Zoom-In and Carousel Effect */}
         <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] rounded-xl overflow-hidden shadow-2xl bg-gray-800">
-          <div className={`w-full h-full transition-all duration-500 ease-in-out ${
-            isTransitioning ? 'transform translate-x-full opacity-0' : 'transform translate-x-0 opacity-100'
-          }`}>
+                     <div className={`w-full h-full transition-all duration-1000 ease-in-out ${
+             isTransitioning ? 'transform translate-x-full opacity-0' : 'transform translate-x-0 opacity-100'
+           }`}>
             <Image
               src={currentImage.src}
               alt={currentImage.alt || 'Traditional craft making process'}
               fill
-              className={`object-cover transition-transform duration-2000 ease-out ${
-                isZooming ? 'scale-125' : 'scale-100'
-              }`}
+              className="object-cover"
+              style={{
+                transform: `scale(${zoomLevel})`,
+                transition: 'transform 0.02s linear' // Smooth zoom animation
+              }}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
               priority={currentImageIndex === 0}
             />
@@ -127,7 +164,7 @@ export default function ProductCollage() {
           {/* Subtle gradient overlay for better text readability */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
           
-          {/* Image Description Overlay */}
+                    {/* Image Description Overlay */}
           <div className="absolute bottom-4 left-4 right-4 text-center">
             <p className="text-white text-sm md:text-base bg-black/20 px-4 py-3 rounded-lg backdrop-blur-sm font-light" style={{fontFamily: 'Bahnschrift Light Condensed, sans-serif'}}>
               {currentImage.alt}
@@ -150,11 +187,6 @@ export default function ProductCollage() {
       </div>
       
       
-      <style dangerouslySetInnerHTML={{__html: `
-        .duration-2000 {
-          transition-duration: 2000ms;
-        }
-      `}} />
     </section>
   );
 }

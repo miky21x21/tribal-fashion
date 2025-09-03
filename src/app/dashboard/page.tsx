@@ -3,10 +3,12 @@
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { useCart } from '../../contexts/CartContext';
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { clearAllUserCarts } = useCart();
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -78,7 +80,10 @@ export default function DashboardPage() {
 
           <div className="text-center mt-8 space-y-4">
             <button
-              onClick={() => signOut({ callbackUrl: '/' })}
+              onClick={() => {
+                clearAllUserCarts();
+                signOut({ callbackUrl: '/' });
+              }}
               className="bg-tribal-red/90 backdrop-blur-sm text-white py-3 px-8 rounded-xl font-semibold hover:bg-tribal-red-accent/90 transition-all duration-300 transform hover:scale-105 shadow-lg border border-white/20"
             >
               Sign Out

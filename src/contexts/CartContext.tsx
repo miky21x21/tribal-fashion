@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 
 export interface CartItem {
   id: string;
@@ -24,6 +25,7 @@ interface CartContextType extends CartState {
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
+  clearAllUserCarts: () => void;
   getCartTotal: () => number;
 }
 
@@ -153,10 +155,21 @@ const initialState: CartState = {
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, initialState);
+  const { data: session } = useSession();
 
-  // Load cart from localStorage on mount
+  // Get user-specific cart key
+  const getCartKey = () => {
+    if (session?.user?.email) {
+      return `tribal-fashion-cart-${session.user.email}`;
+    }
+    return 'tribal-fashion-cart-guest';
+  };
+
+  // Load cart from localStorage on mount or when user changes
   useEffect(() => {
-    const savedCart = localStorage.getItem('tribal-fashion-cart');
+    const cartKey = getCartKey();
+    const savedCart = localStorage.getItem(cartKey);
+    
     if (savedCart) {
       try {
         const cartItems: CartItem[] = JSON.parse(savedCart);
@@ -168,14 +181,15 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } else {
       dispatch({ type: 'LOAD_CART', payload: [] });
     }
-  }, []);
+  }, [session?.user?.email]);
 
   // Save cart to localStorage whenever it changes
   useEffect(() => {
     if (!state.isLoading) {
-      localStorage.setItem('tribal-fashion-cart', JSON.stringify(state.items));
+      const cartKey = getCartKey();
+      localStorage.setItem(cartKey, JSON.stringify(state.items));
     }
-  }, [state.items, state.isLoading]);
+  }, [state.items, state.isLoading, session?.user?.email]);
 
   const addToCart = (product: Omit<CartItem, 'quantity'>) => {
     dispatch({ type: 'ADD_TO_CART', payload: product });
@@ -193,6 +207,22 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     dispatch({ type: 'CLEAR_CART' });
   };
 
+  const clearAllUserCarts = () => {
+    // Clear current user's cart
+    dispatch({ type: 'CLEAR_CART' });
+    
+    // Clear all cart data from localStorage
+    const keys = Object.keys(localStorage);
+    keys.forEach(key => {
+      if (key.startsWith('tribal-fashion-cart-')) {
+        localStorage.removeItem(key);
+      }
+    });
+    
+    // Clear saved login credentials
+    localStorage.removeItem('tribal-fashion-credentials');
+  };
+
   const getCartTotal = () => {
     return state.totalPrice;
   };
@@ -203,6 +233,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     removeFromCart,
     updateQuantity,
     clearCart,
+    clearAllUserCarts,
     getCartTotal,
   };
 

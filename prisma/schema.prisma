@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model Account {
@@ -16,12 +16,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -40,11 +40,41 @@ model Session {
 model User {
   id            String    @id @default(cuid())
   name          String?
+  firstName     String?
+  lastName      String?
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  password      String?
+  role          String    @default("user")
+  authProvider  String    @default("email")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
   accounts      Account[]
   sessions      Session[]
+  profile       UserProfile?
+}
+
+model UserProfile {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  firstName      String
+  lastName       String
+  email          String
+  phoneNumber    String?
+  street         String?
+  apartment      String?
+  city           String?
+  state          String?
+  zipCode        String?
+  country        String   @default("India")
+  avatar         String?
+  profileComplete Boolean @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {

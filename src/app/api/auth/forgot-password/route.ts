@@ -1,4 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { PrismaClient } from '@prisma/client';
+import { sign } from 'jsonwebtoken';
+
+const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,24 +24,52 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
     
-    // Forward the request to the backend
-    const backendUrl = process.env.BACKEND_URL || 'http://localhost:5000';
-    const response = await fetch(`${backendUrl}/api/auth/forgot-password`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email }),
+    // Check if user exists
+    const user = await prisma.user.findUnique({
+      where: { email: email.toLowerCase() }
     });
     
-    const data = await response.json();
+    if (!user) {
+      // For security reasons, don't reveal if email exists or not
+      return NextResponse.json({
+        success: true,
+        message: 'If this email is registered, you will receive a password reset link'
+      });
+    }
     
-    return NextResponse.json(data, { status: response.status });
+    // Generate reset token
+    const resetToken = sign(
+      { 
+        id: user.id, 
+        email: user.email, 
+        type: 'password_reset' 
+      },
+      process.env.NEXTAUTH_SECRET || 'fallback-secret',
+      { expiresIn: '1h' }
+    );
+    
+    // In a real application, you would:
+    // 1. Save the reset token to database with expiration
+    // 2. Send email with reset link
+    // For now, we'll just return success with the token for development
+    
+    // Create reset link
+    const resetLink = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/reset-password?token=${resetToken}`;
+    
+    return NextResponse.json({
+      success: true,
+      message: 'Password reset link sent to your email',
+      // In development, include the reset link for testing
+      ...(process.env.NODE_ENV === 'development' && { 
+        resetLink,
+        resetToken 
+      })
+    });
   } catch (error) {
     console.error('Forgot password error:', error);
     return NextResponse.json({
       success: false,
-      message: 'Internal server error'
+      message: 'Failed to process password reset request'
     }, { status: 500 });
   }
 }

@@ -63,7 +63,8 @@ export default function SignUpPage() {
     return true;
   };
 
-  const handleSignUp = async () => {
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!validateForm()) return;
 
     setState(prev => ({ ...prev, isLoading: true, error: "" }));
@@ -100,7 +101,7 @@ export default function SignUpPage() {
           error: data.message || 'Failed to create account'
         }));
       }
-    } catch {
+    } catch (error) {
       setState(prev => ({
         ...prev,
         isLoading: false,
@@ -111,7 +112,7 @@ export default function SignUpPage() {
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
-      handleSignUp();
+      handleSignUp(e as any);
     }
   };
 
@@ -142,7 +143,7 @@ export default function SignUpPage() {
         )}
 
         {/* Sign Up Form */}
-        <div className="space-y-4 relative z-10">
+        <form onSubmit={handleSignUp} className="space-y-4 relative z-10">
           {/* Name Fields */}
           <div className="grid grid-cols-2 gap-3">
             <input
@@ -152,6 +153,7 @@ export default function SignUpPage() {
               onKeyPress={handleKeyPress}
               placeholder="First Name"
               className="border border-tribal-brown/30 bg-white/80 backdrop-blur-sm text-tribal-dark py-3 px-4 rounded-xl text-sm font-medium placeholder-tribal-brown placeholder-opacity-60 focus:outline-none focus:border-tribal-red focus:ring-2 focus:ring-tribal-red/20 transition-all duration-300"
+              required
             />
             <input
               type="text"
@@ -160,6 +162,7 @@ export default function SignUpPage() {
               onKeyPress={handleKeyPress}
               placeholder="Last Name"
               className="border border-tribal-brown/30 bg-white/80 backdrop-blur-sm text-tribal-dark py-3 px-4 rounded-xl text-sm font-medium placeholder-tribal-brown placeholder-opacity-60 focus:outline-none focus:border-tribal-red focus:ring-2 focus:ring-tribal-red/20 transition-all duration-300"
+              required
             />
           </div>
           
@@ -171,6 +174,7 @@ export default function SignUpPage() {
             onKeyPress={handleKeyPress}
             placeholder="Email"
             className="w-full border border-tribal-brown/30 bg-white/80 backdrop-blur-sm text-tribal-dark py-3 px-4 rounded-xl text-sm font-medium placeholder-tribal-brown placeholder-opacity-60 focus:outline-none focus:border-tribal-red focus:ring-2 focus:ring-tribal-red/20 transition-all duration-300"
+            required
           />
           
           {/* Password Input */}
@@ -181,6 +185,7 @@ export default function SignUpPage() {
             onKeyPress={handleKeyPress}
             placeholder="Password (min. 6 characters)"
             className="w-full border border-tribal-brown/30 bg-white/80 backdrop-blur-sm text-tribal-dark py-3 px-4 rounded-xl text-sm font-medium placeholder-tribal-brown placeholder-opacity-60 focus:outline-none focus:border-tribal-red focus:ring-2 focus:ring-tribal-red/20 transition-all duration-300"
+            required
           />
           
           {/* Confirm Password Input */}
@@ -191,6 +196,7 @@ export default function SignUpPage() {
             onKeyPress={handleKeyPress}
             placeholder="Confirm Password"
             className="w-full border border-tribal-brown/30 bg-white/80 backdrop-blur-sm text-tribal-dark py-3 px-4 rounded-xl text-sm font-medium placeholder-tribal-brown placeholder-opacity-60 focus:outline-none focus:border-tribal-red focus:ring-2 focus:ring-tribal-red/20 transition-all duration-300"
+            required
           />
           
           {/* Terms Agreement */}
@@ -200,6 +206,7 @@ export default function SignUpPage() {
               checked={state.agreeToTerms}
               onChange={(e) => setState(prev => ({ ...prev, agreeToTerms: e.target.checked, error: "" }))}
               className="w-4 h-4 text-tribal-red bg-white/80 backdrop-blur-sm border border-tribal-brown/30 rounded-md focus:ring-tribal-red focus:ring-2 transition-all duration-300 mt-0.5"
+              required
             />
             <span className="text-sm text-tribal-brown">
               I agree to the{" "}
@@ -215,7 +222,7 @@ export default function SignUpPage() {
           
           {/* Sign Up Button */}
           <button
-            onClick={handleSignUp}
+            type="submit"
             disabled={state.isLoading}
             className="w-full bg-red-600/90 backdrop-blur-sm text-white py-3 px-4 rounded-xl font-bold text-sm hover:bg-red-700/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center border border-white/20"
           >
@@ -235,7 +242,7 @@ export default function SignUpPage() {
               </Link>
             </p>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from 'next-auth/react';
+import { useCart } from '../../contexts/CartContext';
 
 interface OrderItem {
   id: string;
@@ -57,6 +58,7 @@ interface ProfileState {
 export default function ProfilePage() {
   const router = useRouter();
   const { data: session, status } = useSession();
+  const { clearAllUserCarts } = useCart();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [state, setState] = useState<ProfileState>({
@@ -752,7 +754,10 @@ export default function ProfilePage() {
               </button>
               
               <button
-                onClick={() => signOut({ callbackUrl: '/' })}
+                onClick={() => {
+                  clearAllUserCarts();
+                  signOut({ callbackUrl: '/' });
+                }}
                 className="bg-gray-500/90 backdrop-blur-sm text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold text-sm sm:text-base hover:bg-gray-600/90 transition-all duration-300 transform hover:scale-105 shadow-lg border border-white/20 flex items-center space-x-2"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

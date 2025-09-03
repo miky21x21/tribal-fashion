@@ -283,7 +283,7 @@ export default function LoginForm({ onLogin, onProfileComplete }: LoginFormProps
       {/* Welcome Section */}
       <div className="relative text-center mb-8">
         {/* Welcome Text */}
-        <h1 className="text-7xl font-kiner text-tribal-dark font-bold mb-3 uppercase tracking-widest">Welcome</h1>
+        <h1 className="text-7xl text-tribal-dark mb-3 tracking-widest">Welcome</h1>
         <p className="text-sm text-tribal-brown opacity-80 font-medium">Please enter your details</p>
       </div>
 

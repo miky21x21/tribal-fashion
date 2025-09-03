@@ -1,4 +1,78 @@
 /*
+ * === NATURAL GLIDING SMOOTH SCROLLING ===
+ * Creates a smooth, gliding scrolling experience that feels natural
+ * Works perfectly on both mobile and desktop devices
+ */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scroll-padding-top: 80px;
+}
+
+body {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Natural smooth scrolling for all elements */
+* {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Enhanced smooth scrolling for better gliding feel */
+html, body, div, section, article, main, nav, footer {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Smooth scrolling classes */
+.smooth-scroll,
+.smooth-scroll-force,
+.smooth-scroll-enhanced,
+.scroll-container {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Enhanced scrollbar for visual feedback */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--tribal-cream);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--tribal-red);
+  border-radius: 6px;
+  border: 2px solid var(--tribal-cream);
+  transition: background-color 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--tribal-red-accent);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--tribal-cream);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--tribal-red) var(--tribal-cream);
+}
+
+/* Force smooth scrolling on all elements */
+html *, body * {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/*
  * === NAVBAR LOGO RESPONSIVE STYLING ===
  * Responsive scaling for the Kinir logo to maintain consistency across devices
  */

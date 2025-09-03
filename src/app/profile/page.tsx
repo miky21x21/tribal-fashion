@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useSession, signOut } from 'next-auth/react';
 
 interface OrderItem {
   id: string;
@@ -55,6 +56,7 @@ interface ProfileState {
 
 export default function ProfilePage() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [state, setState] = useState<ProfileState>({
@@ -85,51 +87,46 @@ export default function ProfilePage() {
   });
 
   useEffect(() => {
-    loadUserProfile();
-    loadUserOrders();
-  }, [loadUserProfile, loadUserOrders]);
+    // Check if user is authenticated
+    if (status === 'unauthenticated') {
+      router.push('/login');
+      return;
+    }
+    
+    if (status === 'authenticated' && session) {
+      loadUserProfile();
+      loadUserOrders();
+    }
+  }, [status, session, router]);
 
   const loadUserProfile = useCallback(async () => {
     try {
-      const token = localStorage.getItem('token');
-      
-      if (!token) {
-        router.push('/login');
+      // Use NextAuth session instead of JWT token
+      if (!session) {
+        setState(prev => ({ ...prev, error: "No session found", isLoading: false }));
         return;
       }
 
-      const response = await fetch('/api/auth/me', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        
-        if (data.success) {
-          const user = data.data;
-          setState(prev => ({
-            ...prev,
-            firstName: user.firstName || "",
-            lastName: user.lastName || "",
-            email: user.email || "",
-            phoneNumber: user.phoneNumber || "",
-            avatar: user.avatar || "",
-            street: user.street || "",
-            apartment: user.apartment || "",
-            city: user.city || "",
-            state: user.state || "",
-            zipCode: user.zipCode || "",
-            country: user.country || "India",
-            isLoading: false
-          }));
-        } else {
-          setState(prev => ({ ...prev, error: "Failed to load profile data", isLoading: false }));
-        }
-      } else {
-        router.push('/login');
-      }
+      // Extract user info from NextAuth session
+      const user = {
+        firstName: session.user?.name?.split(' ')[0] || "",
+        lastName: session.user?.name?.split(' ').slice(1).join(' ') || "",
+        email: session.user?.email || "",
+        phoneNumber: "",
+        avatar: session.user?.image || "",
+        street: "",
+        apartment: "",
+        city: "",
+        state: "",
+        zipCode: "",
+        country: "India"
+      };
+
+      setState(prev => ({
+        ...prev,
+        ...user,
+        isLoading: false
+      }));
     } catch (error) {
       console.error('Profile load failed:', error);
       setState(prev => ({
@@ -138,24 +135,23 @@ export default function ProfilePage() {
         isLoading: false
       }));
     }
-  }, [router]);
+  }, [session]);
 
   const loadUserOrders = useCallback(async () => {
     try {
       setState(prev => ({ ...prev, isLoadingOrders: true }));
       
-      const token = localStorage.getItem('token');
-      console.log('Loading orders - Token exists:', !!token);
-      
-      if (!token) {
-        console.log('No token found, skipping order load');
+      // Use NextAuth session instead of JWT token
+      if (!session) {
+        console.log('No session found, skipping order load');
+        setState(prev => ({ ...prev, isLoadingOrders: false }));
         return;
       }
 
-      console.log('Making request to /api/orders');
+      console.log('Making request to /api/orders with NextAuth session');
       const response = await fetch('/api/orders', {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         }
       });
 
@@ -198,7 +194,7 @@ export default function ProfilePage() {
         isLoadingOrders: false
       }));
     }
-  }, []);
+  }, [session]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -217,12 +213,20 @@ export default function ProfilePage() {
     setState(prev => ({ ...prev, isSaving: true, error: "", success: "" }));
 
     try {
-      const token = localStorage.getItem('token');
+      // Use NextAuth session instead of JWT token
+      if (!session) {
+        setState(prev => ({
+          ...prev,
+          isSaving: false,
+          error: "No session found"
+        }));
+        return;
+      }
+
       const response = await fetch('/api/auth/profile', {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           firstName: state.firstName,
@@ -333,12 +337,10 @@ export default function ProfilePage() {
       
       if (data.success) {
         // Now update the phone number in the profile
-        const token = localStorage.getItem('token');
-        const updateResponse = await fetch('/api/auth/profile', {
+        const response = await fetch('/api/auth/profile', {
           method: 'PUT',
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             firstName: state.firstName,
@@ -355,7 +357,7 @@ export default function ProfilePage() {
           })
         });
 
-        const updateData = await updateResponse.json();
+        const updateData = await response.json();
         
         if (updateData.success) {
           setState(prev => ({
@@ -425,6 +427,21 @@ export default function ProfilePage() {
   const getInitials = (firstName: string, lastName: string) => {
     return `${firstName.charAt(0)}${lastName.charAt(0)}`;
   };
+
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-tribal-cream to-tribal-cream-light flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-tribal-red mx-auto"></div>
+          <p className="mt-4 text-tribal-dark text-lg">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (status === 'unauthenticated') {
+    return null; // Will redirect to login
+  }
 
   if (state.isLoading) {
     return (
@@ -713,7 +730,7 @@ export default function ProfilePage() {
             </div>
 
             {/* Save Button */}
-            <div className="flex justify-center mt-6">
+            <div className="flex justify-center mt-6 space-x-4">
               <button
                 onClick={handleProfileSave}
                 disabled={state.isSaving}
@@ -732,6 +749,16 @@ export default function ProfilePage() {
                     <span>Save Profile</span>
                   </>
                 )}
+              </button>
+              
+              <button
+                onClick={() => signOut({ callbackUrl: '/' })}
+                className="bg-gray-500/90 backdrop-blur-sm text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold text-sm sm:text-base hover:bg-gray-600/90 transition-all duration-300 transform hover:scale-105 shadow-lg border border-white/20 flex items-center space-x-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                <span>Sign Out</span>
               </button>
             </div>
 
@@ -851,18 +878,7 @@ export default function ProfilePage() {
               </div>
             )}
 
-            {/* Save Button */}
-            <button
-              onClick={handleProfileSave}
-              disabled={state.isSaving}
-              className="w-full bg-tribal-red/90 backdrop-blur-sm text-white py-3 px-4 rounded-xl font-bold text-sm hover:bg-tribal-red-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center border border-white/20"
-            >
-              {state.isSaving ? (
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-              ) : (
-                "Save Changes"
-              )}
-            </button>
+            {/* Save Button - Removed duplicate */}
           </div>
         </div>
       </div>

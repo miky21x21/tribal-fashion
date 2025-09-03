@@ -1,6 +1,8 @@
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import { CartProvider } from "@/contexts/CartContext";
+import SmoothScrollInitializer from "@/components/SmoothScrollInitializer";
+import ScrollToTop from "@/components/ScrollToTop";
+import Providers from "@/components/Providers";
 
 export const metadata = {
   title: "KINIR...anything tribal",
@@ -31,10 +33,12 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Homemade+Apple&display=swap"
           rel="stylesheet"
         />
-        
       </head>
-      <body className="min-h-screen flex flex-col font-tribal">
-        <CartProvider>
+      <body className="min-h-screen flex flex-col font-tribal smooth-scroll-force">
+        <Providers>
+          {/* ✅ Smooth Scrolling Initializer */}
+          <SmoothScrollInitializer />
+          
           {/* ✅ Navbar */}
           <Navbar />
 
@@ -53,7 +57,10 @@ export default function RootLayout({
               </p>
             </div>
           </footer>
-        </CartProvider>
+
+          {/* ✅ Scroll to Top Button */}
+          <ScrollToTop />
+        </Providers>
       </body>
     </html>
   );

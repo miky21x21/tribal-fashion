@@ -1,0 +1,17 @@
+# NextAuth Configuration
+NEXTAUTH_SECRET="your-32-character-secret-here"
+NEXTAUTH_URL="http://localhost:3000"
+
+# Google OAuth
+GOOGLE_CLIENT_ID="your-google-client-id.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+
+# Apple Sign In
+APPLE_ID="your-apple-service-id"
+APPLE_SECRET="your-apple-private-key"
+
+# Database
+DATABASE_URL="postgresql://username:password@localhost:5432/database_name"
+
+# Backend API
+BACKEND_URL="http://localhost:5000"

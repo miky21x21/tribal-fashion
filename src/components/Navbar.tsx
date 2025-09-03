@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { useCart } from "../contexts/CartContext";
+import { useSession, signOut } from 'next-auth/react';
 
 interface User {
   id: string;
@@ -16,14 +17,15 @@ interface User {
 }
 
 export default function Navbar() {
-  const [user, setUser] = useState<User | null>(null);
+  const { data: session, status } = useSession();
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { totalItems } = useCart();
 
+  // Prevent hydration mismatch
   useEffect(() => {
-    checkUserAuth();
+    setMounted(true);
   }, []);
 
   // Close dropdown when clicking outside
@@ -43,55 +45,106 @@ export default function Navbar() {
     };
   }, [showProfileDropdown]);
 
-  const checkUserAuth = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      console.log('Checking auth - Token exists:', !!token);
-      
-      if (!token) {
-        console.log('No token found, user not logged in');
-        setIsLoading(false);
-        return;
-      }
-
-      const response = await fetch('/api/auth/me', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      console.log('Auth check response status:', response.status);
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Auth check response data:', data);
-        
-        if (data.success) {
-          console.log('User authenticated:', data.data);
-          setUser(data.data);
-        } else {
-          console.log('Auth check failed - no success flag');
-        }
-      } else {
-        console.log('Auth check failed - response not ok');
-      }
-    } catch (error) {
-      console.error('Auth check failed:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
-    setShowProfileDropdown(false);
-    window.location.href = '/';
+    signOut({ callbackUrl: '/' });
   };
 
   const getInitials = (firstName?: string, lastName?: string) => {
     return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`;
   };
+
+  // Extract user info from NextAuth session
+  const getUserFromSession = (): User | null => {
+    if (!session?.user) return null;
+    
+    const nameParts = session.user.name?.split(' ') || [];
+    const firstName = nameParts[0] || '';
+    const lastName = nameParts.slice(1).join(' ') || '';
+    
+    return {
+      id: session.user.email || 'unknown',
+      email: session.user.email || '',
+      firstName,
+      lastName,
+      avatar: session.user.image || '',
+      phoneNumber: '',
+      profileComplete: !!session.user.name
+    };
+  };
+
+  const user = getUserFromSession();
+  const isLoading = !mounted || status === 'loading';
+
+  // Don't render anything until mounted to prevent hydration mismatch
+  if (!mounted) {
+    return (
+      <header className="sticky top-0 z-50 bg-tribal-striped text-white px-2 sm:px-4 md:px-6 lg:px-8 flex justify-between items-center shadow-xl relative min-h-[77px]">
+        {/* Left Logo */}
+        <div className="flex items-center pl-4 sm:pl-6 md:pl-8">
+          <Link href="/" className="hover:opacity-80 transition duration-300">
+            <h1 
+              className="relative text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal tracking-wider drop-shadow-md font-kiner text-black cursor-pointer kinir-logo" 
+            >
+              <span className="double-underline">K</span>
+              <span className="double-underline">i</span>n
+              <span className="double-underline">i</span>r
+              <span 
+                className="absolute text-black subtitle"
+                style={{ 
+                  top: '111%', 
+                  right: '5%', 
+                  fontSize: '0.454645726rem',
+                  whiteSpace: 'nowrap', 
+                  fontFamily: '"Monotype Corsiva", cursive', 
+                  letterSpacing: '-0.05em', 
+                  transform: 'translateY(-50%)'
+                }}
+              >
+                <span className="dots-typewriter"></span>Anything Tribal
+              </span>
+            </h1>
+          </Link>
+        </div>
+
+        {/* Right Navigation - Loading State */}
+        <nav className="flex items-center space-x-2 sm:space-x-4 md:space-x-6 font-semibold">
+          <Link href="/" className="hover:text-amber-300 transition duration-300 p-1 sm:p-2 rounded-lg">
+            <Image src="/home.svg" alt="Home" width={22} height={22} className="sm:w-7 sm:h-7" />
+          </Link>
+          
+          <Link
+            href="/cart"
+            className="relative hover:text-amber-300 transition duration-300 p-1 sm:p-2 rounded-lg"
+            title="Shopping Cart"
+          >
+            <div className="relative">
+              <Image src="/shop.svg" alt="Cart" width={22} height={22} className="sm:w-7 sm:h-7" />
+            </div>
+          </Link>
+          
+          <Link
+            href="/about"
+            className="hover:text-amber-300 transition duration-300 p-1 sm:p-2 rounded-lg"
+            prefetch={false}
+          >
+            <Image src="/about.svg" alt="About" width={22} height={22} className="sm:w-7 sm:h-7" />
+          </Link>
+          
+          <Link
+            href="/contact"
+            className="hover:text-amber-300 transition duration-300 p-1 sm:p-2 rounded-lg"
+            prefetch={false}
+          >
+            <Image src="/contact.svg" alt="Contact" width={22} height={22} className="sm:w-7 sm:h-7" />
+          </Link>
+          
+          {/* Loading Profile Placeholder */}
+          <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/30 backdrop-blur-md animate-pulse border-2 border-white shadow-lg"></div>
+        </nav>
+      </header>
+    );
+  }
+
   return (
     <header className="sticky top-0 z-50 bg-tribal-striped text-white px-2 sm:px-4 md:px-6 lg:px-8 flex justify-between items-center shadow-xl relative min-h-[77px]">
       {/* Left Logo */}
@@ -100,24 +153,24 @@ export default function Navbar() {
           <h1 
             className="relative text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal tracking-wider drop-shadow-md font-kiner text-black cursor-pointer kinir-logo" 
           >
-          <span className="double-underline">K</span>
-          <span className="double-underline">i</span>n
-          <span className="double-underline">i</span>r
-          <span 
-            className="absolute text-black subtitle"
-            style={{ 
-              top: '111%', 
-              right: '5%', 
-              fontSize: '0.454645726rem',
-              whiteSpace: 'nowrap', 
-              fontFamily: '"Monotype Corsiva", cursive', 
-              letterSpacing: '-0.05em', 
-              transform: 'translateY(-50%)'
-            }}
-          >
-            <span className="dots-typewriter"></span>Anything Tribal
-          </span>
-        </h1>
+            <span className="double-underline">K</span>
+            <span className="double-underline">i</span>n
+            <span className="double-underline">i</span>r
+            <span 
+              className="absolute text-black subtitle"
+              style={{ 
+                top: '111%', 
+                right: '5%', 
+                fontSize: '0.454645726rem',
+                whiteSpace: 'nowrap', 
+                fontFamily: '"Monotype Corsiva", cursive', 
+                letterSpacing: '-0.05em', 
+                transform: 'translateY(-50%)'
+              }}
+            >
+              <span className="dots-typewriter"></span>Anything Tribal
+            </span>
+          </h1>
         </Link>
       </div>
 

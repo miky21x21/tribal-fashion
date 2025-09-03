@@ -2,99 +2,87 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
-interface LoginFormState {
+interface LoginFormProps {
+  onLogin?: (token: string, user: any) => void;
+  onProfileComplete?: () => void;
+}
+
+interface LoginState {
   email: string;
   password: string;
   rememberMe: boolean;
-  showForgotPassword: boolean;
-  resetEmail: string;
   isLoginLoading: boolean;
   isGoogleLoading: boolean;
-  isAppleLoading: boolean;
-  isForgotPasswordLoading: boolean;
   error: string;
   success: string;
+  showForgotPassword: boolean;
+  resetEmail: string;
+  isForgotPasswordLoading: boolean;
   showProfileCompletion: boolean;
+  profileEmail: string;
   firstName: string;
   lastName: string;
-  profileEmail: string;
-}
-
-interface User {
-  id: string;
-  email?: string;
-  firstName?: string;
-  lastName?: string;
-  avatar?: string;
-  phoneNumber?: string;
-  profileComplete: boolean;
-}
-
-interface LoginFormProps {
-  onLogin?: (token: string, user: User) => void;
-  onProfileComplete?: (userData: User) => void;
 }
 
 export default function LoginForm({ onLogin, onProfileComplete }: LoginFormProps) {
-  const [state, setState] = useState<LoginFormState>({
+  const [state, setState] = useState<LoginState>({
     email: "",
     password: "",
     rememberMe: false,
-    showForgotPassword: false,
-    resetEmail: "",
     isLoginLoading: false,
     isGoogleLoading: false,
-    isAppleLoading: false,
-    isForgotPasswordLoading: false,
     error: "",
     success: "",
+    showForgotPassword: false,
+    resetEmail: "",
+    isForgotPasswordLoading: false,
     showProfileCompletion: false,
+    profileEmail: "",
     firstName: "",
     lastName: "",
-    profileEmail: "",
   });
 
-  // Load saved credentials on mount
+  const { data: session } = useSession();
+  const router = useRouter();
+
   useEffect(() => {
-    const savedEmail = localStorage.getItem('rememberEmail');
-    if (savedEmail) {
-      setState(prev => ({
-        ...prev,
-        email: savedEmail,
-        rememberMe: true
-      }));
+    // Check for remembered email
+    const rememberedEmail = localStorage.getItem('rememberEmail');
+    if (rememberedEmail) {
+      setState(prev => ({ ...prev, email: rememberedEmail, rememberMe: true }));
     }
   }, []);
 
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+  useEffect(() => {
+    // If user is authenticated and profile completion is needed
+    if (session && !state.showProfileCompletion) {
+      // Check if profile needs completion (you can customize this logic)
+      if (!session.user?.name) {
+        setState(prev => ({ 
+          ...prev, 
+          showProfileCompletion: true,
+          profileEmail: session.user?.email || ""
+        }));
+      } else {
+        // Profile is complete, redirect to dashboard
+        router.push('/dashboard');
+      }
+    }
+  }, [session, router, state.showProfileCompletion]);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const email = e.target.value;
-    setState(prev => ({
-      ...prev,
-      email,
-      error: ""
-    }));
+    setState(prev => ({ ...prev, email: e.target.value, error: "" }));
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const password = e.target.value;
-    setState(prev => ({
-      ...prev,
-      password,
-      error: ""
-    }));
+    setState(prev => ({ ...prev, password: e.target.value, error: "" }));
   };
 
-  const handleRememberMeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setState(prev => ({
-      ...prev,
-      rememberMe: e.target.checked
-    }));
+  const handleRememberMeChange = () => {
+    setState(prev => ({ ...prev, rememberMe: !prev.rememberMe }));
   };
 
   const handleEmailLogin = async () => {
@@ -196,29 +184,26 @@ export default function LoginForm({ onLogin, onProfileComplete }: LoginFormProps
     setState(prev => ({ ...prev, isGoogleLoading: true, error: "" }));
     
     try {
-      // Redirect to Google OAuth or integrate with Google OAuth library
-      window.location.href = '/api/auth/google';
-    } catch {
+      const result = await signIn('google', { 
+        callbackUrl: '/dashboard',
+        redirect: false 
+      });
+      
+      if (result?.error) {
+        setState(prev => ({
+          ...prev,
+          isGoogleLoading: false,
+          error: 'Google login failed. Please try again.'
+        }));
+      } else if (result?.url) {
+        // Redirect to the callback URL
+        window.location.href = result.url;
+      }
+    } catch (error) {
       setState(prev => ({
         ...prev,
         isGoogleLoading: false,
         error: 'Google login failed. Please try again.'
-      }));
-    }
-  };
-
-  const handleAppleLogin = async () => {
-    setState(prev => ({ ...prev, isAppleLoading: true, error: "" }));
-    
-    try {
-      // This would integrate with Apple Sign In
-      // For now, simulate the process
-      setState(prev => ({ ...prev, isAppleLoading: false, error: "Apple Sign In integration pending" }));
-    } catch {
-      setState(prev => ({
-        ...prev,
-        isAppleLoading: false,
-        error: 'Apple login failed. Please try again.'
       }));
     }
   };
@@ -246,7 +231,7 @@ export default function LoginForm({ onLogin, onProfileComplete }: LoginFormProps
       const data = await response.json();
       
       if (data.success) {
-        onProfileComplete?.(data.data.user);
+        onProfileComplete?.();
       } else {
         setState(prev => ({ ...prev, error: data.message || 'Failed to update profile' }));
       }
@@ -275,101 +260,159 @@ export default function LoginForm({ onLogin, onProfileComplete }: LoginFormProps
     }
   };
 
-  return (
-    <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-3xl shadow-2xl p-8 relative overflow-hidden max-w-md mx-auto">
-      {/* Glass morphism overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-3xl pointer-events-none"></div>
-      
-      {/* Welcome Section */}
-      <div className="relative text-center mb-8">
-        {/* Welcome Text */}
-        <h1 className="text-7xl text-tribal-dark mb-3 tracking-widest">Welcome</h1>
-        <p className="text-sm text-tribal-brown opacity-80 font-medium">Please enter your details</p>
-      </div>
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
-      {/* Error and Success Messages */}
-      {state.error && (
-        <div className="mb-4 p-3 bg-red-100/80 backdrop-blur-sm border border-red-400/50 text-red-700 rounded-xl text-sm">
-          {state.error}
-        </div>
-      )}
-      
-      {state.success && (
-        <div className="mb-4 p-3 bg-green-100/80 backdrop-blur-sm border border-green-400/50 text-green-700 rounded-xl text-sm">
-          {state.success}
-        </div>
-      )}
-
-      {/* Profile Completion Form */}
-      {state.showProfileCompletion && (
-        <div className="space-y-4 relative z-10">
-          <div className="text-center mb-4">
-            <h3 className="text-xl font-bold text-tribal-dark">Complete Your Profile</h3>
-            <p className="text-sm text-tribal-brown opacity-80">Help us personalize your experience</p>
-          </div>
+  // Profile completion form
+  if (state.showProfileCompletion) {
+    return (
+      <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-3xl shadow-2xl p-8 relative overflow-hidden">
+        {/* Glass morphism overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-3xl pointer-events-none"></div>
+        
+        <div className="relative z-10 text-center">
+          <h2 className="text-2xl font-bold text-tribal-dark mb-6">Complete Your Profile</h2>
+          <p className="text-tribal-brown mb-6">Please provide your name to complete your profile setup</p>
           
-          <div className="grid grid-cols-2 gap-3">
+          {state.error && (
+            <div className="mb-4 p-3 bg-red-100/80 backdrop-blur-sm border border-red-400/50 text-red-700 rounded-xl text-sm">
+              {state.error}
+            </div>
+          )}
+          
+          <div className="space-y-4">
             <input
               type="text"
               value={state.firstName}
               onChange={(e) => setState(prev => ({ ...prev, firstName: e.target.value }))}
               placeholder="First Name"
-              className="border border-tribal-brown/30 bg-white/80 backdrop-blur-sm text-tribal-dark py-3 px-4 rounded-xl text-sm font-medium placeholder-tribal-brown placeholder-opacity-60 focus:outline-none focus:border-tribal-red focus:ring-2 focus:ring-tribal-red/20 transition-all duration-300"
+              className="w-full border border-tribal-brown/30 bg-white/80 backdrop-blur-sm text-tribal-dark py-3 px-4 rounded-xl text-sm font-medium placeholder-tribal-brown placeholder-opacity-60 focus:outline-none focus:border-tribal-red focus:ring-2 focus:ring-tribal-red/20 transition-all duration-300"
             />
+            
             <input
               type="text"
               value={state.lastName}
               onChange={(e) => setState(prev => ({ ...prev, lastName: e.target.value }))}
               placeholder="Last Name"
-              className="border border-tribal-brown/30 bg-white/80 backdrop-blur-sm text-tribal-dark py-3 px-4 rounded-xl text-sm font-medium placeholder-tribal-brown placeholder-opacity-60 focus:outline-none focus:border-tribal-red focus:ring-2 focus:ring-tribal-red/20 transition-all duration-300"
+              className="w-full border border-tribal-brown/30 bg-white/80 backdrop-blur-sm text-tribal-dark py-3 px-4 rounded-xl text-sm font-medium placeholder-tribal-brown placeholder-opacity-60 focus:outline-none focus:border-tribal-red focus:ring-2 focus:ring-tribal-red/20 transition-all duration-300"
             />
+            
+            <button
+              onClick={handleProfileComplete}
+              className="w-full bg-tribal-red/90 backdrop-blur-sm text-white py-3 px-4 rounded-xl font-bold text-sm hover:bg-tribal-red-accent/90 transition-all duration-300 transform hover:scale-105 shadow-lg border border-white/20"
+            >
+              Complete Profile
+            </button>
           </div>
-          
-          <input
-            type="email"
-            value={state.profileEmail}
-            onChange={(e) => setState(prev => ({ ...prev, profileEmail: e.target.value }))}
-            placeholder="Email (optional)"
-            className="w-full border border-tribal-brown/30 bg-white/80 backdrop-blur-sm text-tribal-dark py-3 px-4 rounded-xl text-sm font-medium placeholder-tribal-brown placeholder-opacity-60 focus:outline-none focus:border-tribal-red focus:ring-2 focus:ring-tribal-red/20 transition-all duration-300"
-          />
-          
-          <button
-            onClick={handleProfileComplete}
-            className="w-full bg-tribal-green/90 backdrop-blur-sm text-tribal-cream py-3 px-4 rounded-xl font-bold text-sm hover:bg-royal-green/90 transition-all duration-300 transform hover:scale-105 shadow-lg border border-white/20"
-          >
-            Complete Profile
-          </button>
         </div>
-      )}
+      </div>
+    );
+  }
 
-      {/* Main Login Form */}
-      {!state.showProfileCompletion && (
-        <div className="space-y-4 relative z-10">
+  // Forgot password form
+  if (state.showForgotPassword) {
+    return (
+      <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-3xl shadow-2xl p-8 relative overflow-hidden">
+        {/* Glass morphism overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-3xl pointer-events-none"></div>
+        
+        <div className="relative z-10 text-center">
+          <h2 className="text-2xl font-bold text-tribal-dark mb-6">Reset Password</h2>
+          <p className="text-tribal-brown mb-6">Enter your email address and we'll send you a password reset link</p>
           
-          {/* Forgot Password Form */}
+          {state.error && (
+            <div className="mb-4 p-3 bg-red-100/80 backdrop-blur-sm border border-red-400/50 text-red-700 rounded-xl text-sm">
+              {state.error}
+            </div>
+          )}
+          
+          {state.success && (
+            <div className="mb-4 p-3 bg-green-100/80 backdrop-blur-sm border border-green-400/50 text-green-700 rounded-xl text-sm">
+              {state.success}
+            </div>
+          )}
+          
+          <div className="space-y-4">
+            <input
+              type="email"
+              value={state.resetEmail}
+              onChange={(e) => setState(prev => ({ ...prev, resetEmail: e.target.value }))}
+              placeholder="Enter your email"
+              className="w-full border border-tribal-brown/30 bg-white/80 backdrop-blur-sm text-tribal-dark py-3 px-4 rounded-xl text-sm font-medium placeholder-tribal-brown placeholder-opacity-60 focus:outline-none focus:border-tribal-red focus:ring-2 focus:ring-tribal-red/20 transition-all duration-300"
+            />
+            
+            <button
+              onClick={handleForgotPassword}
+              disabled={state.isForgotPasswordLoading}
+              className="w-full bg-tribal-red/90 backdrop-blur-sm text-white py-3 px-4 rounded-xl font-bold text-sm hover:bg-tribal-red-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 shadow-lg border border-white/20"
+            >
+              {state.isForgotPasswordLoading ? (
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mx-auto"></div>
+              ) : (
+                "Send Reset Link"
+              )}
+            </button>
+            
+            <button
+              onClick={toggleForgotPassword}
+              className="w-full text-tribal-brown text-sm underline hover:text-tribal-red transition-colors py-2 rounded-xl hover:bg-white/10 backdrop-blur-sm"
+            >
+              Back to Sign In
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-3xl shadow-2xl p-8 relative overflow-hidden">
+      {/* Glass morphism overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-3xl pointer-events-none"></div>
+      
+      <div className="relative z-10">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-tribal-dark mb-2">Welcome Back</h1>
+          <p className="text-tribal-brown opacity-80">Sign in to your Tribal Fashion account</p>
+        </div>
+
+        {/* Error Message */}
+        {state.error && (
+          <div className="mb-6 p-4 bg-red-100/80 backdrop-blur-sm border border-red-400/50 text-red-700 rounded-xl text-sm">
+            {state.error}
+          </div>
+        )}
+
+        {/* Success Message */}
+        {state.success && (
+          <div className="mb-6 p-4 bg-green-100/80 backdrop-blur-sm border border-green-400/50 text-green-700 rounded-xl text-sm">
+            {state.success}
+          </div>
+        )}
+
+        {/* Login Form */}
+        <div className="space-y-6">
           {state.showForgotPassword ? (
+            /* Forgot Password Form */
             <div className="space-y-4">
-              <div className="text-center mb-4">
-                <h3 className="text-xl font-bold text-tribal-dark">Reset Password</h3>
-                <p className="text-sm text-tribal-brown opacity-80">Enter your email to receive reset instructions</p>
-              </div>
-              
               <input
                 type="email"
                 value={state.resetEmail}
-                onChange={(e) => setState(prev => ({ ...prev, resetEmail: e.target.value, error: "" }))}
-                onKeyPress={handleKeyPress}
-                placeholder="Email address"
+                onChange={(e) => setState(prev => ({ ...prev, resetEmail: e.target.value }))}
+                placeholder="Enter your email"
                 className="w-full border border-tribal-brown/30 bg-white/80 backdrop-blur-sm text-tribal-dark py-3 px-4 rounded-xl text-sm font-medium placeholder-tribal-brown placeholder-opacity-60 focus:outline-none focus:border-tribal-red focus:ring-2 focus:ring-tribal-red/20 transition-all duration-300"
               />
               
               <button
                 onClick={handleForgotPassword}
                 disabled={state.isForgotPasswordLoading}
-                className="w-full bg-tribal-red/90 backdrop-blur-sm text-tribal-cream py-3 px-4 rounded-xl font-bold text-sm hover:bg-tribal-red-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center border border-white/20"
+                className="w-full bg-tribal-red/90 backdrop-blur-sm text-white py-3 px-4 rounded-xl font-bold text-sm hover:bg-tribal-red-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 shadow-lg border border-white/20"
               >
                 {state.isForgotPasswordLoading ? (
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-tribal-cream"></div>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mx-auto"></div>
                 ) : (
                   "Send Reset Link"
                 )}
@@ -469,24 +512,6 @@ export default function LoginForm({ onLogin, onProfileComplete }: LoginFormProps
                   </>
                 )}
               </button>
-
-              {/* Apple Sign In Button */}
-              <button
-                onClick={handleAppleLogin}
-                disabled={state.isAppleLoading}
-                className="w-full bg-black/90 backdrop-blur-sm text-white py-3 px-4 rounded-xl font-semibold text-sm hover:bg-gray-800/90 transition-all duration-300 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-3 border border-white/10"
-              >
-                {state.isAppleLoading ? (
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                ) : (
-                  <>
-                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-                    </svg>
-                    <span>Sign in with Apple ID</span>
-                  </>
-                )}
-              </button>
               
               {/* Sign Up Link */}
               <div className="text-center mt-6">
@@ -500,7 +525,7 @@ export default function LoginForm({ onLogin, onProfileComplete }: LoginFormProps
             </div>
           )}
         </div>
-      )}
+      </div>
 
       {/* Decorative tribal elements */}
       <div className="absolute -top-4 -left-4 w-8 h-8 border-4 border-tribal-red transform rotate-45 opacity-30"></div>

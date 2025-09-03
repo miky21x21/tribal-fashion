@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
 interface JWTUser {
   id: string;
@@ -51,6 +52,20 @@ function extractUserInfo(user: JWTUser) {
   };
 }
 
+// Extract user info from NextAuth token
+function extractNextAuthUserInfo(token: any) {
+  return {
+    id: token.sub || token.id || 'unknown',
+    email: token.email || '',
+    firstName: token.firstName || token.name?.split(' ')[0] || '',
+    lastName: token.lastName || token.name?.split(' ').slice(1).join(' ') || '',
+    role: token.role || 'user',
+    authProvider: token.provider || 'oauth',
+    phoneNumber: token.phoneNumber || '',
+    providerId: token.sub || token.id || 'unknown'
+  };
+}
+
 export async function middleware(request: NextRequest) {
   // Skip middleware for static files, public routes, and NextAuth routes
   const pathname = request.nextUrl.pathname;
@@ -71,22 +86,42 @@ export async function middleware(request: NextRequest) {
   let user = null;
   let authMethod = null;
   
-  // Try to authenticate with JWT token
-  const authHeader = request.headers.get('authorization');
-  const jwtToken = authHeader?.replace('Bearer ', '');
+  // First, try to authenticate with NextAuth session
+  try {
+    const nextAuthToken = await getToken({ 
+      req: request, 
+      secret: process.env.NEXTAUTH_SECRET 
+    });
+    
+    if (nextAuthToken) {
+      user = extractNextAuthUserInfo(nextAuthToken);
+      authMethod = 'nextauth';
+      console.log('✅ NextAuth session found:', user.email);
+    }
+  } catch (error) {
+    console.log('❌ NextAuth session check failed:', error);
+  }
   
-  if (jwtToken) {
-    try {
-      const jwtUser = await verifyJWT(jwtToken);
-      user = extractUserInfo(jwtUser);
-      authMethod = 'jwt';
-    } catch {
-      // JWT verification failed
+  // If no NextAuth session, try to authenticate with JWT token
+  if (!user) {
+    const authHeader = request.headers.get('authorization');
+    const jwtToken = authHeader?.replace('Bearer ', '');
+    
+    if (jwtToken) {
+      try {
+        const jwtUser = await verifyJWT(jwtToken);
+        user = extractUserInfo(jwtUser);
+        authMethod = 'jwt';
+        console.log('✅ JWT token verified:', user.email);
+      } catch (error) {
+        console.log('❌ JWT verification failed:', error);
+      }
     }
   }
   
   // If no valid authentication found for protected routes
   if (!user && isProtectedRoute(pathname)) {
+    console.log('❌ No authentication found for protected route:', pathname);
     return new NextResponse(
       JSON.stringify({
         success: false,
@@ -113,6 +148,8 @@ export async function middleware(request: NextRequest) {
     
     // For client-side access, add user info to a custom header
     response.headers.set('x-user-context', JSON.stringify(user));
+    
+    console.log('✅ User authenticated via', authMethod, ':', user.email);
   }
   
   return response;

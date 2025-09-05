@@ -19,7 +19,10 @@ interface User {
 
 // Create a static version that matches exactly what the server renders
 const StaticNavbar = () => (
-  <header className="sticky top-0 z-50 bg-tribal-striped text-white px-2 sm:px-4 md:px-6 lg:px-8 flex justify-between items-center shadow-xl relative min-h-[77px]">
+  <header 
+    className="sticky top-0 z-[100] bg-tribal-striped text-white px-2 sm:px-4 md:px-6 lg:px-8 flex justify-between items-center shadow-xl min-h-[77px]"
+    style={{ position: 'sticky', top: 0, zIndex: 100 }}
+  >
     {/* Left Logo */}
     <div className="flex items-center pl-4 sm:pl-6 md:pl-8">
       <Link href="/" className="hover:opacity-80 transition duration-300">
@@ -59,7 +62,7 @@ const StaticNavbar = () => (
         title="Shopping Cart"
       >
         <div className="relative">
-          <Image src="/shop.svg" alt="Cart" width={22} height={22} className="sm:w-7 sm:h-7" />
+          <Image src="/cart.svg" alt="Cart" width={40} height={40} className="sm:w-10 sm:h-10" />
         </div>
       </Link>
       

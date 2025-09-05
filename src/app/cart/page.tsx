@@ -31,8 +31,16 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-tribal-cream to-tribal-cream-light py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
+      <div 
+        className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 relative"
+        style={{
+          backgroundImage: 'url("/images/yo.jpg")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
+        <div className="max-w-3xl mx-auto text-center">
           <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-3xl pointer-events-none"></div>
             
@@ -46,7 +54,10 @@ export default function CartPage() {
               
               <Link
                 href="/shop"
-                className="inline-block bg-tribal-red/90 backdrop-blur-sm text-white py-2 px-6 sm:py-3 sm:px-8 rounded-xl font-bold text-base sm:text-lg hover:bg-tribal-red-accent/90 transition-all duration-300 transform hover:scale-105 shadow-lg border border-white/20"
+                className="inline-block backdrop-blur-sm text-white py-2 px-6 sm:py-3 sm:px-8 rounded-xl font-bold text-base sm:text-lg transition-all duration-300 transform hover:scale-105 shadow-lg border border-white/20"
+                style={{backgroundColor: '#E35336'}}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d1452a'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#E35336'}
               >
                 Continue Shopping
               </Link>
@@ -58,7 +69,15 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-tribal-cream to-tribal-cream-light py-12 px-4 sm:px-6 lg:px-8">
+    <div 
+      className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 relative"
+      style={{
+        backgroundImage: 'url("/images/yo.jpg")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8">
@@ -114,8 +133,11 @@ export default function CartPage() {
                           <div className="flex items-center space-x-1 sm:space-x-2 bg-white/80 backdrop-blur-sm rounded-lg border border-tribal-brown/30">
                             <button
                               onClick={() => handleQuantityChange(item.productId, item.quantity - 1)}
-                              className="p-1.5 sm:p-2 hover:bg-tribal-red hover:text-white transition duration-300 rounded-l-lg"
+                              className="p-1.5 sm:p-2 hover:text-white transition duration-300 rounded-l-lg"
                               data-testid="quantity-decrease"
+                              style={{backgroundColor: 'transparent'}}
+                              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#E35336'}
+                              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                             >
                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
@@ -131,8 +153,11 @@ export default function CartPage() {
                             
                             <button
                               onClick={() => handleQuantityChange(item.productId, item.quantity + 1)}
-                              className="p-1.5 sm:p-2 hover:bg-tribal-red hover:text-white transition duration-300 rounded-r-lg"
+                              className="p-1.5 sm:p-2 hover:text-white transition duration-300 rounded-r-lg"
                               data-testid="quantity-increase"
+                              style={{backgroundColor: 'transparent'}}
+                              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#E35336'}
+                              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                             >
                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -192,8 +217,11 @@ export default function CartPage() {
                 
                 <div className="space-y-3">
                   <button
-                    className="w-full bg-tribal-red/90 backdrop-blur-sm text-white py-2.5 sm:py-3 px-4 rounded-xl font-bold text-base sm:text-lg hover:bg-tribal-red-accent/90 transition-all duration-300 transform hover:scale-105 shadow-lg border border-white/20"
+                    className="w-full backdrop-blur-sm text-white py-2.5 sm:py-3 px-4 rounded-xl font-bold text-base sm:text-lg transition-all duration-300 transform hover:scale-105 shadow-lg border border-white/20"
                     data-testid="checkout-button"
+                    style={{backgroundColor: '#E35336'}}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d1452a'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#E35336'}
                   >
                     Proceed to Checkout
                   </button>

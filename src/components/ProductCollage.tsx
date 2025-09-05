@@ -1,192 +1,174 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
-interface CollageItem {
-  id: string;
-  type: 'image';
-  src: string;
-  alt?: string;
-}
-
-const craftingProcessImages: CollageItem[] = [
+const craftingProcessImages = [
   {
     id: '1',
-    type: 'image',
     src: '/images/Product banner/hand weaving 1.png',
-    alt: 'Traditional hand weaving process - Setting up the loom'
+    alt: 'Traditional hand weaving process - Setting up the loom',
+    title: 'Hand Weaving',
+    description: 'Traditional tribal weaving techniques'
   },
   {
     id: '2',
-    type: 'image',
     src: '/images/Product banner/hand weaving 2.png',
-    alt: 'Final product with weaving intricate patterns'
+    alt: 'Final product with weaving intricate patterns',
+    title: 'Intricate Patterns',
+    description: 'Masterful pattern creation'
   },
   {
     id: '3',
-    type: 'image',
     src: '/images/Product banner/hand weaving 3.png',
-    alt: 'Detailed handwork in traditional tribal weaving'
+    alt: 'Detailed handwork in traditional tribal weaving',
+    title: 'Artisan Craft',
+    description: 'Skilled hands at work'
   },
   {
     id: '4',
-    type: 'image',
     src: '/images/Product banner/hand weaving 4.png',
-    alt: 'Artisan crafting traditional tribal textiles'
+    alt: 'Artisan crafting traditional tribal textiles',
+    title: 'Tribal Textiles',
+    description: 'Authentic tribal creation'
   },
   {
     id: '5',
-    type: 'image',
     src: '/images/Product banner/product (16).png',
-    alt: 'Traditional tribal crafting process'
+    alt: 'Traditional tribal crafting process',
+    title: 'Traditional Craft',
+    description: 'Centuries-old techniques'
   },
   {
     id: '6',
-    type: 'image',
     src: '/images/Product banner/product (18).png',
-    alt: 'Authentic tribal product creation'
+    alt: 'Authentic tribal product creation',
+    title: 'Cultural Heritage',
+    description: 'Rich tribal traditions'
   },
   {
     id: '7',
-    type: 'image',
     src: '/images/Product banner/hand weaving 7.jpg',
-    alt: 'Master artisan demonstrating traditional techniques'
+    alt: 'Master artisan demonstrating traditional techniques',
+    title: 'Master Artisan',
+    description: 'Expert craftsmanship'
   }
 ];
 
 export default function ProductCollage() {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isZooming, setIsZooming] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [zoomLevel, setZoomLevel] = useState(1);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const zoomIntervalRef = useRef<NodeJS.Timeout | null>(null);
-
-  const currentImage = craftingProcessImages[currentImageIndex];
-
-  const startZoomEffect = () => {
-    setIsZooming(true);
-    setZoomLevel(1);
-    
-    // Gradual zoom effect over 6 seconds for longer image display
-    let currentZoom = 1;
-    const zoomStep = 0.004; // Smaller increment for slower zoom
-    
-    zoomIntervalRef.current = setInterval(() => {
-      currentZoom += zoomStep;
-      setZoomLevel(currentZoom);
-      
-      // When zoom reaches maximum, transition to next image
-      if (currentZoom >= 1.25) {
-        clearInterval(zoomIntervalRef.current!);
-        transitionToNextImage();
-      }
-    }, 20); // Update every 20ms for smooth animation
-  };
-
-  const transitionToNextImage = () => {
-    setIsTransitioning(true);
-    
-    // Smooth slide transition
-    setTimeout(() => {
-      setCurrentImageIndex(prev => 
-        prev === craftingProcessImages.length - 1 ? 0 : prev + 1
-      );
-      
-      // Reset states after image change
-      setTimeout(() => {
-        setIsZooming(false);
-        setIsTransitioning(false);
-        setZoomLevel(1);
-      }, 500);
-    }, 1000);
-  };
-
-  const nextImage = () => {
-    startZoomEffect();
-  };
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    // Start zoom effect immediately when component mounts
-    startZoomEffect();
+    const timer = setInterval(() => {
+      setCurrentIndex(prev => (prev + 1) % craftingProcessImages.length);
+    }, 5000);
 
-    // Auto advance every 8 seconds (6s zoom + 2s transition time)
-    const setupTimer = () => {
-      timerRef.current = setTimeout(() => {
-        nextImage();
-        setupTimer();
-      }, 8000); // 8 seconds total cycle for longer image display
-    };
-
-    // Start the timer after initial zoom completes
-    const startTimer = setTimeout(() => {
-      setupTimer();
-    }, 8000);
-
-    return () => {
-      clearTimeout(startTimer);
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-      if (zoomIntervalRef.current) {
-        clearInterval(zoomIntervalRef.current);
-      }
-    };
+    return () => clearInterval(timer);
   }, []);
+
+  const goToSlide = (index: number) => {
+    setCurrentIndex(index);
+  };
 
   return (
     <section className="py-16 sm:py-20 px-4 sm:px-6 md:px-20 bg-gradient-to-br from-black via-gray-900 to-gray-800 overflow-hidden">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-12 sm:mb-16 text-tribal-cream mobile-title-wrap font-serif">
           How Our Crafts Are Made
         </h2>
         
-        {/* Single Image Display with Zoom-In and Carousel Effect */}
-        <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] rounded-xl overflow-hidden shadow-2xl bg-gray-800">
-                     <div className={`w-full h-full transition-all duration-1000 ease-in-out ${
-             isTransitioning ? 'transform translate-x-full opacity-0' : 'transform translate-x-0 opacity-100'
-           }`}>
+        {/* Slider */}
+        <div className="slider w-full h-[70vh] relative">
+          <div className="items-group w-full h-full relative">
+            {craftingProcessImages.map((image, index) => (
+              <div
+                key={image.id}
+                className={`item absolute top-0 left-0 w-full h-full flex items-center justify-center p-12 transition-all duration-500 ${
+                  index === currentIndex ? 'opacity-100 visible' : 'opacity-0 invisible'
+                }`}
+              >
+                {/* Background image using Next.js Image */}
+                <div className="absolute top-0 left-0 w-full h-full">
+                  <Image
+                    src={image.src}
+                    alt={image.alt}
+                    fill
+                    className="object-cover"
+                    priority={index === 0}
+                    sizes="100vw"
+                  />
+                </div>
+                
+                {/* Background blur effect */}
+                <div className="blur absolute top-0 left-0 w-full h-full z-0">
             <Image
-              src={currentImage.src}
-              alt={currentImage.alt || 'Traditional craft making process'}
+                    src={image.src}
+                    alt={image.alt}
               fill
               className="object-cover"
               style={{
-                transform: `scale(${zoomLevel})`,
-                transition: 'transform 0.02s linear' // Smooth zoom animation
-              }}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
-              priority={currentImageIndex === 0}
+                      filter: 'blur(5px)',
+                      transform: 'scale(1.03)'
+                    }}
+                    sizes="100vw"
+                  />
+                </div>
+                
+                {/* Main content block */}
+                <div className="block relative w-full max-w-md h-full max-h-96 p-5 text-white rounded-lg overflow-hidden transform scale-105 transition-all duration-500 hover:shadow-2xl">
+                  {/* Background image for the block */}
+                  <div className="absolute inset-0">
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      fill
+                      className="object-cover rounded-lg"
+                      sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
           
-          {/* Subtle gradient overlay for better text readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+                  {/* Circle light effect */}
+                  <span className=" absolute top-0 left-0 w-full h-full opacity-0 transition-opacity duration-500 rounded-lg"
+                        style={{
+                          background: 'radial-gradient(circle at 80px 40px, #fff, transparent)'
+                        }} />
+                  
+                  {/* Text content */}
+                  <div className="text relative w-full h-full flex flex-col justify-center text-center z-10">
+                    <h2 className="text-6xl md:text-8xl font-bold mb-0 text-white drop-shadow-lg" style={{fontFamily: 'Oswald, sans-serif'}}>
+                      {image.title}
+                    </h2>
+                    <p className="text-sm md:text-base mt-4 text-white drop-shadow-lg" style={{fontFamily: 'Open Sans, sans-serif'}}>
+                      {image.description}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
           
-                    {/* Image Description Overlay */}
-          <div className="absolute bottom-4 left-4 right-4 text-center">
-            <p className="text-white text-sm md:text-base bg-black/20 px-4 py-3 rounded-lg backdrop-blur-sm font-light" style={{fontFamily: 'Bahnschrift Light Condensed, sans-serif'}}>
-              {currentImage.alt}
-            </p>
+          {/* Navigation dots */}
+          <div className="navigations absolute bottom-0 w-full">
+            <ul className="dots h-5 py-2 text-center">
+              {craftingProcessImages.map((_, index) => (
+                <li
+                  key={index}
+                  className={`inline-block w-2.5 h-2.5 cursor-pointer transition-all duration-300 bg-white rounded-full mx-1 ${
+                    index === currentIndex ? 'w-4 h-4' : ''
+                  }`}
+                  onClick={() => goToSlide(index)}
+                />
+              ))}
+            </ul>
           </div>
         </div>
-
         
         <div className="text-center mt-12">
           <p className="text-tribal-cream text-lg md:text-xl mb-6 max-w-2xl mx-auto leading-relaxed" style={{fontFamily: 'Times New Roman, serif'}}>
             Witness the ancient artistry of Jharkhand&apos;s tribal craftspeople as they weave stories into every thread, preserving centuries-old traditions through skilled hands and passionate hearts.
           </p>
-          <a
-            href="/shop"
-            className="px-8 py-4 bg-tribal-red text-tribal-cream rounded-full shadow-lg hover:bg-tribal-green transition duration-300 font-bold text-lg inline-block transform hover:scale-105"
-          >
-            Explore Collection
-          </a>
         </div>
       </div>
-      
-      
     </section>
   );
 }

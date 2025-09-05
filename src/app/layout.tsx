@@ -1,7 +1,6 @@
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import SmoothScrollInitializer from "@/components/SmoothScrollInitializer";
-import ScrollToTop from "@/components/ScrollToTop";
 import Providers from "@/components/Providers";
 
 export const metadata = {
@@ -24,17 +23,36 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Kingthings+Linear+K&display=swap"
-          rel="stylesheet"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Homemade+Apple&display=swap"
-          rel="stylesheet"
-        />
+        <link rel="preload" href="/fonts/Kingthings Linear K.ttf" as="font" type="font/ttf" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/MTCORSVA.TTF" as="font" type="font/ttf" crossOrigin="anonymous" />
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            @font-face {
+              font-family: 'Kingthings Linear K';
+              src: url('/fonts/Kingthings Linear K.ttf') format('truetype');
+              font-display: block;
+              font-weight: 400;
+            }
+            @font-face {
+              font-family: 'Monotype Corsiva';
+              src: url('/fonts/MTCORSVA.TTF') format('truetype');
+              font-display: block;
+              font-weight: 400;
+            }
+            .font-kiner, .kinir-logo, h1, .kinir-logo h1 {
+              font-family: 'Kingthings Linear K', serif !important;
+              font-display: block !important;
+              font-weight: 400 !important;
+            }
+            .subtitle {
+              font-family: 'Monotype Corsiva', cursive !important;
+              font-display: block !important;
+              font-weight: 400 !important;
+            }
+          `
+        }} />
       </head>
-      <body className="min-h-screen flex flex-col font-tribal smooth-scroll-force">
+      <body className="min-h-screen font-tribal smooth-scroll-force">
         <Providers>
           {/* ✅ Smooth Scrolling Initializer */}
           <SmoothScrollInitializer />
@@ -43,10 +61,10 @@ export default function RootLayout({
           <Navbar />
 
           {/* ✅ Page Content */}
-          <main className="flex-1">{children}</main>
+          <main>{children}</main>
 
           {/* ✅ Footer */}
-          <footer className="bg-tribal-red text-white py-8 text-center mt-10">
+          <footer className="bg-[#7f0f07] text-white py-8 text-center mt-10">
             <div className="max-w-6xl mx-auto px-4">
               <p className="text-base sm:text-lg mb-4">
                 © {new Date().getFullYear()} KINIR. All rights reserved.
@@ -58,8 +76,6 @@ export default function RootLayout({
             </div>
           </footer>
 
-          {/* ✅ Scroll to Top Button */}
-          <ScrollToTop />
         </Providers>
       </body>
     </html>

@@ -93,22 +93,6 @@ function Hero() {
             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span>Kinir... anything tribal</span>
 </motion.p>
 
-          <motion.div
-            initial={{ opacity: 1, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 1, duration: 0.8 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-
-            <a
-              href="/shop"
-
-              className="px-6 py-3 rounded-full bg-tribal-red text-white hover:bg-tribal-green transition duration-200 shadow-xl inline-block font-semibold mobile-button-text"
-           >
-              Explore Collection
-            </a>
-          </motion.div>
         </div>
         </div>
       </div>

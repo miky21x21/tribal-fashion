@@ -72,7 +72,10 @@ const AuthenticatedNavbar = () => {
   const isLoading = status === 'loading';
 
   return (
-    <header className="sticky top-0 z-50 bg-tribal-striped text-white px-2 sm:px-4 md:px-6 lg:px-8 flex justify-between items-center shadow-xl relative min-h-[77px]">
+    <header 
+      className="sticky top-0 z-[100] bg-tribal-striped text-white px-2 sm:px-4 md:px-6 lg:px-8 flex justify-between items-center shadow-xl min-h-[77px]"
+      style={{ position: 'sticky', top: 0, zIndex: 100 }}
+    >
       {/* Left Logo */}
       <div className="flex items-center pl-4 sm:pl-6 md:pl-8">
         <Link href="/" className="hover:opacity-80 transition duration-300">
@@ -113,9 +116,14 @@ const AuthenticatedNavbar = () => {
           title="Shopping Cart"
         >
           <div className="relative">
-            <Image src="/shop.svg" alt="Cart" width={22} height={22} className="sm:w-7 sm:h-7" />
+            <Image src="/cart.svg" alt="Cart" width={38} height={38} className="sm:w-10 sm:h-10" />
             {totalItems > 0 && (
-              <span className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-tribal-red text-white text-[11px] sm:text-sm font-bold rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center animate-pulse border border-white">
+              <span 
+                className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 text-white text-[11px] sm:text-sm font-bold rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center animate-pulse border border-white transition-colors duration-300" 
+                style={{backgroundColor: '#E35336'}}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d1452a'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#E35336'}
+              >
                 {totalItems > 99 ? '99+' : totalItems}
               </span>
             )}

@@ -34,7 +34,7 @@ export default function ShopPage() {
     : productCategories.flatMap(category => category.products);
 
   return (
-    <section className="px-3 sm:px-4 md:px-6 py-8 sm:py-12 md:py-16 bg-tribal-cream">
+    <section className="px-3 sm:px-4 md:px-6 py-8 sm:py-12 md:py-16 bg-#d69264">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-6 sm:mb-8 md:mb-12 text-center text-tribal-red">
           Explore Our Collection

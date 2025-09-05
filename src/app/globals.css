@@ -35,6 +35,252 @@ html, body, div, section, article, main, nav, footer {
   -webkit-overflow-scrolling: touch;
 }
 
+/* Ensure sticky positioning works */
+header[style*="position: sticky"] {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+}
+
+/* Product card animations */
+@keyframes animate {
+  0%, 100% {
+    transform: translateY(10px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Slide animation keyframes for 4x4 grid positioning */
+@keyframes slide-to-position-1 {
+  0% { 
+    visibility: visible; 
+    transform: translate3d(-200%, -200%, 0); 
+  }
+  100% { 
+    transform: translate3d(0, 0, 0); 
+  }
+}
+
+@keyframes slide-to-position-2 {
+  0% { 
+    visibility: visible; 
+    transform: translate3d(0, -200%, 0); 
+  }
+  100% { 
+    transform: translate3d(0, 0, 0); 
+  }
+}
+
+@keyframes slide-to-position-3 {
+  0% { 
+    visibility: visible; 
+    transform: translate3d(200%, -200%, 0); 
+  }
+  100% { 
+    transform: translate3d(0, 0, 0); 
+  }
+}
+
+@keyframes slide-to-position-4 {
+  0% { 
+    visibility: visible; 
+    transform: translate3d(400%, -200%, 0); 
+  }
+  100% { 
+    transform: translate3d(0, 0, 0); 
+  }
+}
+
+@keyframes slide-to-position-5 {
+  0% { 
+    visibility: visible; 
+    transform: translate3d(-200%, 0, 0); 
+  }
+  100% { 
+    transform: translate3d(0, 0, 0); 
+  }
+}
+
+@keyframes slide-to-position-6 {
+  0% { 
+    visibility: visible; 
+    transform: translate3d(0, 200%, 0); 
+  }
+  100% { 
+    transform: translate3d(0, 0, 0); 
+  }
+}
+
+@keyframes slide-to-position-7 {
+  0% { 
+    visibility: visible; 
+    transform: translate3d(200%, 0, 0); 
+  }
+  100% { 
+    transform: translate3d(0, 0, 0); 
+  }
+}
+
+@keyframes slide-to-position-8 {
+  0% { 
+    visibility: visible; 
+    transform: translate3d(400%, 0, 0); 
+  }
+  100% { 
+    transform: translate3d(0, 0, 0); 
+  }
+}
+
+@keyframes slide-to-position-9 {
+  0% { 
+    visibility: visible; 
+    transform: translate3d(-200%, 200%, 0); 
+  }
+  100% { 
+    transform: translate3d(0, 0, 0); 
+  }
+}
+
+@keyframes slide-to-position-10 {
+  0% { 
+    visibility: visible; 
+    transform: translate3d(0, 200%, 0); 
+  }
+  100% { 
+    transform: translate3d(0, 0, 0); 
+  }
+}
+
+@keyframes slide-to-position-11 {
+  0% { 
+    visibility: visible; 
+    transform: translate3d(200%, 200%, 0); 
+  }
+  100% { 
+    transform: translate3d(0, 0, 0); 
+  }
+}
+
+@keyframes slide-to-position-12 {
+  0% { 
+    visibility: visible; 
+    transform: translate3d(400%, 200%, 0); 
+  }
+  100% { 
+    transform: translate3d(0, 0, 0); 
+  }
+}
+
+/* Slide animation classes for 4x4 grid positioning */
+.animate-slide-to-1 {
+  animation: slide-to-position-1 3s ease-in-out forwards;
+}
+
+.animate-slide-to-2 {
+  animation: slide-to-position-2 3s ease-in-out forwards;
+}
+
+.animate-slide-to-3 {
+  animation: slide-to-position-3 3s ease-in-out forwards;
+}
+
+.animate-slide-to-4 {
+  animation: slide-to-position-4 3s ease-in-out forwards;
+}
+
+.animate-slide-to-5 {
+  animation: slide-to-position-5 3s ease-in-out forwards;
+}
+
+.animate-slide-to-6 {
+  animation: slide-to-position-6 3s ease-in-out forwards;
+}
+
+.animate-slide-to-7 {
+  animation: slide-to-position-7 3s ease-in-out forwards;
+}
+
+.animate-slide-to-8 {
+  animation: slide-to-position-8 3s ease-in-out forwards;
+}
+
+.animate-slide-to-9 {
+  animation: slide-to-position-9 3s ease-in-out forwards;
+}
+
+.animate-slide-to-10 {
+  animation: slide-to-position-10 3s ease-in-out forwards;
+}
+
+.animate-slide-to-11 {
+  animation: slide-to-position-11 3s ease-in-out forwards;
+}
+
+.animate-slide-to-12 {
+  animation: slide-to-position-12 3s ease-in-out forwards;
+}
+
+/* Product card hover effects */
+.product-card:hover .absolute:first-child {
+  transform: skewX(0deg) !important;
+  left: 20px !important;
+  width: calc(100% - 90px) !important;
+}
+
+.product-card:hover .absolute:nth-child(2) {
+  transform: skewX(0deg) !important;
+  left: 20px !important;
+  width: calc(100% - 90px) !important;
+}
+
+.product-card:hover span div:first-child {
+  top: -50px !important;
+  left: 50px !important;
+  width: 100px !important;
+  height: 100px !important;
+  opacity: 1 !important;
+}
+
+.product-card:hover span div:last-child {
+  bottom: -50px !important;
+  right: 50px !important;
+  width: 100px !important;
+  height: 100px !important;
+  opacity: 1 !important;
+}
+
+.product-card:hover .relative {
+  left: -25px !important;
+  padding: 15px 20px !important;
+}
+
+/* Slider styles for ProductCollage */
+.slider .item:hover .block {
+  box-shadow: 0px 0px 50px #333 !important;
+}
+
+.slider .item:hover .circleLight {
+  opacity: 0.4 !important;
+}
+
+.slider .block:hover {
+  box-shadow: 0px 0px 70px #111 !important;
+}
+
+.slider .block:hover .circleLight {
+  opacity: 0.4 !important;
+}
+
+.slider .dots li:hover {
+  filter: blur(2px);
+}
+
+.slider .dots li.active:hover {
+  filter: blur(0px);
+}
+
 /* Enhanced scrollbar for visual feedback */
 ::-webkit-scrollbar {
   width: 12px;
@@ -153,16 +399,20 @@ html *, body * {
  * These font definitions are crucial for the correct rendering of the navbar logo.
  * Do not modify or remove without understanding the impact on the logo's appearance.
  */
+@import "tailwindcss";
+
 @font-face {
   font-family: "Monotype Corsiva";
   src: url("/fonts/MTCORSVA.TTF") format("truetype");
+  font-display: block;
+  font-weight: 400;
 }
-
-@import "tailwindcss";
 
 @font-face {
   font-family: "Kingthings Linear K";
   src: url("/fonts/Kingthings Linear K.ttf") format("truetype");
+  font-display: block;
+  font-weight: 400;
 }
 
 /*
@@ -843,4 +1093,14 @@ body {
 .dots-typewriter::before {
   content: "";
   animation: dots-typewriter 2s steps(4) infinite;
+}
+
+/* Logo2 subtitle size increase */
+.logo2-larger-subtitle .subtitle {
+  font-size: 0.5rem !important; /* 10% increase from 0.454645726rem */
+}
+
+/* More specific selector for logo2 subtitle */
+.logo2-larger-subtitle .kinir-logo .subtitle {
+  font-size: 0.5rem !important;
 }

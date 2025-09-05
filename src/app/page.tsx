@@ -1,10 +1,15 @@
 import FeaturedProductsCarousel from "@/components/FeaturedProductsCarousel";
 import Hero from "@/components/Hero";
 import ProductCollage from "@/components/ProductCollage";
+import ShopButton from "@/components/ShopButton";
+import SuperHero from "@/components/SuperHero";
 
 export default function HomePage() {
   return (
     <main className="flex flex-col">
+      {/* Super Hero Section */}
+      <SuperHero />
+
       {/* Hero Section */}
       <Hero />
 
@@ -22,7 +27,7 @@ export default function HomePage() {
       </section>
 
       {/* About Section */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 md:px-20 bg-tribal-gradient-red text-tribal-cream text-center">
+      <section className="py-16 sm:py-20 px-4 sm:px-6 md:px-20 bg-[#7f0f07] text-tribal-cream text-center">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8 font-tribal mobile-title-wrap">
             Celebrating Tribal Heritage
@@ -40,6 +45,9 @@ export default function HomePage() {
           </a>
         </div>
       </section>
+
+      {/* Floating Shop Button */}
+      <ShopButton />
     </main>
   );
 }

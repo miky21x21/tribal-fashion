@@ -1,6 +1,14 @@
 export default function AboutPage() {
   return (
-    <main className="min-h-screen py-16 sm:py-20 px-4 sm:px-6 bg-tribal-cream">
+    <main 
+      className="min-h-screen py-16 sm:py-20 px-4 sm:px-6 relative"
+      style={{
+        backgroundImage: 'url("/images/yo.jpg")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 sm:mb-8 text-tribal-red text-center">
           About Us

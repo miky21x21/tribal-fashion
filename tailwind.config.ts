@@ -20,7 +20,7 @@ const config: Config = {
         "tribal-cream": "#fce29c",
         "tribal-dark-cream": "#fce29c",
         "tribal-red": "#9d2320",
-        "tribal-red-accent": "#e63946",
+        "tribal-red-accent": "#7f0f07",
         "tribal-dark": "#3b1c1c",
         "tribal-yellow": "#ffd166",
         "tribal-brown": "#ef362c",  

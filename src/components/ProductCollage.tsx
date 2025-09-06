@@ -9,7 +9,7 @@ const craftingProcessImages = [
     src: '/images/Product banner/hand weaving 1.png',
     alt: 'Traditional hand weaving process - Setting up the loom',
     title: 'Hand Weaving',
-    description: 'Traditional tribal weaving techniques'
+    description: 'Traditional weaving techniques'
   },
   {
     id: '2',
@@ -30,12 +30,12 @@ const craftingProcessImages = [
     src: '/images/Product banner/hand weaving 4.png',
     alt: 'Artisan crafting traditional tribal textiles',
     title: 'Tribal Textiles',
-    description: 'Authentic tribal creation'
+    description: 'Authentic creation'
   },
   {
     id: '5',
     src: '/images/Product banner/product (16).png',
-    alt: 'Traditional tribal crafting process',
+    alt: 'Traditional crafting process',
     title: 'Traditional Craft',
     description: 'Centuries-old techniques'
   },
@@ -44,7 +44,7 @@ const craftingProcessImages = [
     src: '/images/Product banner/product (18).png',
     alt: 'Authentic tribal product creation',
     title: 'Cultural Heritage',
-    description: 'Rich tribal traditions'
+    description: 'Rich tradition'
   },
   {
     id: '7',

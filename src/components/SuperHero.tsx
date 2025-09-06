@@ -30,24 +30,129 @@ export default function SuperHero() {
     'animate-slide-to-9'
   ];
 
+  // Additional slide animations for the side columns
+  const leftColumnAnimations = [
+    'animate-slide-to-10',
+    'animate-slide-to-11', 
+    'animate-slide-to-12'
+  ];
+
+  const rightColumnAnimations = [
+    'animate-slide-to-13',
+    'animate-slide-to-14',
+    'animate-slide-to-15'
+  ];
+
   return (
     <section 
       className="relative min-h-screen flex items-center justify-center text-center px-4 py-16 overflow-hidden"
       style={{
-        backgroundImage: 'url("/images/yo.jpg")',
-        backgroundSize: 'cover',
+        backgroundImage: 'url("/images/superherobg.jpg")',
+        backgroundSize: '100% auto',
         backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
+        backgroundRepeat: 'repeat-y',
+        backgroundAttachment: 'fixed'
       }}
     >
       {/* Dark overlay for better text readability */}
       <div className="absolute inset-0 bg-black/40 pointer-events-none"></div>
       
       {/* Content */}
-      <div className="relative z-10 max-w-6xl mx-auto">
+      <div className="relative z-10 max-w-7xl mx-auto">
+        <div className="flex items-center justify-center gap-8" style={{ transform: 'scale(0.8)', transformOrigin: 'center' }}>
+          {/* Left Photo Column */}
+          <div className="flex flex-col gap-8 w-48">
+            <div 
+              className={`w-48 h-48 flex items-center justify-center border-2 border-amber-800/60 shadow-lg rounded-lg overflow-hidden ${leftColumnAnimations[0]} transform transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-2xl hover:border-amber-700/80 hover:rotateY-12 hover:rotateX-5`}
+              style={{
+                background: `
+                  linear-gradient(90deg, #8B4513 0%, #A0522D 25%, #8B4513 50%, #A0522D 75%, #8B4513 100%),
+                  linear-gradient(0deg, transparent 0%, rgba(139, 69, 19, 0.3) 50%, transparent 100%)
+                `,
+                backgroundSize: '100% 100%, 100% 4px',
+                backgroundPosition: '0 0, 0 0',
+                backgroundRepeat: 'no-repeat, repeat-y',
+                boxShadow: `
+                  inset 0 0 20px rgba(0,0,0,0.3), 
+                  0 8px 16px rgba(0,0,0,0.4),
+                  0 4px 8px rgba(0,0,0,0.2),
+                  inset 0 2px 4px rgba(255,255,255,0.1),
+                  inset 0 -2px 4px rgba(0,0,0,0.2)
+                `,
+                transformStyle: 'preserve-3d',
+                perspective: '1000px'
+              }}
+            >
+              <Image
+                src="/images/products/product (10).jpeg"
+                alt="Tribal Product 10"
+                width={192}
+                height={192}
+                className="w-full h-full object-cover rounded-lg transition-transform duration-300 ease-in-out hover:scale-105"
+              />
+            </div>
+            <div 
+              className={`w-48 h-48 flex items-center justify-center border-2 border-amber-800/60 shadow-lg rounded-lg overflow-hidden ${leftColumnAnimations[1]} transform transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-2xl hover:border-amber-700/80 hover:rotateY-12 hover:rotateX-5`}
+              style={{
+                background: `
+                  linear-gradient(90deg, #8B4513 0%, #A0522D 25%, #8B4513 50%, #A0522D 75%, #8B4513 100%),
+                  linear-gradient(0deg, transparent 0%, rgba(139, 69, 19, 0.3) 50%, transparent 100%)
+                `,
+                backgroundSize: '100% 100%, 100% 4px',
+                backgroundPosition: '0 0, 0 0',
+                backgroundRepeat: 'no-repeat, repeat-y',
+                boxShadow: `
+                  inset 0 0 20px rgba(0,0,0,0.3), 
+                  0 8px 16px rgba(0,0,0,0.4),
+                  0 4px 8px rgba(0,0,0,0.2),
+                  inset 0 2px 4px rgba(255,255,255,0.1),
+                  inset 0 -2px 4px rgba(0,0,0,0.2)
+                `,
+                transformStyle: 'preserve-3d',
+                perspective: '1000px'
+              }}
+            >
+              <Image
+                src="/images/products/product (11).jpeg"
+                alt="Tribal Product 11"
+                width={192}
+                height={192}
+                className="w-full h-full object-cover rounded-lg transition-transform duration-300 ease-in-out hover:scale-105"
+              />
+            </div>
+            <div 
+              className={`w-48 h-48 flex items-center justify-center border-2 border-amber-800/60 shadow-lg rounded-lg overflow-hidden ${leftColumnAnimations[2]} transform transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-2xl hover:border-amber-700/80 hover:rotateY-12 hover:rotateX-5`}
+              style={{
+                background: `
+                  linear-gradient(90deg, #8B4513 0%, #A0522D 25%, #8B4513 50%, #A0522D 75%, #8B4513 100%),
+                  linear-gradient(0deg, transparent 0%, rgba(139, 69, 19, 0.3) 50%, transparent 100%)
+                `,
+                backgroundSize: '100% 100%, 100% 4px',
+                backgroundPosition: '0 0, 0 0',
+                backgroundRepeat: 'no-repeat, repeat-y',
+                boxShadow: `
+                  inset 0 0 20px rgba(0,0,0,0.3), 
+                  0 8px 16px rgba(0,0,0,0.4),
+                  0 4px 8px rgba(0,0,0,0.2),
+                  inset 0 2px 4px rgba(255,255,255,0.1),
+                  inset 0 -2px 4px rgba(0,0,0,0.2)
+                `,
+                transformStyle: 'preserve-3d',
+                perspective: '1000px'
+              }}
+            >
+              <Image
+                src="/images/products/product (12).jpeg"
+                alt="Tribal Product 12"
+                width={192}
+                height={192}
+                className="w-full h-full object-cover rounded-lg transition-transform duration-300 ease-in-out hover:scale-105"
+              />
+            </div>
+          </div>
 
-        {/* Slide Animation Grid with Images */}
-        <div className="grid grid-cols-3 gap-8 p-4 max-w-4xl mx-auto">
+          {/* Center Grid */}
+          <div className="grid grid-cols-3 gap-8 p-4 max-w-4xl">
           {productImages.map((image, index) => {
             // Replace the 5th slide (index 4) with the logo
             if (index === 4) {
@@ -71,14 +176,24 @@ export default function SuperHero() {
             return (
               <div 
                 key={index}
-                className={`w-48 h-48 flex items-center justify-center border border-white/30 bg-white/20 backdrop-blur-md shadow-md rounded-lg overflow-hidden ${slideAnimations[index]} transform transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-2xl hover:border-white/50 hover:bg-white/30`}
+                className={`w-48 h-48 flex items-center justify-center border-2 border-amber-800/60 shadow-lg rounded-lg overflow-hidden ${slideAnimations[index]} transform transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-2xl hover:border-amber-700/80 hover:rotateY-12 hover:rotateX-5`}
                 style={{
                   background: `
-                    linear-gradient(45deg, transparent 25%, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.1) 50%, transparent 50%, transparent 75%, rgba(255,255,255,0.1) 75%),
-                    linear-gradient(-45deg, transparent 25%, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.05) 50%, transparent 50%, transparent 75%, rgba(255,255,255,0.05) 75%)
+                    linear-gradient(90deg, #8B4513 0%, #A0522D 25%, #8B4513 50%, #A0522D 75%, #8B4513 100%),
+                    linear-gradient(0deg, transparent 0%, rgba(139, 69, 19, 0.3) 50%, transparent 100%)
                   `,
-                  backgroundSize: '20px 20px, 20px 20px',
-                  backgroundPosition: '0 0, 0 10px'
+                  backgroundSize: '100% 100%, 100% 4px',
+                  backgroundPosition: '0 0, 0 0',
+                  backgroundRepeat: 'no-repeat, repeat-y',
+                  boxShadow: `
+                    inset 0 0 20px rgba(0,0,0,0.3), 
+                    0 8px 16px rgba(0,0,0,0.4),
+                    0 4px 8px rgba(0,0,0,0.2),
+                    inset 0 2px 4px rgba(255,255,255,0.1),
+                    inset 0 -2px 4px rgba(0,0,0,0.2)
+                  `,
+                  transformStyle: 'preserve-3d',
+                  perspective: '1000px'
                 }}
               >
                 <Image
@@ -91,6 +206,98 @@ export default function SuperHero() {
               </div>
             );
           })}
+          </div>
+
+          {/* Right Photo Column */}
+          <div className="flex flex-col gap-8 w-48">
+            <div 
+              className={`w-48 h-48 flex items-center justify-center border-2 border-amber-800/60 shadow-lg rounded-lg overflow-hidden ${rightColumnAnimations[0]} transform transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-2xl hover:border-amber-700/80 hover:rotateY-12 hover:rotateX-5`}
+              style={{
+                background: `
+                  linear-gradient(90deg, #8B4513 0%, #A0522D 25%, #8B4513 50%, #A0522D 75%, #8B4513 100%),
+                  linear-gradient(0deg, transparent 0%, rgba(139, 69, 19, 0.3) 50%, transparent 100%)
+                `,
+                backgroundSize: '100% 100%, 100% 4px',
+                backgroundPosition: '0 0, 0 0',
+                backgroundRepeat: 'no-repeat, repeat-y',
+                boxShadow: `
+                  inset 0 0 20px rgba(0,0,0,0.3), 
+                  0 8px 16px rgba(0,0,0,0.4),
+                  0 4px 8px rgba(0,0,0,0.2),
+                  inset 0 2px 4px rgba(255,255,255,0.1),
+                  inset 0 -2px 4px rgba(0,0,0,0.2)
+                `,
+                transformStyle: 'preserve-3d',
+                perspective: '1000px'
+              }}
+            >
+              <Image
+                src="/images/products/product (13).jpeg"
+                alt="Tribal Product 13"
+                width={192}
+                height={192}
+                className="w-full h-full object-cover rounded-lg transition-transform duration-300 ease-in-out hover:scale-105"
+              />
+            </div>
+            <div 
+              className={`w-48 h-48 flex items-center justify-center border-2 border-amber-800/60 shadow-lg rounded-lg overflow-hidden ${rightColumnAnimations[1]} transform transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-2xl hover:border-amber-700/80 hover:rotateY-12 hover:rotateX-5`}
+              style={{
+                background: `
+                  linear-gradient(90deg, #8B4513 0%, #A0522D 25%, #8B4513 50%, #A0522D 75%, #8B4513 100%),
+                  linear-gradient(0deg, transparent 0%, rgba(139, 69, 19, 0.3) 50%, transparent 100%)
+                `,
+                backgroundSize: '100% 100%, 100% 4px',
+                backgroundPosition: '0 0, 0 0',
+                backgroundRepeat: 'no-repeat, repeat-y',
+                boxShadow: `
+                  inset 0 0 20px rgba(0,0,0,0.3), 
+                  0 8px 16px rgba(0,0,0,0.4),
+                  0 4px 8px rgba(0,0,0,0.2),
+                  inset 0 2px 4px rgba(255,255,255,0.1),
+                  inset 0 -2px 4px rgba(0,0,0,0.2)
+                `,
+                transformStyle: 'preserve-3d',
+                perspective: '1000px'
+              }}
+            >
+              <Image
+                src="/images/products/product (14).jpeg"
+                alt="Tribal Product 14"
+                width={192}
+                height={192}
+                className="w-full h-full object-cover rounded-lg transition-transform duration-300 ease-in-out hover:scale-105"
+              />
+            </div>
+            <div 
+              className={`w-48 h-48 flex items-center justify-center border-2 border-amber-800/60 shadow-lg rounded-lg overflow-hidden ${rightColumnAnimations[2]} transform transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-2xl hover:border-amber-700/80 hover:rotateY-12 hover:rotateX-5`}
+              style={{
+                background: `
+                  linear-gradient(90deg, #8B4513 0%, #A0522D 25%, #8B4513 50%, #A0522D 75%, #8B4513 100%),
+                  linear-gradient(0deg, transparent 0%, rgba(139, 69, 19, 0.3) 50%, transparent 100%)
+                `,
+                backgroundSize: '100% 100%, 100% 4px',
+                backgroundPosition: '0 0, 0 0',
+                backgroundRepeat: 'no-repeat, repeat-y',
+                boxShadow: `
+                  inset 0 0 20px rgba(0,0,0,0.3), 
+                  0 8px 16px rgba(0,0,0,0.4),
+                  0 4px 8px rgba(0,0,0,0.2),
+                  inset 0 2px 4px rgba(255,255,255,0.1),
+                  inset 0 -2px 4px rgba(0,0,0,0.2)
+                `,
+                transformStyle: 'preserve-3d',
+                perspective: '1000px'
+              }}
+            >
+              <Image
+                src="/images/products/product (15).jpeg"
+                alt="Tribal Product 15"
+                width={192}
+                height={192}
+                className="w-full h-full object-cover rounded-lg transition-transform duration-300 ease-in-out hover:scale-105"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </section>

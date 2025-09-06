@@ -17,9 +17,21 @@ export default function HomePage() {
       <ProductCollage />
 
       {/* Featured Products Section */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 md:px-20 bg-gradient-to-br from-[#CA7842] via-[#D68B50] to-[#E29D5E] overflow-hidden">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl  font-bold text-center font-tribal mb-12 sm:mb-16 text-tribal-red mobile-title-wrap">
+      <section 
+        className="py-16 sm:py-20 px-4 sm:px-6 md:px-20 overflow-hidden relative"
+        style={{
+          backgroundImage: 'url("/images/superherobg.jpg")',
+          backgroundSize: '100% auto',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'repeat-y',
+          backgroundAttachment: 'fixed'
+        }}
+      >
+        {/* Dark overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/40 pointer-events-none"></div>
+        
+        <div className="max-w-6xl mx-auto relative z-10">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl  font-bold text-center font-tribal mb-12 sm:mb-16 text-tribal-cream mobile-title-wrap">
             Featured Products
           </h2>
           <FeaturedProductsCarousel />

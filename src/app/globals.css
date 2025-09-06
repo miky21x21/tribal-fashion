@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Homemade+Apple&display=swap');
+
 /*
  * === NATURAL GLIDING SMOOTH SCROLLING ===
  * Creates a smooth, gliding scrolling experience that feels natural
@@ -173,6 +175,36 @@ header[style*="position: sticky"] {
   }
 }
 
+@keyframes slide-to-position-13 {
+  0% { 
+    visibility: visible; 
+    transform: translate3d(-200%, -300%, 0); 
+  }
+  100% { 
+    transform: translate3d(0, 0, 0); 
+  }
+}
+
+@keyframes slide-to-position-14 {
+  0% { 
+    visibility: visible; 
+    transform: translate3d(0, -300%, 0); 
+  }
+  100% { 
+    transform: translate3d(0, 0, 0); 
+  }
+}
+
+@keyframes slide-to-position-15 {
+  0% { 
+    visibility: visible; 
+    transform: translate3d(200%, -300%, 0); 
+  }
+  100% { 
+    transform: translate3d(0, 0, 0); 
+  }
+}
+
 /* Slide animation classes for 4x4 grid positioning */
 .animate-slide-to-1 {
   animation: slide-to-position-1 3s ease-in-out forwards;
@@ -220,6 +252,27 @@ header[style*="position: sticky"] {
 
 .animate-slide-to-12 {
   animation: slide-to-position-12 3s ease-in-out forwards;
+}
+
+.animate-slide-to-13 {
+  animation: slide-to-position-13 3s ease-in-out forwards;
+}
+
+.animate-slide-to-14 {
+  animation: slide-to-position-14 3s ease-in-out forwards;
+}
+
+.animate-slide-to-15 {
+  animation: slide-to-position-15 3s ease-in-out forwards;
+}
+
+/* 3D rotation effects for slides */
+.hover\:rotateY-12:hover {
+  transform: rotateY(12deg) !important;
+}
+
+.hover\:rotateX-5:hover {
+  transform: rotateX(5deg) !important;
 }
 
 /* Product card hover effects */

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 
@@ -10,6 +10,8 @@ function Hero() {
   const [scale, setScale] = useState(1);
   const [baseHeight, setBaseHeight] = useState<number | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(textRef, { once: true, amount: 0.3 });
 
   useLayoutEffect(() => {
     if (contentRef.current) {
@@ -57,10 +59,15 @@ function Hero() {
             }}
           >
           
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 2 }}
-            transition={{ delay: 0.5, duration: 2 }}
+           <motion.div
+             ref={textRef}
+             initial={{ opacity: 0 }}
+             animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+             transition={{ 
+               duration: 1.5, 
+               ease: "easeOut",
+               delay: 0.2
+             }}
             className="text-tribal-brown text-left lg:text-base mb-8 mx-auto leading-relaxed text-shadow-book hero-paragraph mobile-text-wrap"
             style={{ fontFamily: "'Homemade Apple', cursive", fontSize: "135%", color: "#8B4513" }}
           >
@@ -90,8 +97,8 @@ function Hero() {
             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;This is what you hold in your hands.
             <br />
             
-            &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span>Kinir... anything tribal</span>
-</motion.p>
+            &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span>Kinir... anything tribal</span>
+          </motion.div>
 
         </div>
         </div>

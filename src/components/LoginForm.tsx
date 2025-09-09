@@ -32,7 +32,7 @@ export default function LoginForm() {
   // Handle navigation when authenticated
   useEffect(() => {
     if (status === "authenticated" && session) {
-      router.push("/profile");
+      router.push("/");
     }
   }, [status, session, router]);
 
@@ -40,7 +40,7 @@ export default function LoginForm() {
   useEffect(() => {
     if (state.shouldRedirect) {
       const timer = setTimeout(() => {
-        router.push("/profile");
+        router.push("/");
       }, 1500);
       
       return () => clearTimeout(timer);

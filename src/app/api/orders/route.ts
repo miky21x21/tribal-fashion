@@ -1,73 +1,151 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/[...nextauth]/route';
+import { createDeliveryNotification, sendDeliveryNotification } from '@/lib/delivery-notifications';
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const authHeader = request.headers.get('authorization');
-    const { searchParams } = new URL(request.url);
-    const queryString = searchParams.toString();
-    
-    if (!authHeader) {
+    // Check authentication
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
       return NextResponse.json(
-        { success: false, message: 'No authorization header provided' },
+        { success: false, message: 'Authentication required' },
         { status: 401 }
       );
     }
-    
-    const url = `${BACKEND_URL}/api/orders${queryString ? `?${queryString}` : ''}`;
-    const response = await fetch(url, {
-      headers: {
-        Authorization: authHeader
+
+    const body = await request.json();
+    const { items, total, shippingAddress } = body;
+
+    // Validate required fields
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return NextResponse.json(
+        { success: false, message: 'Order items are required' },
+        { status: 400 }
+      );
+    }
+
+    if (!total || total <= 0) {
+      return NextResponse.json(
+        { success: false, message: 'Order total is required and must be greater than 0' },
+        { status: 400 }
+      );
+    }
+
+    if (!shippingAddress) {
+      return NextResponse.json(
+        { success: false, message: 'Shipping address is required' },
+        { status: 400 }
+      );
+    }
+
+    // Validate shipping address fields
+    const requiredFields = ['name', 'phone', 'address', 'city', 'state', 'zipCode'];
+    for (const field of requiredFields) {
+      if (!shippingAddress[field] || !shippingAddress[field].trim()) {
+        return NextResponse.json(
+          { success: false, message: `${field} is required in shipping address` },
+          { status: 400 }
+        );
       }
-    });
-    
-    const data = await response.json();
-    return NextResponse.json(data, { status: response.status });
-  } catch (error) {
-    console.error('Error fetching orders:', error);
-    return NextResponse.json(
-      { 
-        success: false, 
-        message: 'Failed to fetch orders',
-        error: error instanceof Error ? error.message : 'Unknown error'
+    }
+
+    // Create order via backend API
+    const response = await fetch(`${BACKEND_URL}/api/orders`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.user.id}`, // Using user ID as token for now
       },
+      body: JSON.stringify({
+        items,
+        total,
+        shippingAddress: {
+          name: shippingAddress.name.trim(),
+          phone: shippingAddress.phone.trim(),
+          address: shippingAddress.address.trim(),
+          city: shippingAddress.city.trim(),
+          state: shippingAddress.state.trim(),
+          zipCode: shippingAddress.zipCode.trim(),
+          country: shippingAddress.country || 'India'
+        }
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return NextResponse.json(
+        { success: false, message: data.message || 'Failed to create order' },
+        { status: response.status }
+      );
+    }
+
+    // Send notification to delivery agent
+    try {
+      const notification = createDeliveryNotification(data.data);
+      await sendDeliveryNotification(notification);
+    } catch (notificationError) {
+      console.error('Failed to send delivery notification:', notificationError);
+      // Don't fail the order if notification fails
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: data.data,
+      message: 'Order created successfully'
+    });
+
+  } catch (error) {
+    console.error('Order creation error:', error);
+    return NextResponse.json(
+      { success: false, message: 'Internal server error' },
       { status: 500 }
     );
   }
 }
 
-export async function POST(request: NextRequest) {
+
+export async function GET() {
   try {
-    const body = await request.json();
-    const authHeader = request.headers.get('authorization');
-    
-    if (!authHeader) {
+    // Check authentication
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
       return NextResponse.json(
-        { success: false, message: 'No authorization header provided' },
+        { success: false, message: 'Authentication required' },
         { status: 401 }
       );
     }
-    
+
+    // Get user's orders from backend
     const response = await fetch(`${BACKEND_URL}/api/orders`, {
-      method: 'POST',
+      method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: authHeader
+        'Authorization': `Bearer ${session.user.id}`,
       },
-      body: JSON.stringify(body)
     });
-    
+
     const data = await response.json();
-    return NextResponse.json(data, { status: response.status });
+
+    if (!response.ok) {
+      return NextResponse.json(
+        { success: false, message: data.message || 'Failed to fetch orders' },
+        { status: response.status }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: data.data,
+      message: 'Orders fetched successfully'
+    });
+
   } catch (error) {
-    console.error('Error creating order:', error);
+    console.error('Fetch orders error:', error);
     return NextResponse.json(
-      { 
-        success: false, 
-        message: 'Failed to create order',
-        error: error instanceof Error ? error.message : 'Unknown error'
-      },
+      { success: false, message: 'Internal server error' },
       { status: 500 }
     );
   }

@@ -216,15 +216,16 @@ export default function CartPage() {
                 </div>
                 
                 <div className="space-y-3">
-                  <button
-                    className="w-full backdrop-blur-sm text-white py-2.5 sm:py-3 px-4 rounded-xl font-bold text-base sm:text-lg transition-all duration-300 transform hover:scale-105 shadow-lg border border-white/20"
+                  <Link
+                    href="/checkout"
+                    className="w-full block text-center backdrop-blur-sm text-white py-2.5 sm:py-3 px-4 rounded-xl font-bold text-base sm:text-lg transition-all duration-300 transform hover:scale-105 shadow-lg border border-white/20"
                     data-testid="checkout-button"
                     style={{backgroundColor: '#E35336'}}
                     onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d1452a'}
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#E35336'}
                   >
                     Proceed to Checkout
-                  </button>
+                  </Link>
                   
                   <Link
                     href="/shop"

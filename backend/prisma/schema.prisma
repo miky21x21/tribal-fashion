@@ -73,6 +73,22 @@ model Order {
   items     OrderItem[]
   total     Float
   status    OrderStatus @default(PENDING)
+  
+  // Shipping Information
+  shippingName        String
+  shippingPhone       String
+  shippingAddress     String
+  shippingCity        String
+  shippingState       String
+  shippingZipCode     String
+  shippingCountry     String @default("India")
+  
+  // Payment Information
+  paymentMethod       String @default("COD")
+  paymentId           String?
+  paymentOrderId      String?
+  paymentStatus       String @default("PENDING")
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

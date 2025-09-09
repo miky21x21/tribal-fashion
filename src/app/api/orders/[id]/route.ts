@@ -1,38 +1,59 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../../auth/[...nextauth]/route';
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const authHeader = request.headers.get('authorization');
-    
-    if (!authHeader) {
+    // Check authentication
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
       return NextResponse.json(
-        { success: false, message: 'No authorization header provided' },
+        { success: false, message: 'Authentication required' },
         { status: 401 }
       );
     }
-    
-    const { id } = await params;
-    const response = await fetch(`${BACKEND_URL}/api/orders/${id}`, {
+
+    const orderId = params.id;
+
+    if (!orderId) {
+      return NextResponse.json(
+        { success: false, message: 'Order ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Get order from backend
+    const response = await fetch(`${BACKEND_URL}/api/orders/${orderId}`, {
+      method: 'GET',
       headers: {
-        Authorization: authHeader
-      }
-    });
-    
-    const data = await response.json();
-    return NextResponse.json(data, { status: response.status });
-  } catch (error) {
-    console.error('Error fetching order:', error);
-    return NextResponse.json(
-      { 
-        success: false, 
-        message: 'Failed to fetch order',
-        error: error instanceof Error ? error.message : 'Unknown error'
+        'Authorization': `Bearer ${session.user.id}`,
       },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return NextResponse.json(
+        { success: false, message: data.message || 'Failed to fetch order' },
+        { status: response.status }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: data.data,
+      message: 'Order fetched successfully'
+    });
+
+  } catch (error) {
+    console.error('Fetch order error:', error);
+    return NextResponse.json(
+      { success: false, message: 'Internal server error' },
       { status: 500 }
     );
   }

@@ -77,8 +77,8 @@ export default function ProductCollage() {
           How Our Crafts Are Made
         </h2>
         
-        {/* Slider */}
-        <div className="slider w-full h-[70vh] relative">
+        {/* Desktop Slider */}
+        <div className="hidden md:block slider w-full h-[70vh] relative">
           <div className="items-group w-full h-full relative">
             {craftingProcessImages.map((image, index) => (
               <div
@@ -160,6 +160,94 @@ export default function ProductCollage() {
                 />
               ))}
             </ul>
+          </div>
+        </div>
+
+        {/* Mobile Slider - Responsive version */}
+        <div className="md:hidden">
+          <div className="slider w-full h-[50vh] relative">
+            <div className="items-group w-full h-full relative">
+              {craftingProcessImages.map((image, index) => (
+                <div
+                  key={image.id}
+                  className={`item absolute top-0 left-0 w-full h-full flex items-center justify-center p-4 transition-all duration-500 ${
+                    index === currentIndex ? 'opacity-100 visible' : 'opacity-0 invisible'
+                  }`}
+                >
+                  {/* Background image using Next.js Image */}
+                  <div className="absolute top-0 left-0 w-full h-full">
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      fill
+                      className="object-cover"
+                      priority={index === 0}
+                      sizes="100vw"
+                    />
+                  </div>
+                  
+                  {/* Background blur effect */}
+                  <div className="blur absolute top-0 left-0 w-full h-full z-0">
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      fill
+                      className="object-cover"
+                      style={{
+                        filter: 'blur(5px)',
+                        transform: 'scale(1.03)'
+                      }}
+                      sizes="100vw"
+                    />
+                  </div>
+                  
+                  {/* Main content block */}
+                  <div className="block relative w-full max-w-sm h-full max-h-80 p-3 text-white rounded-lg overflow-hidden transform scale-105 transition-all duration-500 hover:shadow-2xl">
+                    {/* Background image for the block */}
+                    <div className="absolute inset-0">
+                      <Image
+                        src={image.src}
+                        alt={image.alt}
+                        fill
+                        className="object-cover rounded-lg"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                    </div>
+                    
+                    {/* Circle light effect */}
+                    <span className=" absolute top-0 left-0 w-full h-full opacity-0 transition-opacity duration-500 rounded-lg"
+                          style={{
+                            background: 'radial-gradient(circle at 80px 40px, #fff, transparent)'
+                          }} />
+                    
+                    {/* Text content */}
+                    <div className="text relative w-full h-full flex flex-col justify-center text-center z-10">
+                      <h2 className="text-3xl sm:text-4xl font-bold mb-0 text-white drop-shadow-lg" style={{fontFamily: 'Oswald, sans-serif'}}>
+                        {image.title}
+                      </h2>
+                      <p className="text-xs sm:text-sm mt-2 text-white drop-shadow-lg" style={{fontFamily: 'Open Sans, sans-serif'}}>
+                        {image.description}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            {/* Navigation dots */}
+            <div className="navigations absolute bottom-0 w-full">
+              <ul className="dots h-5 py-2 text-center">
+                {craftingProcessImages.map((_, index) => (
+                  <li
+                    key={index}
+                    className={`inline-block w-2.5 h-2.5 cursor-pointer transition-all duration-300 bg-white rounded-full mx-1 ${
+                      index === currentIndex ? 'w-4 h-4' : ''
+                    }`}
+                    onClick={() => goToSlide(index)}
+                  />
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
         

@@ -1,7 +1,8 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
+import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
 // Extend the session type to include custom properties
 declare module "next-auth" {
@@ -30,7 +31,7 @@ declare module "next-auth/jwt" {
   }
 }
 
-const handler = NextAuth({
+export const authOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -48,8 +49,7 @@ const handler = NextAuth({
         }
 
         try {
-          // Import Prisma client
-          const { PrismaClient } = require('@prisma/client');
+          // Create Prisma client
           const prisma = new PrismaClient();
           
           // Find user by email
@@ -68,7 +68,6 @@ const handler = NextAuth({
           }
 
           // Verify password
-          const bcrypt = require('bcryptjs');
           const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
           
           if (!isPasswordValid) {
@@ -93,7 +92,7 @@ const handler = NextAuth({
     })
   ],
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as const,
   },
   callbacks: {
     async jwt({ token, user, account }) {
@@ -126,6 +125,8 @@ const handler = NextAuth({
     error: '/login',
   },
   debug: process.env.NODE_ENV === 'development',
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

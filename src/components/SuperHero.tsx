@@ -45,7 +45,7 @@ export default function SuperHero() {
 
   return (
     <section 
-      className="relative min-h-screen flex items-center justify-center text-center px-4 py-16 overflow-hidden"
+      className="relative flex md:min-h-screen items-center justify-center text-center px-4 pt-4 pb-8 md:pb-24 overflow-hidden"
       style={{
         backgroundImage: 'url("/images/superherobg.jpg")',
         backgroundSize: '100% auto',
@@ -59,7 +59,8 @@ export default function SuperHero() {
       
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto">
-        <div className="flex items-center justify-center gap-8" style={{ transform: 'scale(0.8)', transformOrigin: 'center' }}>
+        {/* Desktop Layout */}
+        <div className="hidden md:flex items-center justify-center gap-8" style={{ transform: 'scale(0.8)', transformOrigin: 'center' }}>
           {/* Left Photo Column */}
           <div className="flex flex-col gap-8 w-48">
             <div 
@@ -297,6 +298,66 @@ export default function SuperHero() {
                 className="w-full h-full object-cover rounded-lg transition-transform duration-300 ease-in-out hover:scale-105"
               />
             </div>
+          </div>
+        </div>
+
+        {/* Mobile Layout - Only 9 slides (3x3 grid) */}
+        <div className="md:hidden flex items-center justify-center px-4">
+          {/* Center Grid - Only 9 slides */}
+          <div className="grid grid-cols-3 gap-3 p-4 max-w-sm">
+          {productImages.map((image, index) => {
+            // Replace the 5th slide (index 4) with the logo
+            if (index === 4) {
+              return (
+                <KinirLogoSquare
+                  key={index}
+                  size="sm"
+                  color="black"
+                  showSubtitle={true}
+                  className={`w-24 h-24 ${slideAnimations[index]}`}
+                  style={{ 
+                    paddingTop: '0.5%',
+                    width: '96px',
+                    height: '96px'
+                  }}
+                  subtitleStyle={{ fontSize: '0.6rem' }}
+                />
+              );
+            }
+            
+            return (
+              <div 
+                key={index}
+                className={`w-24 h-24 flex items-center justify-center border-2 border-amber-800/60 shadow-lg rounded-lg overflow-hidden ${slideAnimations[index]} transform transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-2xl hover:border-amber-700/80 hover:rotateY-12 hover:rotateX-5`}
+                style={{
+                  background: `
+                    linear-gradient(90deg, #8B4513 0%, #A0522D 25%, #8B4513 50%, #A0522D 75%, #8B4513 100%),
+                    linear-gradient(0deg, transparent 0%, rgba(139, 69, 19, 0.3) 50%, transparent 100%)
+                  `,
+                  backgroundSize: '100% 100%, 100% 4px',
+                  backgroundPosition: '0 0, 0 0',
+                  backgroundRepeat: 'no-repeat, repeat-y',
+                  boxShadow: `
+                    inset 0 0 20px rgba(0,0,0,0.3), 
+                    0 8px 16px rgba(0,0,0,0.4),
+                    0 4px 8px rgba(0,0,0,0.2),
+                    inset 0 2px 4px rgba(255,255,255,0.1),
+                    inset 0 -2px 4px rgba(0,0,0,0.2)
+                  `,
+                  transformStyle: 'preserve-3d',
+                  perspective: '1000px'
+                }}
+              >
+                <Image
+                  src={image}
+                  alt={`Tribal Product ${index + 1}`}
+                  width={96}
+                  height={96}
+                  className="w-full h-full object-cover rounded-lg transition-transform duration-300 ease-in-out hover:scale-105"
+                />
+              </div>
+            );
+          })}
           </div>
         </div>
       </div>

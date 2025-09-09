@@ -43,6 +43,7 @@
     "next": "15.4.6",
     "next-auth": "^4.24.11",
     "postcss": "^8.5.6",
+    "razorpay": "^2.9.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "twilio": "^5.8.2"

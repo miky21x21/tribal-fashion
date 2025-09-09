@@ -70,7 +70,7 @@ router.get('/', authenticate, async (req, res) => {
 router.post('/', authenticate, async (req, res) => {
   try {
     const userId = req.user.id;
-    const { items, total, shippingAddress, paymentMethod } = req.body;
+    const { items, total, shippingAddress, paymentMethod, paymentId, paymentOrderId } = req.body;
     
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({
@@ -86,6 +86,24 @@ router.post('/', authenticate, async (req, res) => {
       });
     }
     
+    // Validate shipping address
+    if (!shippingAddress) {
+      return res.status(400).json({
+        success: false,
+        message: 'Shipping address is required'
+      });
+    }
+
+    const requiredShippingFields = ['name', 'phone', 'address', 'city', 'state', 'zipCode'];
+    for (const field of requiredShippingFields) {
+      if (!shippingAddress[field] || !shippingAddress[field].trim()) {
+        return res.status(400).json({
+          success: false,
+          message: `${field} is required in shipping address`
+        });
+      }
+    }
+
     // Create order with items in a transaction
     const order = await prisma.$transaction(async (tx) => {
       // Create the order
@@ -93,7 +111,18 @@ router.post('/', authenticate, async (req, res) => {
         data: {
           userId,
           total,
-          status: 'PENDING'
+          status: 'PENDING',
+          shippingName: shippingAddress.name.trim(),
+          shippingPhone: shippingAddress.phone.trim(),
+          shippingAddress: shippingAddress.address.trim(),
+          shippingCity: shippingAddress.city.trim(),
+          shippingState: shippingAddress.state.trim(),
+          shippingZipCode: shippingAddress.zipCode.trim(),
+          shippingCountry: shippingAddress.country || 'India',
+          paymentMethod: paymentMethod || 'COD',
+          paymentId: paymentId || null,
+          paymentOrderId: paymentOrderId || null,
+          paymentStatus: paymentMethod === 'ONLINE' ? 'COMPLETED' : 'PENDING'
         }
       });
       
